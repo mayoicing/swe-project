@@ -1,0 +1,6 @@
+/* Style - Navbar component */
+
+.navbar {
+    display: flex;
+    justify-content: space-evenly;
+}
