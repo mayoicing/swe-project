@@ -2,8 +2,7 @@ import styles from './PersonalInfoForm.module.css';
 
 export default function PersonalInfoForm() {
     return (
-        <>
-            <div className={styles.form}>
+        <div className={styles.form}>
             <h1>Personal Information</h1>
             <form>
                 <label>First Name: <input type="text" name="fname" /></label>
@@ -13,7 +12,6 @@ export default function PersonalInfoForm() {
                 <label>Password: <input type="password" name="password"/></label>
                 <label>Confirm Password: <input type="confirmPassword" name="confirmPassword"/></label>
             </form>
-            </div>
-        </>
+        </div>
     );
 }
