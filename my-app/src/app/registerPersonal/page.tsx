@@ -1,7 +1,8 @@
 /* Page - RegisterPersonal */
+import RegisterPersonal from "./RegisterPersonal";
 
 export default function RegisterPersonalPage() {
     return (
-        <div>RegisterPersonal</div>
+        <RegisterPersonal/>
     );
 }
