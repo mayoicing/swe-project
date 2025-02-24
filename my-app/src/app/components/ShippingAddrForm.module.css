@@ -1,0 +1,24 @@
+/* Style - Shipping Address Form */
+
+.body { /* Overall file */
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form { /* White background */
+    width: 80%;
+    padding: 20px;
+    margin: 150px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form h1 { /* Title of form */
+    font-size: 40px;
+    font-weight: bolder;
+    color: #2C2C2C;
+}

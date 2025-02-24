@@ -1,7 +1,8 @@
 /* Page - RegisterAddress */
+import RegisterAddress from "./RegisterAddress";
 
 export default function RegisterAddressPage() {
     return (
-        <div>RegisterAddress</div>
+        <RegisterAddress/>
     );
 }
