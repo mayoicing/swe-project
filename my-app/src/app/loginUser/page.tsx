@@ -1,7 +1,8 @@
 /* Page - LoginUser */
+import LoginUser from "./LoginUser";
 
 export default function LoginUserPage() {
     return (
-        <div>LoginUser</div>
+        <LoginUser/>
     );
 }
