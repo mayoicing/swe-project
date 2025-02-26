@@ -1,1 +1,26 @@
 /* Style - RegisterAddress */
+
+.headings {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px
+}
+
+.headings h1 {
+    color: white;
+    font-size: 50px;
+    font-weight: bolder;
+}
+
+.headings h2 {
+    color: white;
+    font-size: 20px;
+    font-weight: bolder;
+    letter-spacing: -0.5px;
+    margin-top: -7px;
+}
