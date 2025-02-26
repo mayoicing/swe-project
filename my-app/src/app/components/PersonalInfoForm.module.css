@@ -8,17 +8,88 @@
     align-items: center;
 }
 
-.form { /* White background */
+.headings {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px
+}
+
+.headings h1 {
+    color: white;
+    font-size: 50px;
+    font-weight: bolder;
+}
+
+.headings h2 {
+    color: white;
+    font-size: 20px;
+    font-weight: bolder;
+    letter-spacing: -0.5px;
+    margin-top: -7px;
+}
+
+.formContainer { /* White background */
     width: 80%;
     padding: 20px;
-    margin: 150px;
+    margin: 150px auto;
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
-.form h1 { /* Title of form */
+.formContainer h1 { /* Title of form */
     font-size: 40px;
     font-weight: bolder;
     color: #2C2C2C;
+    letter-spacing: -0.5px;
 }
+
+.inputForm { /* Includes all fields */
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.inputForm label { /* Form labels for input fields */
+    display: block;
+    width: 100%;
+    padding: 10px;
+    letter-spacing: 0.5px;
+}
+
+.inputForm input { /* Styles input fields */
+    display: block;
+    width: 100%;
+    border: 1px solid #D9D9D9;
+    border-radius: 8px;
+    padding: 10px 20px;
+}
+
+.inputForm input:focus {
+    outline: none;
+}
+
+.fullName { /* Only includes first & last name fields */
+    display: flex;
+}
+
+.buttonContainer { /* Container for button */
+    display: flex;
+    justify-content: center;
+}
+
+.submitButton { /* Submit form button */
+    background-color: #444444;
+    color: #f5f5f5;
+    padding: 5px 500px;
+    border-radius: 10px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
