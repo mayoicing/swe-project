@@ -1,6 +1,6 @@
 /* Style - Navbar component */
 
-.navbar { /* Entire top navbar */
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -9,9 +9,12 @@
     background-color: #1C2337;
     opacity: 95%;
     height: 75px;
+    position: sticky;
+    top: 0; 
+    z-index: 1000; 
 }
 
-.leftSection { /* Includes SlayTix logo, search bar, & magnifyingGlass */
+.leftSection {
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -19,19 +22,19 @@
     width: 55%;
 }
 
-.slaytix { /* Only SlayTix logo */
+.slaytix {
     font-size: 35px;
     font-weight: bold;
 }
 
-.search { /* Includes search bar & magnifyingGlas */
+.search {
     flex-grow: 1;
     display: flex;
     align-items: center;
     position: relative;
 }
 
-.search input { /* Only search bar */
+.search input {
     flex-grow: 1;
     padding: 5px;
     padding-left: 25px;
@@ -43,11 +46,11 @@
     color: #1C2337;
 }
 
-.search input:focus { /* When you click on search bar */
+.search input:focus {
     outline: none;
 }
 
-.searchButton { /* Only magnifying glass */
+.searchButton {
     position: absolute;
     right: 10px;
     top: 7px;
@@ -57,7 +60,7 @@
     border: none;
 }
 
-.links { /* List of links */
+.links {
     display: flex;
     gap: 35px;
     font-size: 20px;
@@ -66,7 +69,7 @@
     align-items: center;
 }
 
-.links li { /* Includes Movies, Promotions, Login, & Signup links */ 
+.links li {
     display: flex;
     align-items: center;
     position: relative;
@@ -76,7 +79,7 @@
     height: 100%;
 }
 
-.links li::before { /* State happens before */
+.links li::before {
     content: '';
     position: absolute;
     top: 0;
@@ -86,10 +89,10 @@
     background-color: #0d132e;
     opacity: 0;
     transition: opacity 0.3s ease;
-    z-index: -1; 
+    z-index: -1;
     height: 100%;
 }
 
-.links li:hover::before { /* State happens when hover */
+.links li:hover::before {
     opacity: 1;
 }
