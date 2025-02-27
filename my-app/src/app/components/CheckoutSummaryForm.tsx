@@ -53,6 +53,10 @@ export default function CheckoutSummary() {
     setTicketDetails(updatedTickets);
   };
 
+  const handleUpdateSeats = () => {
+    router.push("/seatSelection"); // Change to the appropriate seat selection page
+  };
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Checkout Summary</h1>
@@ -66,6 +70,9 @@ export default function CheckoutSummary() {
           ) : (
             <p>No seats selected</p>
           )}
+          <button className={styles.updateSeatsButton} onClick={handleUpdateSeats}>
+            Update Seats
+          </button>
         </div>
 
         {/* RIGHT SIDE: Total, Promotions, Shipping, Payment */}
@@ -81,7 +88,6 @@ export default function CheckoutSummary() {
                     <th>Category</th>
                     <th>Qty</th>
                     <th>Price</th>
-                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -98,14 +104,6 @@ export default function CheckoutSummary() {
                         />
                       </td>
                       <td>${ticket.price}</td>
-                      <td>
-                        <button
-                          className={styles.deleteButton}
-                          onClick={() => handleDeleteTicket(index)}
-                        >
-                          Delete
-                        </button>
-                      </td>
                     </tr>
                   ))}
                 </tbody>

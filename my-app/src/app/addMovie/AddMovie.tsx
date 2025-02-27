@@ -2,34 +2,27 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import styles from "./ManageMovieDetails.module.css";
+import styles from "./AddMovie.module.css";
 
 interface Actor {
   name: string;
   role: string;
 }
 
-interface Schedule {
-  date: string;
-  time: string;
-}
-
 export default function AddMovieDetails() {
-  const [category, setCategory] = useState<string>("");
+  const [category, setCategory] = useState<string>(""); // State for selected category
   const [actors, setActors] = useState<Actor[]>([
-    { name: "Lindsay Lohan", role: "Cady Heron" },
-    { name: "Rachel McAdams", role: "Regina George" },
+    { name: "John Smith", role: "Lead" },
+    { name: "Jane Doe", role: "Supporting" },
   ]);
   const [newActor, setNewActor] = useState<string>("");
   const [newRole, setNewRole] = useState<string>("");
-  const [schedule, setSchedule] = useState<Schedule[]>([]);
-  const [newDate, setNewDate] = useState<string>("");
-  const [newTime, setNewTime] = useState<string>("");
   const router = useRouter();
 
   const removeActor = (actorToRemove: string) => {
     setActors((prevActors) => prevActors.filter((actor) => actor.name !== actorToRemove));
-  };
+};
+
 
   const handleAddActor = () => {
     if (newActor.trim()) {
@@ -39,20 +32,11 @@ export default function AddMovieDetails() {
     }
   };
 
-  const handleAddSchedule = () => {
-    if (newDate && newTime) {
-      setSchedule([...schedule, { date: newDate, time: newTime }]);
-      setNewDate("");
-      setNewTime("");
-    }
-  };
-
-  const removeSchedule = (index: number) => {
-    setSchedule(schedule.filter((_, i) => i !== index));
-  };
-
   const handleSaveChanges = () => {
+    // (Backend add movie stuff)
     alert("Movie Added!");
+
+    // Go back to Admin homepage (Manage Movies page)
     router.push("./adminMovie");
   };
 
@@ -128,40 +112,10 @@ export default function AddMovieDetails() {
         ))}
       </div>
 
-      {/* Scheduled Times Section */}
-      <label className={styles.label}>Scheduled Times</label>
-      <div className={styles.scheduleInputContainer}>
-        <input
-          type="date"
-          className={styles.input}
-          value={newDate}
-          onChange={(e) => setNewDate(e.target.value)}
-        />
-        <input
-          type="time"
-          className={styles.input}
-          value={newTime}
-          onChange={(e) => setNewTime(e.target.value)}
-        />
-        <button className={styles.addButton} onClick={handleAddSchedule}>
-          Add Schedule
-        </button>
-      </div>
-      <div className={styles.tagContainer}>
-        {schedule.map((entry, index) => (
-          <div key={index} className={styles.scheduleTag}>
-            <span>{entry.date} - {entry.time}</span>
-            <button className={styles.removeButton} onClick={() => removeSchedule(index)}>
-              ✖
-            </button>
-          </div>
-        ))}
-      </div>
-
       {/* Buttons at the Bottom */}
       <div className={styles.buttonContainer}>
         <button className={styles.saveButton} onClick={handleSaveChanges}>
-          Save Changes
+          Add Movie
         </button>
         <button className={styles.deleteButton}>Delete Movie</button>
       </div>

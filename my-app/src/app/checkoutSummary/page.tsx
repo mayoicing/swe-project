@@ -1,13 +1,13 @@
 /* Page - CheckoutSummary */
 
 import Navbar from '../components/Navbar';
-import CheckoutSummaryForm from '../components/CheckoutSummaryForm';
+import CheckoutSummary from './CheckoutSummary';
 
 export default function CheckoutSummaryPage() {
     return (
         <>
         <Navbar/>
-        <CheckoutSummaryForm/>
+        <CheckoutSummary/>
         </>
     );
 }
