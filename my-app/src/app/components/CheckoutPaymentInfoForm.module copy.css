@@ -1,0 +1,73 @@
+/* Style - Payment Information Form */
+
+.body { /* Overall file */
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.formContainer { /* White background */
+    width: 80%;
+    padding: 20px;
+    margin: 150px auto;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.formContainer h1 { /* Title of form */
+    font-size: 40px;
+    font-weight: bolder;
+    color: #2C2C2C;
+    letter-spacing: -0.5px;
+}
+
+.inputForm { /* Includes all fields */
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.inputForm label { /* Form labels for input fields */
+    display: block;
+    width: 100%;
+    padding: 10px;
+    letter-spacing: 0.5px;
+}
+
+.inputForm input { /* Styles input fields */
+    display: block;
+    width: 100%;
+    border: 1px solid #D9D9D9;
+    border-radius: 8px;
+    padding: 10px 20px;
+}
+
+.inputForm input:focus { /* How button looks when clicked on */
+    outline: none;
+}
+
+.otherCardInfo, .otherAddressInfo { /* Includes expiration date, CVV, city, state, & zipcode */
+    display: flex;
+}
+
+.buttonContainer { /* Container for button */
+    display: flex;
+    justify-content: center;
+}
+
+.submitButton { /* Submit button*/
+    background-color: #2c2c2c;
+    color: #f5f5f5;
+    padding: 5px 500px;
+    border-radius: 10px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.submitButton:active {
+    background-color: #444444;
+}

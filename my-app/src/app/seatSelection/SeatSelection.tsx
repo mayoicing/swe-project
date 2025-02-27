@@ -12,11 +12,9 @@ const SeatSelection: React.FC = () => {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [maxSeats, setMaxSeats] = useState<number>(0);
 
-  // Define wheelchair-accessible seat positions
   const wheelchairSeats = new Set(["1-2", "1-7", "2-3", "2-6"]);
 
   useEffect(() => {
-    // Get ticket count from localStorage
     const ticketCount = parseInt(localStorage.getItem("ticketCount") || "0", 10);
     if (ticketCount > 0) {
       setMaxSeats(ticketCount);
@@ -34,13 +32,19 @@ const SeatSelection: React.FC = () => {
     }
   };
 
+  const handleConfirmSelection = () => {
+    if (selectedSeats.length === maxSeats) {
+      localStorage.setItem("selectedSeats", JSON.stringify(selectedSeats)); // ✅ Save seats to localStorage
+      router.push("./checkoutAddress"); // ✅ Navigate to Checkout Address Page
+    }
+  };
+
   return (
     <div className={styles.seatContainer}>
       <h2 className={styles.screenLabel}>SCREEN</h2>
       <p className={styles.instructions}>Select up to {maxSeats} seats</p>
 
       <div className={styles.seatingGrid}>
-        {/* Main seating area */}
         {Array.from({ length: ROWS }, (_, rowIndex) => (
           <div key={rowIndex} className={styles.seatRow}>
             {Array.from({ length: COLS }, (_, colIndex) => {
@@ -61,7 +65,11 @@ const SeatSelection: React.FC = () => {
         ))}
       </div>
 
-      <button className={styles.selectButton} disabled={selectedSeats.length < maxSeats}>
+      <button
+        className={styles.selectButton}
+        disabled={selectedSeats.length < maxSeats}
+        onClick={handleConfirmSelection}
+      >
         {selectedSeats.length === maxSeats ? "Confirm Selection" : `Select Seats (${selectedSeats.length}/${maxSeats})`}
       </button>
     </div>

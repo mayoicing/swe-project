@@ -14,7 +14,7 @@ export default function LoginForm() {
             </form>
             <div className={styles.navigation}>
                     <Link href='/'>Forget password?</Link>
-                    <Link href='/' className={styles.admin}>Admin Login</Link>
+                    <Link href='/loginAdmin' className={styles.admin}>Admin Login</Link>
             </div>
         </div>
     );

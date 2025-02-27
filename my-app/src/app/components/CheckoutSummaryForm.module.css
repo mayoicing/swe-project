@@ -1,0 +1,134 @@
+/* Main Container */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background-color: #2a3b5d; /* Lighter blue */
+  color: white;
+  padding: 20px;
+}
+
+/* Page Title */
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Summary Layout: Large Left Side & Smaller Right Side */
+.summaryWrapper {
+  display: flex;
+  gap: 20px;
+  width: 80%;
+  max-width: 1200px;
+  align-items: flex-start;
+}
+
+/* Large Left Card (Seat Selection) */
+.largeCard {
+  background: white;
+  color: black;
+  padding: 20px;
+  border-radius: 8px;
+  width: 55%;
+  min-height: 250px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Right Side Cards */
+.rightSide {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 40%;
+}
+
+/* Smaller Cards on the Right */
+.summaryCard {
+  background: white;
+  color: black;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Styling */
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.tableContainer table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tableContainer th,
+.tableContainer td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Separator Line */
+.separator {
+  width: 80%;
+  margin: 15px auto;
+  border: 0.5px solid #ccc;
+}
+
+/* Total Price Styling */
+.totalPrice {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Promo Code Input */
+.promoInput {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+/* Apply Button */
+.promoButton {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #7c42ff;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.promoButton:hover {
+  background-color: #5a2bd6;
+}
+
+/* Confirm Order Button */
+.confirmButton {
+  margin-top: 20px;
+  padding: 12px 25px;
+  background-color: #7c42ff;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.confirmButton:hover {
+  background-color: #5a2bd6;
+}

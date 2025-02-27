@@ -1,7 +1,12 @@
 /* Page - CheckoutAddress */
+import CheckoutAddress from "./CheckoutAddress";
+import Navbar from '../components/Navbar';
 
 export default function CheckoutAddressPage() {
     return (
-        <div>CheckoutAddress</div>
+        <>
+        <Navbar/>
+        <CheckoutAddress/>
+        </>
     );
 }
