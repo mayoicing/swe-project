@@ -7,7 +7,6 @@ export default function AdminMoviePage() {
     <>
       <Navbar/>
       <AdminMoviesList/>
-      <div>Admin Home</div>
     </>
   );
 }
