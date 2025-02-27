@@ -8,17 +8,8 @@ interface Genre {
 }
 
 const initialGenres: Genre[] = [
-    { genre: 'ACTION', isSelected: false }, 
-    { genre: 'DRAMA', isSelected: false }, 
-    { genre: 'COMEDY', isSelected: false }, 
-    { genre: 'ROMANCE', isSelected: false }, 
-    { genre: '3D', isSelected: false }, 
-    { genre: 'DANCE', isSelected: false },
-    { genre: 'FOREIGN', isSelected: false }, 
-    { genre: 'CLASSIC', isSelected: false }, 
-    { genre: 'INDIE', isSelected: false },
-    { genre: 'WESTERN', isSelected: false }, 
-    { genre: 'HORROR', isSelected: false }
+    { genre: 'CURRENTLY RUNNING', isSelected: false }, 
+    { genre: 'COMING SOON', isSelected: false }, 
 ];
 
 export default function GenreButtons() {

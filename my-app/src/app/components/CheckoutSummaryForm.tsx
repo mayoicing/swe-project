@@ -25,6 +25,13 @@ export default function CheckoutSummary() {
     router.push("/orderConfirm");
   };
 
+  const handleCancelOrder = () => {
+    const isConfirmed = confirm("Are you sure you want to cancel your order?");
+    if (isConfirmed) {
+      router.push("/"); // Navigate back to the homepage or another page
+    }
+  };
+
   const handleApplyPromo = () => {
     if (promoCode.trim() === "DISCOUNT10") {
       setDiscount(10);
@@ -33,6 +40,17 @@ export default function CheckoutSummary() {
       setDiscount(0);
       alert("Invalid promo code.");
     }
+  };
+
+  const handleQuantityChange = (index: number, newQuantity: number) => {
+    const updatedTickets = [...ticketDetails];
+    updatedTickets[index].quantity = newQuantity;
+    setTicketDetails(updatedTickets);
+  };
+
+  const handleDeleteTicket = (index: number) => {
+    const updatedTickets = ticketDetails.filter((_, i) => i !== index);
+    setTicketDetails(updatedTickets);
   };
 
   return (
@@ -63,14 +81,31 @@ export default function CheckoutSummary() {
                     <th>Category</th>
                     <th>Qty</th>
                     <th>Price</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {ticketDetails.map((ticket, index) => (
                     <tr key={index}>
                       <td>{ticket.category}</td>
-                      <td>{ticket.quantity}</td>
+                      <td>
+                        <input
+                          type="number"
+                          min="0"
+                          value={ticket.quantity}
+                          onChange={(e) => handleQuantityChange(index, parseInt(e.target.value))}
+                          className={styles.quantityInput}
+                        />
+                      </td>
                       <td>${ticket.price}</td>
+                      <td>
+                        <button
+                          className={styles.deleteButton}
+                          onClick={() => handleDeleteTicket(index)}
+                        >
+                          Delete
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -107,9 +142,15 @@ export default function CheckoutSummary() {
         </div>
       </div>
 
-      <button className={styles.confirmButton} onClick={handleConfirmOrder}>
-        Confirm Order
-      </button>
+      {/* Buttons at the Bottom */}
+      <div className={styles.buttonContainer}>
+        <button className={styles.cancelButton} onClick={handleCancelOrder}>
+          Cancel Order
+        </button>
+        <button className={styles.confirmButton} onClick={handleConfirmOrder}>
+          Confirm Order
+        </button>
+      </div>
     </div>
   );
 }
