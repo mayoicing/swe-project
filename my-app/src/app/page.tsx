@@ -2,6 +2,7 @@
 import Navbar from './components/Navbar'
 import MoviesList from './components/MoviesList';
 
+
 export default function Home() {
   return (
     <>
@@ -10,4 +11,6 @@ export default function Home() {
       <div>Home</div>
     </>
   );
+
+  
 }
