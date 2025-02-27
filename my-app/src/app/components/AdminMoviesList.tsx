@@ -5,6 +5,7 @@ import movie1 from '../images/movie1.jpg';
 import movie2 from '../images/movie2.jpg';
 import movie3 from '../images/movie3.jpg';
 import styles from './MoviesList.module.css';
+import styles1 from './AdminMoviesList.module.css';
 
 interface Movie {
   id: string;
@@ -21,7 +22,7 @@ const movies: Movie[] = [
 export default function MoviesList() {
   return (
     <section style={{ padding: '20px' }}>
-      <h2>Movies</h2>
+      <h2 className={styles.h2}>Manage Movies</h2>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
         {movies.map((movie) => (
           <Link

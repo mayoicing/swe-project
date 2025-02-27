@@ -1,8 +1,8 @@
 /* Page - MovieDetails */
-import MovieDetails from "./adminMovieDetails";
+import MoviePage from "./adminMovieDetails";
 
 export default function adminMovieDetailsPage() {
     return (
-        <MovieDetails/>
+        <MoviePage/>
     );
 }
