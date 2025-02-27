@@ -1,0 +1,99 @@
+.pageContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+    background-color: #1e2a40; 
+}
+
+.container {
+    width: 320px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin: auto;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: gray;
+    margin-bottom: 15px;
+}
+
+.seatSelection {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.seatRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Seat Type Labels */
+.seatInfo {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.seatLabel {
+    font-weight: bold;
+}
+
+.subLabel {
+    font-size: 12px;
+    color: gray;
+}
+
+.price {
+    font-size: 14px;
+    color: black;
+}
+
+/* Seat Counter Controls */
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Buttons for increasing/decreasing seat count */
+.btn {
+    background: none;
+    border: 1px solid gray;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.count {
+    font-size: 16px;
+}
+
+.nextButton {
+    margin-top: 15px;
+    width: 100%;
+    padding: 8px;
+    background: #2C2C2C;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.nextButton:active {
+    background: #444;
+}

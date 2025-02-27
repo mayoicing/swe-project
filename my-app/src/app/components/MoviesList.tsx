@@ -21,7 +21,7 @@ const movies: Movie[] = [
 export default function MoviesList() {
   return (
     <section style={{ padding: '20px' }}>
-      <h2>Movies</h2>
+      <h2 className={styles.h2}>Movies</h2>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
         {movies.map((movie) => (
           <Link

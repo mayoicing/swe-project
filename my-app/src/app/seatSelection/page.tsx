@@ -1,7 +1,13 @@
 /* Page - SeatSelection */
 
-export default function SeatSelectionPage() {
+import SeatSelection from "./SeatSelection";
+import Navbar from '../components/Navbar';
+
+export default function SelectSeats() {
     return (
-        <div>SeatSelection</div>
+        <>
+        <Navbar/>
+        <SeatSelection/>
+        </>
     );
 }

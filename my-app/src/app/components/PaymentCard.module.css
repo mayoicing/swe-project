@@ -7,15 +7,21 @@
     color: #000000;
     font-size: 20px;
     font-weight: bolder;
-    letter-spacing: -0.5;
-    padding: 55px 40px 20px 15px;
+    letter-spacing: -0.5px; 
+    padding: 20px; 
     border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    position: relative; 
+}
+
+.logoContainer {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .logo {
-    position: relative;
-    left: 220px;
-    bottom: 35px;
     height: 40px;
     width: auto;
 }
