@@ -9,28 +9,14 @@ import jakarta.persistence.Column;
 
 @Entity
 @Table(name = "MovieInfo") 
+
 public class MovieInfo {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private int id;
-
-    @Column(length = 1000) 
     private String poster;
-
-    @Column(length = 100)
     private String title;
-
-    @Column(length = 500)
     private String description;
-
-    @Column(length = 100)
     private String category;
-
-    @Column(name = "film_code", length = 10) 
     private String filmCode;
-
-    @Column(length = 300)
     private String trailer;
 
     // Constructor
@@ -118,4 +104,3 @@ public class MovieInfo {
                 '}';
     }
 }
-
