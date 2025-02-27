@@ -90,23 +90,17 @@ export default function CheckoutSummary() {
                     <th>Price</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {ticketDetails.map((ticket, index) => (
-                    <tr key={index}>
-                      <td>{ticket.category}</td>
-                      <td>
-                        <input
-                          type="number"
-                          min="0"
-                          value={ticket.quantity}
-                          onChange={(e) => handleQuantityChange(index, parseInt(e.target.value))}
-                          className={styles.quantityInput}
-                        />
-                      </td>
-                      <td>${ticket.price}</td>
-                    </tr>
-                  ))}
-                </tbody>
+                  <tbody>
+                    {ticketDetails.map((ticket, index) =>
+                      ticket.quantity > 0 ? (
+                        <tr key={index}>
+                          <td>{ticket.category}</td>
+                          <td>{ticket.quantity}</td>
+                          <td>${ticket.price * ticket.quantity}</td>
+                        </tr>
+                      ) : null
+                    )}
+                  </tbody>
               </table>
             </div>
             <hr className={styles.separator} />

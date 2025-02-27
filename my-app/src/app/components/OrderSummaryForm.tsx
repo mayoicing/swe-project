@@ -24,18 +24,14 @@ export default function CheckoutSummary() {
     0
   );
 
-  const handleDeleteTicket = (index: number) => {
-    const updatedTickets = [...ticketDetails];
-
-    // If quantity is greater than 1, decrease the count
-    if (updatedTickets[index].quantity > 1) {
-      updatedTickets[index].quantity -= 1;
-    } else {
-      // If only 1 ticket, remove the ticket type
-      updatedTickets.splice(index, 1);
-    }
-
-    setTicketDetails(updatedTickets);
+  const handleDecreaseTicket = (index: number) => {
+    setTicketDetails((prevTickets) =>
+      prevTickets.map((ticket, i) =>
+        i === index && ticket.quantity > 0
+          ? { ...ticket, quantity: ticket.quantity - 1 }
+          : ticket
+      )
+    );
   };
 
   const handleUpdateTickets = () => {
@@ -67,12 +63,13 @@ export default function CheckoutSummary() {
               {ticketDetails.map((ticket, index) => (
                 <tr key={index}>
                   <td>{ticket.category}</td>
-                  <td>{ticket.quantity}</td> {/* Removed input field */}
+                  <td>{ticket.quantity}</td>
                   <td>${ticket.price * ticket.quantity}</td>
                   <td>
                     <button
                       className={styles.deleteButton}
-                      onClick={() => handleDeleteTicket(index)}
+                      onClick={() => handleDecreaseTicket(index)}
+                      disabled={ticket.quantity === 0} // Disable button if quantity is 0
                     >
                       -
                     </button>
@@ -99,7 +96,7 @@ export default function CheckoutSummary() {
         <button
           className={styles.confirmButton}
           onClick={handleConfirmOrder}
-          disabled={ticketDetails.length === 0}
+          disabled={ticketDetails.every((ticket) => ticket.quantity === 0)} // Prevent checkout if no tickets
         >
           Confirm & Continue to Checkout
         </button>

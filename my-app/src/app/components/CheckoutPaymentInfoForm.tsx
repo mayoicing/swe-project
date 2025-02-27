@@ -23,7 +23,7 @@ export default function PaymentInfoForm() {
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
     localStorage.setItem("paymentInfo", JSON.stringify(paymentData));
-    router.push("./checkoutSummary");
+    router.push("./orderSummary");
   };
 
   return (
