@@ -29,7 +29,7 @@ export default function PaymentInfoForm() {
   return (
     <div className={styles.formContainer}>
       <h1>Payment Information</h1>
-      <form className={styles.inputForm} onSubmit={handleNext}> {/* ✅ Handle navigation here */}
+      <form className={styles.inputForm} onSubmit={handleNext}>
         <label>Card Number<input type="text" pattern="[0-9]*" name="cardNum" placeholder="Type here" onChange={handleChange} /></label>
         <div className={styles.otherCardInfo}>
           <label>Expiration Date<input type="date" name="date" placeholder="Type here" onChange={handleChange} /></label>
@@ -42,7 +42,7 @@ export default function PaymentInfoForm() {
           <label>Zip Code<input type="text" name="zipcode" placeholder="Type here" onChange={handleChange} /></label>
         </div>
         <div className={styles.buttonContainer}>
-          <input type="submit" value="Next" className={styles.submitButton} />
+          <input type="submit" value="Continue to Order Summary" className={styles.submitButton} />
         </div>
       </form>
     </div>
