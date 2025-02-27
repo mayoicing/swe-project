@@ -1,1 +1,76 @@
-/* Style - SeatSelection */
+/* Center seat selection layout */
+.seatContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    text-align: center;
+    background-color: #1b1e3b;
+    color: white;
+    padding: 20px;
+  }
+  
+  .screenLabel {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+
+  .seatRow {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-bottom: 5px;
+  }
+  
+  /* Individual seat styling */
+  .seat {
+    width: 35px;
+    height: 35px;
+    background-color: #6a5acd;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .seat:hover {
+    background-color: #9b7ff5;
+  }
+  
+  /* Styling for wheelchair-accessible seats */
+  .wheelchair {
+    background-color: #4a90e2 !important;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Highlight selected seats */
+  .selected {
+    background-color: #1b1e68 !important;
+  }
+  
+  /* Button styling */
+  .selectButton {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #7c42ff;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .selectButton:hover {
+    background-color: #5a2bd6;
+  }
+  
