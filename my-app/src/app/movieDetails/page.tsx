@@ -1,7 +1,8 @@
 /* Page - MovieDetails */
+import MovieDetails from "./MovieDetails";
 
 export default function MovieDetailsPage() {
     return (
-        <div>MovieDetails</div>
+        <MovieDetails/>
     );
 }
