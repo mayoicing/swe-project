@@ -3,6 +3,9 @@ import LoginForm from '../components/LoginForm';
 
 export default function LoginAdmin() {
     return (
-        <LoginForm/>
+        <div className={styles.container}>
+            <h1 className={styles.title}></h1>
+            <LoginForm/>
+        </div>
     );
 }

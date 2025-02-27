@@ -1,1 +1,23 @@
 /* Style - LoginAdmin */
+
+.container {
+    position: relative; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; 
+}
+
+.title {
+    font-size: 45px;
+    font-weight: bolder;
+    letter-spacing: -0.5px;
+    color: white;
+    position: absolute; 
+    top: 55px; 
+    left: 50%;
+    transform: translateX(-50%); 
+    margin: 0; 
+    text-align: center;
+}
