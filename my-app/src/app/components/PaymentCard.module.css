@@ -1,0 +1,21 @@
+/* Style - PaymentCard */
+
+.card {
+    width: 350px;
+    height: 200px;
+    background-color: #B34749;
+    color: #000000;
+    font-size: 20px;
+    font-weight: bolder;
+    letter-spacing: -0.5;
+    padding: 55px 40px 20px 15px;
+    border-radius: 15px;
+}
+
+.logo {
+    position: relative;
+    left: 220px;
+    bottom: 35px;
+    height: 40px;
+    width: auto;
+}

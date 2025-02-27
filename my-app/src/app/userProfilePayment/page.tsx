@@ -1,7 +1,8 @@
 /* Page - UserProfilePayment */
+import UserProfilePayment from "./UserProfilePayment";
 
 export default function UserProfilePaymentPage() {
     return (
-        <div>UserProfilePayment</div>
+        <UserProfilePayment/>
     );
 }
