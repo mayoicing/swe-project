@@ -4,7 +4,7 @@ export default function ShippingAddrForm() {
     return (
         <div className={styles.formContainer}>
             <h1>Shipping Address (Optional)</h1>
-            <form className={styles.inputForm} action="/" method="POST">
+            <form className={styles.inputForm} action="/registerConfirm" method="POST">
                 <label>Street Address: <input type="text" name="streetaddr" placeholder="Type here"/></label>
                 <label>Shipping Address: <input type="text" name="shipaddr" placeholder="Type here"/></label>
                 <div className={styles.cityState}>

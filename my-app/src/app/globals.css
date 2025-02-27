@@ -23,6 +23,6 @@ body {
   font-family: Spline Sans, Arial, Helvetica, sans-serif;
 }
 
-body::-webkit-scrollbar { 
-  display: none; /* Hide the scrollbar for Chrome, Safari, and newer Edge */
+body::-webkit-scrollbar { /* Hides scrollbar */
+  display: none; 
 }

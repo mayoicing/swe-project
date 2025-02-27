@@ -1,0 +1,41 @@
+/* Style - RegisterConfirm */
+
+.page { /* Styling for entire page */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 200px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.page h1 { /* Styling for hq */
+    color: white;
+    font-size: 75px;
+    font-weight: bolder;
+    letter-spacing: -0.5px;
+}
+
+.page h2 { /* Styling for h2 */
+    color: white;
+    font-size: 25px;
+    font-weight: lighter;
+    margin-top: -15px;
+}
+
+.page button { /* Login button */
+    background-color: white;
+    color: #2C3851;
+    font-weight: bolder;
+    margin-top: 25px;
+    padding: 10px 65px;
+    border-radius: 10px;
+    box-shadow: 5px 10px;
+}
+
+.page button:active {
+    background-color: #abb4cd;
+    box-shadow: none; 
+}
