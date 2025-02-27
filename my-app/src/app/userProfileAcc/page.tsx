@@ -1,7 +1,8 @@
 /* Page - UserProfileAcc */
+import UserProfileAcc from "./UserProfileAcc";
 
 export default function UserProfileAccPage() {
     return (
-        <div>UserProfileAcc</div>
+        <UserProfileAcc/>
     );
 }

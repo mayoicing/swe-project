@@ -1,0 +1,29 @@
+/* Style - ProfileSidebar */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    padding: 50px 50px;
+    border-right: 2px solid white;
+    height: 100vh;
+    width: 20%;
+    gap: 15px;
+    padding-top: 60px;
+}
+
+.container h1 {
+    font-size: 25px;
+    font-weight: bolder;
+    letter-spacing: 0.5px;
+}
+
+.container a {
+   text-decoration: underline;
+   font-weight: lighter;
+   letter-spacing: 0.5px;
+}
+
+.container a:hover {
+    color: #9DC2EE;
+}
