@@ -1,0 +1,25 @@
+/* Style - GenreButtons */
+
+.container {
+    display: flex;
+    justify-content: start;
+    gap: 15px;
+    color: white;
+    margin-top: 30px;
+    margin-left: 30px;
+}
+
+.container p {
+    margin-top: 10px;
+    font-weight: bolder;
+}
+
+.genreButton {
+    border: 1px #CFBDFE solid;
+    border-radius: 5px;
+    padding: 5px 15px;
+}
+
+.genreButton.selected {
+    background-color: #CFBDFE; 
+}
