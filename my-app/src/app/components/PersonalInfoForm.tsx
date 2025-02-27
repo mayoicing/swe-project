@@ -4,7 +4,7 @@ export default function PersonalInfoForm() {
     return (
         <div className={styles.formContainer}>
             <h1>Personal Information</h1>
-            <form>
+            <form action="/registerPayment" method="POST">
                 <div className={styles.inputForm}>
                     <div className={styles.fullName}>
                         <label>First Name<input type="text" name="fname" placeholder="Type here"/></label>
@@ -17,7 +17,7 @@ export default function PersonalInfoForm() {
                         <label>Confirm Password<input type="confirmPassword" name="confirmPassword" placeholder="Type here"/></label>
                     </div>
                     <div className={styles.buttonContainer}>
-                        <input type="submit" value="Submit" className={styles.submitButton}/>
+                        <input type="submit" value="Next" className={styles.submitButton}/>
                     </div>
                 </div>
             </form>

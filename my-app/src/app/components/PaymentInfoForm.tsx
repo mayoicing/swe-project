@@ -4,7 +4,7 @@ export default function PaymentInfoForm() {
     return (
         <div className={styles.formContainer}>
             <h1>Payment Information (Optional)</h1>
-            <form className={styles.inputForm}>
+            <form className={styles.inputForm} action="/registerAddress" method="POST">
                 <label>Card Number<input type="text" pattern="[0-9]*" name="cardNum" placeholder="Type here"/></label>
                 <div className={styles.otherCardInfo}>
                     <label>Expiration Date<input type="date" name="date" placeholder="Type here"/></label>
@@ -17,7 +17,7 @@ export default function PaymentInfoForm() {
                     <label>Zip Code<input type="text" name="zipcode" placeholder="Type here"/></label>
                 </div>
                 <div className={styles.buttonContainer}>
-                    <input type="submit" value="Submit" className={styles.submitButton}/>
+                    <input type="submit" value="Next" className={styles.submitButton}/>
                 </div>
             </form>
         </div>

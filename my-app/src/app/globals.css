@@ -22,3 +22,7 @@ body {
   background: #2C3851;
   font-family: Spline Sans, Arial, Helvetica, sans-serif;
 }
+
+body::-webkit-scrollbar { 
+  display: none; /* Hide the scrollbar for Chrome, Safari, and newer Edge */
+}

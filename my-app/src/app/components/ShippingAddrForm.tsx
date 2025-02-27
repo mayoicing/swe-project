@@ -4,7 +4,7 @@ export default function ShippingAddrForm() {
     return (
         <div className={styles.formContainer}>
             <h1>Shipping Address (Optional)</h1>
-            <form className={styles.inputForm}>
+            <form className={styles.inputForm} action="/" method="POST">
                 <label>Street Address: <input type="text" name="streetaddr" placeholder="Type here"/></label>
                 <label>Shipping Address: <input type="text" name="shipaddr" placeholder="Type here"/></label>
                 <div className={styles.cityState}>
@@ -13,7 +13,7 @@ export default function ShippingAddrForm() {
                 </div>
                 <label>Zip Code: <input type="number" name="zipcode" placeholder="Type here"/></label>
                 <div className={styles.buttonContainer}>
-                    <input type="submit" value="Submit" className={styles.submitButton}/>
+                    <input type="submit" value="Complete Registration" className={styles.submitButton}/>
                 </div>
             </form>
         </div>
