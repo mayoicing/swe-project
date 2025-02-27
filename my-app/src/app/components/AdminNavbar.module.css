@@ -27,40 +27,6 @@
     text-decoration: none;
 }
 
-/* Search bar */
-.search {
-    display: flex;
-    align-items: center;
-    position: relative;
-    width: 100%;
-    max-width: 250px;
-}
-
-.search input {
-    flex-grow: 1;
-    padding: 8px 12px;
-    font-size: 15px;
-    border: 1px solid #222c41;
-    border-radius: 50px;
-    background-color: #E8F1FD;
-    color: #1C2337;
-    width: 100%;
-}
-
-.search input:focus {
-    outline: none;
-}
-
-.search button {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
 /* Right section: Navigation links */
 .links {
     display: flex;

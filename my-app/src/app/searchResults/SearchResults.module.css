@@ -2,12 +2,12 @@
 
 .container {
     color: white;
-    font-weight: bold;
 }
 
 .container h1 {
     padding: 35px;
     font-size: 35px;
+    font-weight: bold;
 }
 
 .grid {
@@ -21,5 +21,9 @@
     flex-direction: column;
     justify-content: center;
     letter-spacing: 0.5px;
+}
+
+.movieCard h2 {
+    font-weight: bold;
 }
 

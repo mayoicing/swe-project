@@ -1,6 +1,9 @@
+"use client";
 import styles from './SearchResults.module.css';
 import Navbar from '../components/Navbar';
 import Image, { StaticImageData } from 'next/image';
+import { useSearchParams } from 'next/navigation';
+import React from 'react';
 import movie1 from '../images/movie1.jpg';
 import movie2 from '../images/movie2.jpg';
 
@@ -20,10 +23,13 @@ const movieResults: Movie[] = [
 ];
 
 export default function SearchResults() {
+    const searchParams = useSearchParams();
+    const query = searchParams.get("q") || "";
+
     return (
         <div className={styles.container}>
             <Navbar/>
-            <h1>Search Results...</h1>
+            <h1>Search Results for "{query}"</h1>
             <div className={styles.grid} >
                 {movieResults.map((movie, index) => (
                     <div key={index} className={styles.movieCard}>
