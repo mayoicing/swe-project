@@ -1,5 +1,13 @@
 /* MoviesList.module.css */
+
 .movieTitle {
     color: white;
   }
+
+.h2 {
+  color: white;
+  font-size: 35px;
+  padding: 5px;
+  font-weight: bolder;
+}
   
