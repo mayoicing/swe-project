@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import styles from "./ManageMovieDetails.module.css";
+import styles from "./AddMovie.module.css";
 
 interface Actor {
   name: string;
@@ -16,10 +16,7 @@ interface Schedule {
 
 export default function AddMovieDetails() {
   const [category, setCategory] = useState<string>("");
-  const [actors, setActors] = useState<Actor[]>([
-    { name: "Lindsay Lohan", role: "Cady Heron" },
-    { name: "Rachel McAdams", role: "Regina George" },
-  ]);
+  const [actors, setActors] = useState<Actor[]>([]);
   const [newActor, setNewActor] = useState<string>("");
   const [newRole, setNewRole] = useState<string>("");
   const [schedule, setSchedule] = useState<Schedule[]>([]);
@@ -161,7 +158,7 @@ export default function AddMovieDetails() {
       {/* Buttons at the Bottom */}
       <div className={styles.buttonContainer}>
         <button className={styles.saveButton} onClick={handleSaveChanges}>
-          Save Changes
+          Add Movie
         </button>
         <button className={styles.deleteButton}>Delete Movie</button>
       </div>

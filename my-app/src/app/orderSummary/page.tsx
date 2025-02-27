@@ -1,13 +1,13 @@
 /* Page - OrderSummary */
 
 import Navbar from '../components/Navbar';
-//import OrderSummary from './OrderSummary';
+import OrderSummary from './OrderSummary';
 
-export default function OrderSummaryPage() {
+export default function CheckoutSummaryPage() {
     return (
         <>
         <Navbar/>
-
+        <OrderSummary/>
         </>
     );
 }
