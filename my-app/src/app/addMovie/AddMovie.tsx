@@ -9,20 +9,24 @@ interface Actor {
   role: string;
 }
 
+interface Schedule {
+  date: string;
+  time: string;
+}
+
 export default function AddMovieDetails() {
-  const [category, setCategory] = useState<string>(""); // State for selected category
-  const [actors, setActors] = useState<Actor[]>([
-    { name: "John Smith", role: "Lead" },
-    { name: "Jane Doe", role: "Supporting" },
-  ]);
+  const [category, setCategory] = useState<string>("");
+  const [actors, setActors] = useState<Actor[]>([]);
   const [newActor, setNewActor] = useState<string>("");
   const [newRole, setNewRole] = useState<string>("");
+  const [schedule, setSchedule] = useState<Schedule[]>([]);
+  const [newDate, setNewDate] = useState<string>("");
+  const [newTime, setNewTime] = useState<string>("");
   const router = useRouter();
 
   const removeActor = (actorToRemove: string) => {
     setActors((prevActors) => prevActors.filter((actor) => actor.name !== actorToRemove));
-};
-
+  };
 
   const handleAddActor = () => {
     if (newActor.trim()) {
@@ -32,11 +36,20 @@ export default function AddMovieDetails() {
     }
   };
 
-  const handleSaveChanges = () => {
-    // (Backend add movie stuff)
-    alert("Movie Added!");
+  const handleAddSchedule = () => {
+    if (newDate && newTime) {
+      setSchedule([...schedule, { date: newDate, time: newTime }]);
+      setNewDate("");
+      setNewTime("");
+    }
+  };
 
-    // Go back to Admin homepage (Manage Movies page)
+  const removeSchedule = (index: number) => {
+    setSchedule(schedule.filter((_, i) => i !== index));
+  };
+
+  const handleSaveChanges = () => {
+    alert("Movie Added!");
     router.push("./adminMovie");
   };
 
@@ -106,6 +119,36 @@ export default function AddMovieDetails() {
             <span>{actor.name}</span>
             {actor.role && <span className={styles.actorRole}>({actor.role})</span>}
             <button className={styles.removeButton} onClick={() => removeActor(actor.name)}>
+              ✖
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* Scheduled Times Section */}
+      <label className={styles.label}>Scheduled Times</label>
+      <div className={styles.scheduleInputContainer}>
+        <input
+          type="date"
+          className={styles.input}
+          value={newDate}
+          onChange={(e) => setNewDate(e.target.value)}
+        />
+        <input
+          type="time"
+          className={styles.input}
+          value={newTime}
+          onChange={(e) => setNewTime(e.target.value)}
+        />
+        <button className={styles.addButton} onClick={handleAddSchedule}>
+          Add Schedule
+        </button>
+      </div>
+      <div className={styles.tagContainer}>
+        {schedule.map((entry, index) => (
+          <div key={index} className={styles.scheduleTag}>
+            <span>{entry.date} - {entry.time}</span>
+            <button className={styles.removeButton} onClick={() => removeSchedule(index)}>
               ✖
             </button>
           </div>
