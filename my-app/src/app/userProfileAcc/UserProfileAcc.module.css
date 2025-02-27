@@ -1,1 +1,90 @@
 /* Style - UserProfileAcc */
+
+.container {
+    display: flex;
+    min-height: 100vh; 
+    color: white;
+    letter-spacing: 0.5px;
+    min-height: 100vh; 
+    flex: 1;
+}
+
+.leftSection {
+    width: 270px;
+}
+
+.rightSection {
+    flex: 1;
+    padding: 20px; 
+    margin-left: 30px;
+}
+
+.rightSection h1 {
+    font-size: 35px;
+    font-weight: bolder;
+    padding: 10px;
+}
+
+.profileSection {
+    display: flex;
+    gap: 50px;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.profileDir { 
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 20px;
+}
+
+.profileDir button {
+    border: 3px white solid;
+    padding: 6px 20px;
+    border-radius: 7px;
+}
+
+.profileDir button:hover {
+    color: #9DC2EE;
+    border: 3px #9DC2EE solid;
+}
+
+.profileDir button:active {
+    background-color: #9DC2EE;
+    color: white;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: auto auto auto auto; 
+    gap: 10px;
+    padding-left: 10px;
+}
+
+.category {
+    font-size: 18px;
+    font-weight: bolder;
+}
+
+.buttons {
+    display: flex;
+    gap: 30px;
+    color: #2C3851;
+    font-size: 15px;
+    font-weight: bolder;
+}
+
+.buttons button {
+    padding: 5px 30px;
+    border-radius: 8px;
+    margin-top: 30px;
+}
+
+.changePass {
+    background-color: #FEF7FF;
+}
+
+.delete {
+    background-color: #EF6161;
+}
