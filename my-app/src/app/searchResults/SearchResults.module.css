@@ -1,0 +1,25 @@
+/* Style - SearchResults */
+
+.container {
+    color: white;
+    font-weight: bold;
+}
+
+.container h1 {
+    padding: 35px;
+    font-size: 35px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: auto auto auto auto auto auto;
+    padding: 25px 50px;
+}
+
+.movieCard {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    letter-spacing: 0.5px;
+}
+
