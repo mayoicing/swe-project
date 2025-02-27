@@ -1,12 +1,12 @@
 /* Style - LoginUser */
 
 .container {
-    position: relative; /* Establish a positioning context for the h1 */
+    position: relative; 
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh; /* Full viewport height */
+    height: 100vh; 
 }
 
 .title {
@@ -16,8 +16,8 @@
     color: white;
     position: absolute; 
     top: 55px; 
-    left: 50%; /* Center horizontally */
-    transform: translateX(-50%); /* Center horizontally */
-    margin: 0; /* Remove default margin */
-    text-align: center; /* Center text */
+    left: 50%; 
+    transform: translateX(-50%); 
+    margin: 0; 
+    text-align: center;
 }
