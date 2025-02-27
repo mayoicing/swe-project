@@ -16,6 +16,7 @@ import com.movieapp.swe_project_backend.service.MovieInfoService;
 
 @RestController
 @RequestMapping("/movieinfo")
+@CrossOrigin(origins = "http://localhost:3000") // Allows frontend to call backend
 public class MovieInfoController {
 
     @Autowired
