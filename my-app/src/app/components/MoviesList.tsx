@@ -1,14 +1,20 @@
+//"use client";
+
+//import { useEffect, useState } from 'react';
+//import axios from 'axios';
 import Image, { StaticImageData } from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import movie1 from '../images/movie1.jpg';
 import movie2 from '../images/movie2.jpg';
 import movie3 from '../images/movie3.jpg';
+//import Image from 'next/image'; 
 import styles from './MoviesList.module.css';
 
 interface Movie {
   id: string;
   title: string;
+  //poster: string;
   image: StaticImageData;
   trailerEmbed: string; // Embedded YouTube URL
 }
@@ -35,12 +41,25 @@ const movies: Movie[] = [
 ];
 
 export default function MoviesList() {
+  //const [movies, setMovies] = useState<Movie[]>([]);
+  /*
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/movieinfo/getAll") // Fetch all movies
+      .then((response) => {
+        setMovies(response.data); // Store movies in state
+      })
+      .catch((error) => {
+        console.error("Error fetching movie data: ", error);
+      });
+  }, []);
+  */
   return (
     <section style={{ padding: '20px' }}>
       <h2 className={styles.h2}>Movies</h2>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         {movies.map((movie) => (
-          <div key={movie.id} style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <div key={movie.id} style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
             {/* Movie Banner */}
             <Link href={`/movieDetails`} style={{ textDecoration: 'none', color: 'inherit' }}>
               <div style={{ cursor: 'pointer', textAlign: 'center' }}>
