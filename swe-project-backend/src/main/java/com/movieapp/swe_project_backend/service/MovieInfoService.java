@@ -13,6 +13,7 @@ public interface MovieInfoService {
 
     Optional<MovieInfo> getMovieInfoById(int id); // ✅ Get by ID
     Optional<MovieInfo> getMovieInfoByTitle(String title); // ✅ Get by Title
+    
     Optional<String> getMoviePosterById(int id);
 
     

@@ -1,7 +1,8 @@
 "use client";
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import styles from './SearchResults.module.css';
 import Navbar from '../components/Navbar';
-import Image, { StaticImageData } from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import movie1 from '../images/movie1.jpg';
@@ -10,21 +11,27 @@ import movie2 from '../images/movie2.jpg';
 interface Movie {
     id: number,
     title: string,
-    poster: StaticImageData,
+    poster: string,
     description: string,
     category: string,
     filmCode: string,
     trailer: string
 }
 
-const movieResults: Movie[] = [
-    { id: 1, title: "Put title here", poster: movie1, description: "Put description here.", category: "Category", filmCode: "Film code", trailer: "Link" },
-    { id: 2, title: "Another one", poster: movie2, description: "yes", category: "category", filmCode: "another", trailer: "google.com" }
-];
+let movieResults: Movie[] = [];
 
 export default function SearchResults() {
+
     const searchParams = useSearchParams();
     const query = searchParams.get("q") || "";
+
+    useEffect(()=>{
+        axios.get("http://localhost:8080/movieinfo/get/title/"+query,{
+        }).then((response)=>{
+            movieResults = [].concat(response.data)
+            console.log(movieResults)
+        })
+    },[query])
 
     return (
         <div className={styles.container}>
@@ -33,7 +40,7 @@ export default function SearchResults() {
             <div className={styles.grid} >
                 {movieResults.map((movie, index) => (
                     <div key={index} className={styles.movieCard}>
-                        <Image
+                        <img
                             src={movie.poster}
                             alt={movie.title}
                             width={175}
