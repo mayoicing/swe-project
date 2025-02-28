@@ -29,8 +29,25 @@ public class MovieInfoImp implements MovieInfoService{
         return movieInfoRepository.findById(id);
     }
 
+
+    @Override
+    public Optional<String> getMovieTitleById(int id) {
+        return movieInfoRepository.findById(id).map(MovieInfo::getTitle);
+    }
+
+    @Override
+    public Optional<String> getMovieDescriptionById(int id) {
+        return movieInfoRepository.findById(id).map(MovieInfo::getDescription);
+    }
+
+
     @Override
     public Optional<MovieInfo> getMovieInfoByTitle(String title) {
         return movieInfoRepository.findByTitle(title);
     }
+
+    @Override
+    public Optional<String> getMoviePosterById(int id) {
+        return movieInfoRepository.findById(id).map(MovieInfo::getPoster);
+}
 }

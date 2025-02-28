@@ -7,8 +7,13 @@ public interface MovieInfoService {
 
     public MovieInfo saveMovieInfo(MovieInfo movieInfo);
     public List<MovieInfo> getAllMovieInfo();
-    
+
+    Optional<String> getMovieTitleById(int id); 
+    Optional<String> getMovieDescriptionById(int id);
+
     Optional<MovieInfo> getMovieInfoById(int id); // ✅ Get by ID
     Optional<MovieInfo> getMovieInfoByTitle(String title); // ✅ Get by Title
+    Optional<String> getMoviePosterById(int id);
 
+    
 }

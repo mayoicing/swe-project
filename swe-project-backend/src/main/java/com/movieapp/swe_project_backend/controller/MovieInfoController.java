@@ -16,7 +16,6 @@ import com.movieapp.swe_project_backend.service.MovieInfoService;
 
 @RestController
 @RequestMapping("/movieinfo")
-@CrossOrigin(origins = "http://localhost:3000") // Allows frontend to call backend
 public class MovieInfoController {
 
     @Autowired
@@ -48,5 +47,30 @@ public class MovieInfoController {
         return movie.map(ResponseEntity::ok)
                     .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    // ✅ Get only the Title
+    @GetMapping("/get/{id}/title")
+    public ResponseEntity<String> getMovieTitle(@PathVariable int id) {
+        return movieInfoService.getMovieTitleById(id)
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.notFound().build());
+}
+
+    // ✅ Get only the Poster
+    @GetMapping("/get/{id}/poster")
+    public ResponseEntity<String> getMoviePoster(@PathVariable int id) {
+        return movieInfoService.getMoviePosterById(id)
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.notFound().build());
+}
+
+    // ✅ Get only the Description
+    @GetMapping("/get/{id}/description")
+    public ResponseEntity<String> getMovieDescription(@PathVariable int id) {
+        return movieInfoService.getMovieDescriptionById(id)
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.notFound().build());
+}
+
 
 }
