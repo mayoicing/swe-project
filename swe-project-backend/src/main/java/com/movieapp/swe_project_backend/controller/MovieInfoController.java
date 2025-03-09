@@ -1,5 +1,7 @@
 package com.movieapp.swe_project_backend.controller;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +22,10 @@ import com.movieapp.swe_project_backend.service.MovieInfoService;
 // @CrossOrigin(origins = "http://localhost:3000") // Allows frontend to call backend
 public class MovieInfoController {
 
+    private String encodeUrl(String url) {
+        return URLEncoder.encode(url, StandardCharsets.UTF_8);
+    }
+
     @Autowired
     private MovieInfoService movieInfoService; // Renamed to avoid confusion
 
@@ -38,16 +44,37 @@ public class MovieInfoController {
     @GetMapping("/get/{id}")
     public ResponseEntity<MovieInfo> getMovieById(@PathVariable int id) {
         Optional<MovieInfo> movie = movieInfoService.getMovieInfoById(id);
+        
+        if (movie.isPresent()) {
+            MovieInfo movieInfo = movie.get();
+            movieInfo.setPoster(encodeUrl(movieInfo.getPoster()));
+            return ResponseEntity.ok(movieInfo);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+        
+        /*
         return movie.map(ResponseEntity::ok)
                     .orElseGet(() -> ResponseEntity.notFound().build());
+        */
     }
 
     // ✅ Get Movie by Title
     @GetMapping("/get/title/{title}")
     public ResponseEntity<MovieInfo> getMovieByTitle(@PathVariable String title) {
         Optional<MovieInfo> movie = movieInfoService.getMovieInfoByTitle(title);
+        
+        if (movie.isPresent()) {
+            MovieInfo movieInfo = movie.get();
+            movieInfo.setPoster(encodeUrl(movieInfo.getPoster()));
+            return ResponseEntity.ok(movieInfo);
+        } else {
+            return ResponseEntity.notFound().build();   
+        }
+        /*
         return movie.map(ResponseEntity::ok)
                     .orElseGet(() -> ResponseEntity.notFound().build());
+        */
     }
 
 }
