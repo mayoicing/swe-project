@@ -19,10 +19,7 @@ import com.movieapp.swe_project_backend.service.MovieInfoService;
 
 @RestController
 @RequestMapping("/movieinfo")
-<<<<<<< HEAD
-=======
 // @CrossOrigin(origins = "http://localhost:3000") // Allows frontend to call backend
->>>>>>> connect-backend
 public class MovieInfoController {
 
     private String encodeUrl(String url) {

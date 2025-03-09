@@ -34,10 +34,7 @@ const nextConfig: NextConfig = {
         pathname: '/nightjarprod/content/uploads/**',
       },
     ]
-  }
->>>>>>> connect-backend
-  /* config options here */
-  }
+  } 
 };
 
 export default nextConfig;
