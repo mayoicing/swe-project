@@ -31,12 +31,7 @@ public class MovieInfoImp implements MovieInfoService{
         return movieInfoRepository.findById(id);
     }
 
-<<<<<<< HEAD
-
-    @Override
-=======
       @Override
->>>>>>> connect-backend
     public Optional<String> getMovieTitleById(int id) {
         return movieInfoRepository.findById(id).map(MovieInfo::getTitle);
     }
@@ -46,10 +41,6 @@ public class MovieInfoImp implements MovieInfoService{
         return movieInfoRepository.findById(id).map(MovieInfo::getDescription);
     }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> connect-backend
     @Override
     public Optional<MovieInfo> getMovieInfoByTitle(String title) {
         return movieInfoRepository.findByTitle(title);
@@ -58,9 +49,5 @@ public class MovieInfoImp implements MovieInfoService{
     @Override
     public Optional<String> getMoviePosterById(int id) {
         return movieInfoRepository.findById(id).map(MovieInfo::getPoster);
-<<<<<<< HEAD
-}
-=======
     }   
->>>>>>> connect-backend
 }
