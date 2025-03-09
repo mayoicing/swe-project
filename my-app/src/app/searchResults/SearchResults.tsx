@@ -33,9 +33,9 @@ export default function SearchResults() {
             .get(`http://localhost:8080/movieinfo/get/title/${query}`)
             .then((response)=>{
             //MovieResults = [].concat(response.data)
-            setMovieResult(response.data);
-            //console.log(movieResults)
-            //console.log(response.data);
+            const decodedPosterURL = decodeURIComponent(response.data.poster.trimEnd());
+            console.log("Decoded Poster URL:", decodedPosterURL);
+            setMovieResult({...response.data, poster: decodedPosterURL});
         })
         .catch((error)=> {
             console.error("Error fetching movie data: ", error);    
