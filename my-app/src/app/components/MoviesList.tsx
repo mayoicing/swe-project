@@ -1,24 +1,27 @@
-//"use client";
+"use client";
 
-//import { useEffect, useState } from 'react';
-//import axios from 'axios';
-import Image, { StaticImageData } from 'next/image';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+//import Image, { StaticImageData } from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+/*
 import movie1 from '../images/movie1.jpg';
 import movie2 from '../images/movie2.jpg';
 import movie3 from '../images/movie3.jpg';
-//import Image from 'next/image'; 
+*/
+import Image from 'next/image'; 
 import styles from './MoviesList.module.css';
 
 interface Movie {
   id: string;
   title: string;
-  //poster: string;
-  image: StaticImageData;
+  poster: string;
+  //image: StaticImageData;
   trailerEmbed: string; // Embedded YouTube URL
 }
 
+/*
 const movies: Movie[] = [
   { 
     id: '1', 
@@ -39,21 +42,27 @@ const movies: Movie[] = [
     trailerEmbed: 'https://www.youtube.com/embed/7UNEY2MgY_s' 
   },
 ];
+*/
 
 export default function MoviesList() {
-  //const [movies, setMovies] = useState<Movie[]>([]);
-  /*
+  const [movies, setMovies] = useState<Movie[]>([]);
+  
   useEffect(() => {
     axios
       .get("http://localhost:8080/movieinfo/getAll") // Fetch all movies
       .then((response) => {
-        setMovies(response.data); // Store movies in state
+        const decodedMovies = response.data.map((movie: Movie) => ({
+          ...movie,
+          poster: decodeURIComponent(movie.poster.trimEnd()), // Decode poster URL
+        }));
+        
+        setMovies(decodedMovies); // Store movies in state
       })
       .catch((error) => {
         console.error("Error fetching movie data: ", error);
       });
   }, []);
-  */
+
   return (
     <section style={{ padding: '20px' }}>
       <h2 className={styles.h2}>Movies</h2>
@@ -64,7 +73,7 @@ export default function MoviesList() {
             <Link href={`/movieDetails`} style={{ textDecoration: 'none', color: 'inherit' }}>
               <div style={{ cursor: 'pointer', textAlign: 'center' }}>
                 <Image
-                  src={movie.image}
+                  src={movie.poster}
                   alt={movie.title}
                   width={175}
                   height={250}
