@@ -9,13 +9,13 @@ public interface MovieInfoService {
     public MovieInfo saveMovieInfo(MovieInfo movieInfo);
     public List<MovieInfo> getAllMovieInfo();
 
-    Optional<String> getMovieTitleById(int id); 
-    Optional<String> getMovieDescriptionById(int id);
+    Optional<String> getMovieTitleById(int movieID); 
+    Optional<String> getMovieDescriptionById(int movieID);
 
-    Optional<MovieInfo> getMovieInfoById(int id); // ✅ Get by ID
+    Optional<MovieInfo> getMovieInfoById(int movieID); // ✅ Get by ID
     Optional<MovieInfo> getMovieInfoByTitle(String title); // ✅ Get by Title
     
-    Optional<String> getMoviePosterById(int id);
+    Optional<String> getMoviePosterById(int movieID);
 
     
 }

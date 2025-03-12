@@ -41,9 +41,9 @@ public class MovieInfoController {
     }
 
    // ✅ Get Movie by ID
-    @GetMapping("/get/{id}")
-    public ResponseEntity<MovieInfo> getMovieById(@PathVariable int id) {
-        Optional<MovieInfo> movie = movieInfoService.getMovieInfoById(id);
+    @GetMapping("/get/{movieID}")
+    public ResponseEntity<MovieInfo> getMovieById(@PathVariable int movieID) {
+        Optional<MovieInfo> movie = movieInfoService.getMovieInfoById(movieID);
         
         if (movie.isPresent()) {
             MovieInfo movieInfo = movie.get();
@@ -78,25 +78,25 @@ public class MovieInfoController {
     }
 
     // ✅ Get only the Title
-    @GetMapping("/get/{id}/title")
-    public ResponseEntity<String> getMovieTitle(@PathVariable int id) {
-        return movieInfoService.getMovieTitleById(id)
+    @GetMapping("/get/{movieID}/title")
+    public ResponseEntity<String> getMovieTitle(@PathVariable int movieID) {
+        return movieInfoService.getMovieTitleById(movieID)
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.notFound().build());
 }
 
     // ✅ Get only the Poster
-    @GetMapping("/get/{id}/poster")
-    public ResponseEntity<String> getMoviePoster(@PathVariable int id) {
-        return movieInfoService.getMoviePosterById(id)
+    @GetMapping("/get/{movieID}/poster")
+    public ResponseEntity<String> getMoviePoster(@PathVariable int movieID) {
+        return movieInfoService.getMoviePosterById(movieID)
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.notFound().build());
 }
 
     // ✅ Get only the Description
-    @GetMapping("/get/{id}/description")
-    public ResponseEntity<String> getMovieDescription(@PathVariable int id) {
-        return movieInfoService.getMovieDescriptionById(id)
+    @GetMapping("/get/{movieID}/description")
+    public ResponseEntity<String> getMovieDescription(@PathVariable int movieID) {
+        return movieInfoService.getMovieDescriptionById(movieID)
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.notFound().build());
 }

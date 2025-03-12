@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 public class MovieInfo {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
-    private int id;
+    private int movieID;
 
     @Column(length = 1000)
     private String poster;
@@ -23,8 +23,8 @@ public class MovieInfo {
     private String trailer;
 
     // Constructor
-    public MovieInfo(int id, String poster, String title, String description, String category, String filmCode, String trailer) {
-        this.id = id;
+    public MovieInfo(int movieID, String poster, String title, String description, String category, String filmCode, String trailer) {
+        this.movieID = movieID;
         this.poster = poster;
         this.title = title;
         this.description = description;
@@ -37,12 +37,12 @@ public class MovieInfo {
     public MovieInfo() {}
 
     // Getters and Setters
-    public int getId() {
-        return id;
+    public int getMovieId() {
+        return movieID;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setMovieId(int movieID) {
+        this.movieID = movieID;
     }
 
     public String getPoster() {
@@ -97,7 +97,7 @@ public class MovieInfo {
     @Override
     public String toString() {
         return "MovieInfo{" +
-                "id=" + id +
+                "movieID=" + movieID +
                 ", poster='" + poster + '\'' +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
