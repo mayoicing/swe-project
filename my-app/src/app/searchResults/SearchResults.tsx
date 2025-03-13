@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { error } from 'console';
 
 interface Movie {
-    id: number,
+    movieID: number,
     title: string,
     poster: string,
     description: string,

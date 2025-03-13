@@ -14,7 +14,7 @@ import Image from 'next/image';
 import styles from './MoviesList.module.css';
 
 interface Movie {
-  id: string;
+  movieID: number;
   title: string;
   poster: string;
   //image: StaticImageData;
@@ -68,7 +68,7 @@ export default function MoviesList() {
       <h2 className={styles.h2}>Movies</h2>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         {movies.map((movie) => (
-            <div key={movie.id} style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <div key={movie.movieID} style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
             {/* Movie Banner */}
             <Link href={`/movieDetails`} style={{ textDecoration: 'none', color: 'inherit' }}>
               <div style={{ cursor: 'pointer', textAlign: 'center' }}>
