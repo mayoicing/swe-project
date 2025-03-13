@@ -14,7 +14,7 @@ public class MovieInfo {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(length = 1000)
+    @Column(columnDefinition="TEXT")
     private String poster;
     private String title;
     private String description;

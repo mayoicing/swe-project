@@ -18,14 +18,14 @@ interface Movie {
   title: string;
   poster: string;
   //image: StaticImageData;
-  trailerEmbed: string; // Embedded YouTube URL
+  trailer: string; // Embedded YouTube URL
 }
 
 /*
 const movies: Movie[] = [
   { 
     id: '1', 
-    title: 'Mean Girls', 
+    title: 'Mean Girls',
     image: movie1, 
     trailerEmbed: 'https://www.youtube.com/embed/oDU84nmSDZY' 
   },
@@ -87,7 +87,7 @@ export default function MoviesList() {
             <iframe 
               width="350" 
               height="200" 
-              src={movie.trailerEmbed} 
+              src={movie.trailer} 
               title={`${movie.title} Trailer`} 
               frameBorder="0" 
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
