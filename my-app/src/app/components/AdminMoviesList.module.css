@@ -1,6 +1,72 @@
 /* Style - AdminMoviesList */
 
-.h2 {
+/* Grid container for movies */
+.movieGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  /* Individual movie card */
+  .movieCard {
+    display: flex;
+    flex-direction: column; /* Stack poster and trailer vertically */
+    justify-content: space-between; /* Space between poster and trailer */
+    align-items: center;
+    position: relative;
+    height: 700px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+  }
+  
+  .posterContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    margin-bottom: 10px;
+    padding-top: 30px;
+  }
+  
+  .moviePoster {
+    border-radius: 8px;
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .movieTrailer {
+    display: block;
+    margin: 20px auto 0;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 350px;
+  }
+  
+  .movieTitle {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size:24px;
+      font-weight: bold;
+      z-index: 10;
+      max-width: 90%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 0 10px;
+      text-align: center;
+    }
+  
+  .h2 {
     color: white;
     font-size: 35px;
-}
+    padding: 5px;
+    font-weight: bolder;
+    text-align: center;
+  }
