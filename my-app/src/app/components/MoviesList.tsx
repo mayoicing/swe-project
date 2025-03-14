@@ -36,13 +36,11 @@ export default function MoviesList() {
   return (
     <section className={styles.container}>
       <h2 className={styles.h2}>Movies</h2>
-      {/* <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}> */}
       <div className={styles.movieGrid}>
         {movies.map((movie) => (
             <div key={movie.movieID} className={styles.movieCard}> {/*style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>*/} 
             {/* Movie Banner */}
             <Link href={`/movieDetails`} style={{ textDecoration: 'none', color: 'inherit' }}>
-              {/* <div style={{ cursor: 'pointer', textAlign: 'center' }}> */}
               <div className={styles.posterContainer}>
               <p className={styles.movieTitle}>{movie.title}</p>
                 <Image
@@ -65,7 +63,6 @@ export default function MoviesList() {
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
               allowFullScreen
               className={styles.trailer}
-              //style={{ borderRadius: '10px' }} 
             ></iframe>
           </div>
         ))}
