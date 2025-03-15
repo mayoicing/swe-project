@@ -30,6 +30,16 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "i.etsystatic.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i.ebayimg.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "s3.amazonaws.com",
         pathname: "/nightjarprod/content/uploads/**",
       },
