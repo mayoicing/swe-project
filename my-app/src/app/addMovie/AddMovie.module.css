@@ -221,5 +221,33 @@
     border-radius: 4px;
     cursor: pointer;
   }
+
+  .moviePosterUrl, .trailerUrl, .movieRating, .movieDuration {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    background-color: #ffffff;
+    border: 1px solid #57606f;
+    color: black;
+    border-radius: 5px;
+  }
+
+  .selectField {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    background-color: #ffffff;
+    border: 1px solid #57606f;
+    color: black;
+    border-radius: 5px;
+  }
+
+  .label {
+    display: block;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 15px;
+  }
   
   

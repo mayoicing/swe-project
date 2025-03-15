@@ -3,25 +3,36 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./AddMovie.module.css";
+import axios from "axios";
 
 interface Actor {
   name: string;
   role: string;
 }
 
+/*
 interface Schedule {
   date: string;
   time: string;
 }
+*/
 
 export default function AddMovieDetails() {
   const [category, setCategory] = useState<string>("");
   const [actors, setActors] = useState<Actor[]>([]);
   const [newActor, setNewActor] = useState<string>("");
   const [newRole, setNewRole] = useState<string>("");
-  const [schedule, setSchedule] = useState<Schedule[]>([]);
-  const [newDate, setNewDate] = useState<string>("");
-  const [newTime, setNewTime] = useState<string>("");
+  //const [schedule, setSchedule] = useState<Schedule[]>([]);
+  //const [newDate, setNewDate] = useState<string>("");
+  //const [newTime, setNewTime] = useState<string>("");
+  const [moviePosterUrl, setMoviePosterUrl] = useState<string>("");
+  const [genre, setGenre] = useState<string>("");
+  const [filmCode, setFilmCode] = useState<string>("");
+  const [trailerUrl, setTrailerUrl] = useState<string>("");
+  const [movieRating, setMovieRating] = useState<number>(0);
+  const [movieDuration, setMovieDuration] = useState<number>(0);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const router = useRouter();
 
   const removeActor = (actorToRemove: string) => {
@@ -36,6 +47,7 @@ export default function AddMovieDetails() {
     }
   };
 
+  /*
   const handleAddSchedule = () => {
     if (newDate && newTime) {
       setSchedule([...schedule, { date: newDate, time: newTime }]);
@@ -47,27 +59,61 @@ export default function AddMovieDetails() {
   const removeSchedule = (index: number) => {
     setSchedule(schedule.filter((_, i) => i !== index));
   };
+*/
 
-  const handleSaveChanges = () => {
-    alert("Movie Added!");
-    router.push("./adminMovie");
-  };
+  const handleSaveChanges = async () => {
+    const movieData = {
+      title,
+      description,
+      category,
+      actors,
+      moviePosterUrl,
+      genre,
+      filmCode,
+      trailerUrl,
+      movieRating,
+      movieDuration,
+    }
+    
+    try {
+      const response = await axios.post("http://localhost:8080/movieinfo/add", movieData); 
+      if (response.status === 200) {
+        console.log("Movie added successfully");
+        router.push("/adminMovie");
+      } else {
+        alert("Failed to add movie");
+      }
+  } catch (error) {
+    console.error("Error adding movie:", error);
+    alert("Failed to add movie");
+  }
+};
 
   return (
     <div className={styles.formContainer}>
       {/* Title Input */}
       <label className={styles.label}>Title</label>
-      <input type="text" className={styles.input} />
+      <input 
+        type="text" 
+        className={styles.input} 
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
 
       {/* Description Input */}
       <label className={styles.label}>Description</label>
-      <textarea className={styles.textarea}></textarea>
+      <textarea 
+        className={styles.textarea}
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        ></textarea>
+      
 
       {/* Release Date */}
-      <label className={styles.label}>Release Date</label>
+      {/*<label className={styles.label}>Release Date</label>
       <div className={styles.dateWrapper}>
         <input type="date" className={styles.input} />
-      </div>
+      </div>*/}
 
       {/* Categories Section */}
       <label className={styles.label}>Category</label>
@@ -93,6 +139,67 @@ export default function AddMovieDetails() {
           Currently Running
         </label>
       </div>
+
+        {/* Movie Poster URL */}
+        <label className={styles.label}>Movie Poster URL</label>
+        <input
+          type="text"
+          placeholder="Enter Movie Posrter URL"
+          className={styles.input}
+          value={moviePosterUrl}
+          onChange={(e) => setMoviePosterUrl(e.target.value)}
+        />
+
+        {/* Genre */}
+        <label className={styles.label}>Genre</label>
+        <input
+          type="text"
+          placeholder="Enter Movie Genre"
+          className={styles.input}
+          value={genre}
+          onChange={(e) => setGenre(e.target.value)}
+        />
+
+        {/* Film Code */} 
+        <label className={styles.label}>Film Code</label>
+        <input
+          type="text"
+          placeholder="Enter Film Code"
+          className={styles.input}
+          value={filmCode}
+          onChange={(e) => setFilmCode(e.target.value)}
+        />
+
+        {/* Trailer URL */}
+        <label className={styles.label}>Trailer URL</label>
+        <input
+          type="text"
+          placeholder="Enter Trailer URL"
+          className={styles.input}
+          value={trailerUrl}
+          onChange={(e) => setTrailerUrl(e.target.value)}
+        />
+
+        {/* Movie Rating */}
+        <label className={styles.label}>Movie Rating</label>
+        <input
+          type="number"
+          min={1}
+          max={10}
+          step="0.1"
+          className={styles.input}
+          value={movieRating}
+          onChange={(e) => setMovieRating(parseFloat(e.target.value))}
+        />
+
+        {/* Movie Duration */}
+        <label className={styles.label}>Movie Duration (in minutes)</label>
+        <input
+          type="number"
+          className={styles.input}
+          value={movieDuration}
+          onChange={(e) => setMovieDuration(parseInt(e.target.value, 10))}
+        />
 
       {/* Actors Section */}
       <label className={styles.label}>Actors</label>
@@ -126,7 +233,7 @@ export default function AddMovieDetails() {
       </div>
 
       {/* Scheduled Times Section */}
-      <label className={styles.label}>Scheduled Times</label>
+     {/* <label className={styles.label}>Scheduled Times</label>
       <div className={styles.scheduleInputContainer}>
         <input
           type="date"
@@ -153,7 +260,7 @@ export default function AddMovieDetails() {
             </button>
           </div>
         ))}
-      </div>
+      </div> */}
 
       {/* Buttons at the Bottom */}
       <div className={styles.buttonContainer}>

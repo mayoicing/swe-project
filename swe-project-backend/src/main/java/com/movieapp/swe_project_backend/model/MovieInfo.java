@@ -18,19 +18,24 @@ public class MovieInfo {
     private String poster;
     private String title;
     private String description;
-    private String category;
+    private String genre;
     private String filmCode;
     private String trailer;
+    private double rating;
+    private int duration;
 
     // Constructor
-    public MovieInfo(int movieID, String poster, String title, String description, String category, String filmCode, String trailer) {
+    public MovieInfo(int movieID, String poster, String title, String description, String genre, String filmCode, String trailer, double rating, int duration) {
+        this.movieID = movieID;
         this.movieID = movieID;
         this.poster = poster;
         this.title = title;
         this.description = description;
-        this.category = category;
+        this.genre = genre;
         this.filmCode = filmCode;
         this.trailer = trailer;
+        this.rating = rating;
+        this.duration = duration;
     }
 
     // Default Constructor
@@ -69,12 +74,12 @@ public class MovieInfo {
         this.description = description;
     }
 
-    public String getCategory() {
-        return category;
+    public String getGenre() {
+        return genre;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setGenre(String genre) {
+        this.genre = genre;
     }
 
     public String getFilmCode() {
@@ -93,6 +98,22 @@ public class MovieInfo {
         this.trailer = trailer;
     }
 
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }   
+
     // toString method
     @Override
     public String toString() {
@@ -101,9 +122,11 @@ public class MovieInfo {
                 ", poster='" + poster + '\'' +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", category='" + category + '\'' +
+                ", genre='" + genre + '\'' +
                 ", filmCode='" + filmCode + '\'' +
                 ", trailer='" + trailer + '\'' +
+                ", rating=" + rating +
+                ", duration=" + duration +
                 '}';
     }
 }

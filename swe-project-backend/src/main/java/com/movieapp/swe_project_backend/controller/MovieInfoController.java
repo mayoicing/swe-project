@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.movieapp.swe_project_backend.dto.MovieInfoDTO;
 import com.movieapp.swe_project_backend.model.MovieInfo;
 import com.movieapp.swe_project_backend.service.MovieInfoService;
 
 @RestController
 @RequestMapping("/movieinfo")
-// @CrossOrigin(origins = "http://localhost:3000") // Allows frontend to call backend
 public class MovieInfoController {
 
     private String encodeUrl(String url) {
@@ -27,10 +27,25 @@ public class MovieInfoController {
     }
 
     @Autowired
-    private MovieInfoService movieInfoService; // Renamed to avoid confusion
+    private MovieInfoService movieInfoService; 
+
+    // Convert DTO to Entity (MovieInfo)
+    private MovieInfo convertToEntity(MovieInfoDTO movieInfoDTO) {
+        MovieInfo movieInfo = new MovieInfo();
+        movieInfo.setTitle(movieInfoDTO.getTitle());
+        movieInfo.setDescription(movieInfoDTO.getDescription());
+        movieInfo.setGenre(movieInfoDTO.getGenre());
+        movieInfo.setFilmCode(movieInfoDTO.getFilmCode());
+        movieInfo.setTrailer(movieInfoDTO.getTrailerUrl());
+        movieInfo.setPoster(movieInfoDTO.getMoviePosterUrl());
+        movieInfo.setRating(movieInfoDTO.getMovieRating());
+        movieInfo.setDuration(movieInfoDTO.getMovieDuration());
+        return movieInfo;
+    }
 
     @PostMapping("/add")
-    public String add(@RequestBody MovieInfo movieInfo) { // Fixed parameter name
+    public String add(@RequestBody MovieInfoDTO movieInfoDTO) { // Fixed parameter name
+        MovieInfo movieInfo = convertToEntity(movieInfoDTO); // Convert DTO to Entity
         movieInfoService.saveMovieInfo(movieInfo); // Use the service to save
         return "Movie info is added";
     }
@@ -42,39 +57,54 @@ public class MovieInfoController {
 
    // ✅ Get Movie by ID
     @GetMapping("/get/{movieID}")
-    public ResponseEntity<MovieInfo> getMovieById(@PathVariable int movieID) {
+    public ResponseEntity<MovieInfoDTO> getMovieById(@PathVariable int movieID) {
         Optional<MovieInfo> movie = movieInfoService.getMovieInfoById(movieID);
         
         if (movie.isPresent()) {
             MovieInfo movieInfo = movie.get();
             movieInfo.setPoster(encodeUrl(movieInfo.getPoster()));
-            return ResponseEntity.ok(movieInfo);
+
+            // Convert MovieInfo to MovieInfoDTO
+            MovieInfoDTO movieInfoDTO = new MovieInfoDTO(
+                movieInfo.getTitle(),
+                movieInfo.getDescription(),
+                movieInfo.getGenre(),
+                movieInfo.getFilmCode(),
+                movieInfo.getTrailer(),
+                movieInfo.getPoster(),
+                movieInfo.getRating(),
+                movieInfo.getDuration()
+            );
+            return ResponseEntity.ok(movieInfoDTO);
         } else {
             return ResponseEntity.notFound().build();
         }
-        
-        /*
-        return movie.map(ResponseEntity::ok)
-                    .orElseGet(() -> ResponseEntity.notFound().build());
-        */
     }
 
     // ✅ Get Movie by Title
     @GetMapping("/get/title/{title}")
-    public ResponseEntity<MovieInfo> getMovieByTitle(@PathVariable String title) {
+    public ResponseEntity<MovieInfoDTO> getMovieByTitle(@PathVariable String title) {
         Optional<MovieInfo> movie = movieInfoService.getMovieInfoByTitle(title);
         
         if (movie.isPresent()) {
             MovieInfo movieInfo = movie.get();
             movieInfo.setPoster(encodeUrl(movieInfo.getPoster()));
-            return ResponseEntity.ok(movieInfo);
+
+            // Convert MovieInfo to MovieInfoDTO
+            MovieInfoDTO movieInfoDTO = new MovieInfoDTO(
+                movieInfo.getTitle(),
+                movieInfo.getDescription(),
+                movieInfo.getGenre(),
+                movieInfo.getFilmCode(),
+                movieInfo.getTrailer(),
+                movieInfo.getPoster(),
+                movieInfo.getRating(),
+                movieInfo.getDuration()
+            );
+            return ResponseEntity.ok(movieInfoDTO);
         } else {
             return ResponseEntity.notFound().build();   
         }
-        /*
-        return movie.map(ResponseEntity::ok)
-                    .orElseGet(() -> ResponseEntity.notFound().build());
-        */
     }
 
     // ✅ Get only the Title
