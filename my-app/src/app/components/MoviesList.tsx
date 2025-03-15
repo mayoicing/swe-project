@@ -43,6 +43,7 @@ export default function MoviesList() {
             <Link href={`/movieDetails`} style={{ textDecoration: 'none', color: 'inherit' }}>
               <div className={styles.posterContainer}>
               <p className={styles.movieTitle}>{movie.title}</p>
+              <div className={styles.posterWrapper}> 
                 <Image
                   src={movie.poster}
                   alt={movie.title}
@@ -50,6 +51,9 @@ export default function MoviesList() {
                   height={325}
                   className={styles.poster}
                 />
+                <div className={styles.posterOverlay}></div>
+                <button className={styles.bookButton}>Book Ticket</button>
+                </div>
               </div>
             </Link>
 
