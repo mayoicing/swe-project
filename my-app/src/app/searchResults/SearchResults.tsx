@@ -11,14 +11,13 @@ import { error } from 'console';
 interface Movie {
     movieID: number,
     title: string,
-    poster: string,
+    moviePosterUrl: string,
     description: string,
-    category: string,
+    genre: string,
     filmCode: string,
     trailer: string
 }
 
-//let movieResults: Movie[] = [];
 
 export default function SearchResults() {
 
@@ -32,10 +31,10 @@ export default function SearchResults() {
         axios
             .get(`http://localhost:8080/movieinfo/get/title/${query}`)
             .then((response)=>{
-            //MovieResults = [].concat(response.data)
-            const decodedPosterURL = decodeURIComponent(response.data.poster.trimEnd());
+            const decodedPosterURL = decodeURIComponent(response.data.moviePosterUrl.trimEnd());
+            //const decodedPosterURL = response.data.moviePosterUrl ? decodeURIComponent(response.data.moviePosterUrl.trimEnd()) : '';
             console.log("Decoded Poster URL:", decodedPosterURL);
-            setMovieResult({...response.data, poster: decodedPosterURL});
+            setMovieResult({...response.data, moviePosterUrl: decodedPosterURL});
         })
         .catch((error)=> {
             console.error("Error fetching movie data: ", error);    
@@ -50,7 +49,7 @@ export default function SearchResults() {
                 {movieResult ? (
                     <div className={styles.movieCard}>
                         <Image
-                            src={movieResult.poster}
+                            src={movieResult.moviePosterUrl}
                             alt={movieResult.title}
                             width={175}
                             height={250}
