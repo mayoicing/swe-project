@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,5 +35,16 @@ public class UserInfoController {
     @GetMapping("/getByEmail")
     public Optional<UserInfo> getUserByEmail(@RequestParam String email) {
         return userInfoService.getUserByEmail(email);
+    }
+
+    @PostMapping("/register")
+    public String registerUser(@RequestBody UserInfo userInfo) {
+        // Set default values before saving
+        userInfo.setStatus(UserInfo.Status.Active); // Enum type
+        userInfo.setEnrollForPromotions(true);
+        userInfo.setUserType(1);
+
+        userInfoService.saveUserInfo(userInfo);
+        return "User registered successfully!";
     }
 }

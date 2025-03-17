@@ -1,5 +1,7 @@
 package com.movieapp.swe_project_backend.model;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -7,11 +9,12 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
-public class UserInfo {
+public class UserInfo implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,10 +39,10 @@ public class UserInfo {
     @Column(nullable = false)
     private Status status;
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 0")
+    @Column(nullable = false)
     private boolean enrollForPromotions;
 
-    @Column
+    @Column(nullable = false)
     private int user_type;
 
     // Enum for status field
@@ -47,7 +50,24 @@ public class UserInfo {
         Active, Inactive, Suspended
     }
 
-    // Constructor
+    // ✅ Default Constructor (Auto-sets default values)
+    public UserInfo() {
+        this.status = Status.Active;
+        this.enrollForPromotions = true;
+        this.user_type = 1;
+    }
+
+    // ✅ Auto-set default values before saving to database
+    @PrePersist
+    protected void onCreate() {
+        if (this.status == null) {
+            this.status = Status.Active;
+        }
+        this.enrollForPromotions = true;
+        this.user_type = 1;
+    }
+
+    // ✅ Full Constructor (For Manual Object Creation)
     public UserInfo(int userID, String first_name, String last_name, String email, String password, 
                     String phone_number, Status status, boolean enrollForPromotions, int user_type) {
         this.userID = userID;
@@ -56,13 +76,10 @@ public class UserInfo {
         this.email = email;
         this.password = password;
         this.phone_number = phone_number;
-        this.status = status;
+        this.status = (status != null) ? status : Status.Active;
         this.enrollForPromotions = enrollForPromotions;
         this.user_type = user_type;
     }
-
-    // Default Constructor
-    public UserInfo() {}
 
     // Getters and Setters
     public int getUserID() { return userID; }
