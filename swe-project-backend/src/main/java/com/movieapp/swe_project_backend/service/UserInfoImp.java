@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.movieapp.swe_project_backend.model.UserInfo;
 import com.movieapp.swe_project_backend.repository.UserInfoRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Service
 public class UserInfoImp implements UserInfoService {
@@ -17,6 +18,8 @@ public class UserInfoImp implements UserInfoService {
 
     @Override
     public UserInfo saveUserInfo(UserInfo userInfo) {
+       // Hash the password before saving
+       userInfo.setPassword(new BCryptPasswordEncoder().encode(userInfo.getPassword()));
         return userInfoRepository.save(userInfo);
     }
 
