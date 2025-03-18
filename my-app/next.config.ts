@@ -62,6 +62,18 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/movieinfo/:path*',
+        destination: 'http://localhost:8080/movieinfo/:path*',
+      },
+      {
+        source: '/api/userinfo/:path*',
+        destination: 'http://localhost:8080/userinfo/:path*',
+      },
+    ];
+  },
 };
 
 export default nextConfig;

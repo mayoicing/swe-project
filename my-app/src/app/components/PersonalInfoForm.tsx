@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from 'react';
 import axios from 'axios';
 import styles from './PersonalInfoForm.module.css';
@@ -5,19 +7,19 @@ import styles from './PersonalInfoForm.module.css';
 
 export default function PersonalInfoForm() {
     const [formData, setFormData] = useState({
-        Fname: '',
-        lname: '',
-        phone: '',
+        first_name: '',
+        last_name: '',
+        phone_number: '',
         email: '',
         password: '',
         confirmPassword: ''
     });
 
-    const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
        
         // check if password and confirm password match
@@ -28,10 +30,10 @@ export default function PersonalInfoForm() {
 
         try {
             // send form data to backend using Axios
-            const response = await axios.post("http://localhost:8080/userinfor/register", {
-                Fname: formData.Fname,
-                lname: formData.lname,
-                phone: formData.phone,
+            const response = await axios.post("http://localhost:8080/userinfo/register", {
+                first_name: formData.first_name,
+                last_name: formData.last_name,
+                phone_number: formData.phone_number,
                 email: formData.email,
                 password: formData.password
             });
@@ -51,14 +53,68 @@ export default function PersonalInfoForm() {
             {/*<form action="/registerPayment" method="POST">*/}
                 <div className={styles.inputForm}>
                     <div className={styles.fullName}>
-                        <label>First Name<input type="text" name="fname" placeholder="Type here"/></label>
-                        <label>Last Name<input type="text" name="lname" placeholder="Type here"/></label>
+                        <label>
+                            First Name
+                            <input 
+                                type="text" 
+                                name="first_name" 
+                                value={formData.first_name}
+                                onChange={handleChange}
+                                placeholder="Type here"
+                            />
+                        </label>
+                        <label>
+                            Last Name
+                            <input 
+                                type="text" 
+                                name="last_name" 
+                                value={formData.last_name}
+                                onChange={handleChange}
+                                placeholder="Type here"
+                            />
+                        </label>
                     </div>
                     <div className={styles.otherInfo}>
-                        <label>Phone Number<input type="tel" name="phone" placeholder="Type here"/></label>
-                        <label>Email Address<input type="email" name="email" placeholder="Type here"/></label>
-                        <label>Password<input type="password" name="password" placeholder="Type here"/></label>
-                        <label>Confirm Password<input type="confirmPassword" name="confirmPassword" placeholder="Type here"/></label>
+                        <label>
+                            Phone Number
+                            <input 
+                                type="tel" 
+                                name="phone_number" 
+                                value={formData.phone_number}
+                                onChange={handleChange}
+                                placeholder="Type here"
+                            />
+                        </label>
+                        <label>
+                            Email Address
+                            <input 
+                                type="email" 
+                                name="email" 
+                                value={formData.email}
+                                onChange={handleChange}
+                                placeholder="Type here"
+                            />
+                        </label>
+                        <label>
+                            Password
+                            <input 
+                                type="password" 
+                                name="password" 
+                                value={formData.password}
+                                onChange={handleChange}
+                                placeholder="Type here"
+                            />
+                        </label>
+                        <label>
+                            Confirm Password
+                            <input 
+                                type="confirmPassword" 
+                                name="confirmPassword" 
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
+                                placeholder="Type here"
+                            />
+                        </label>
                     </div>
                     <div className={styles.buttonContainer}>
                         <input type="submit" value="Next" className={styles.submitButton}/>
