@@ -72,3 +72,10 @@
     background-color: #444444;
 }
 
+.checkboxContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 350px;
+    padding: 0;
+}

@@ -43,12 +43,7 @@ public class UserInfoController {
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody UserInfo userInfo) {
         System.out.println("Received User Info: " + userInfo); // Log the received data
-        // Validate incoming user info
-       /*
-        if (userInfo.getFirstName() == null || userInfo.getLastName() == null || userInfo.getEmail() == null || userInfo.getPassword() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("All fields are required!");
-        }
-        */
+    
         // check if email already exists
         Optional<UserInfo> existingUser = userInfoService.getUserByEmail(userInfo.getEmail());
         if (existingUser.isPresent()) {

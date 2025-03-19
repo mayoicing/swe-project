@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import axios from 'axios';
 import styles from './PersonalInfoForm.module.css';
-// import { Fondamento } from 'next/font/google';
 
 export default function PersonalInfoForm() {
     const [formData, setFormData] = useState({
@@ -50,9 +49,6 @@ export default function PersonalInfoForm() {
             enroll_for_promotions: formData.enroll_for_promotions,
             user_type: formData.user_type
         };
-
-        console.log("Final Payload:", JSON.stringify(userData)); // Debug what is actually sent
-
 
         try {
             // send form data to backend using Axios
@@ -148,15 +144,16 @@ export default function PersonalInfoForm() {
                             />
                         </label>
                     </div>
-                    <label>
+                    <div className={styles.checkboxContainer}>
                         <input 
                             type="checkbox" 
                             name="enroll_for_promotions" 
                             checked={formData.enroll_for_promotions}
                             onChange={handleChange}
+                            id="enrollForPromotions"
                         />
-                        Enroll for Promotions
-                    </label>
+                        <label htmlFor="enrollForPromotions">Enroll for Promotions</label>
+                    </div>
                     <div className={styles.buttonContainer}>
                         <input type="submit" value="Next" className={styles.submitButton}/>
                     </div>
