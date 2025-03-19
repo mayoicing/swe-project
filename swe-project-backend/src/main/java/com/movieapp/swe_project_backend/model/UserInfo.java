@@ -2,6 +2,8 @@ package com.movieapp.swe_project_backend.model;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -21,30 +23,35 @@ public class UserInfo implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userID;
 
-    @Column(nullable = false, length = 100, name = "first_name")
-    private String first_name;
+    @Column(nullable = false, length = 100)
+    @JsonProperty("first_name")
+    private String firstName;
 
-    @Column(nullable = false, length = 100, name = "last_name")
-    private String last_name;
+    @Column(nullable = false, length = 100)
+    @JsonProperty("last_name")
+    private String lastName;
 
-    @Column(nullable = false, length = 300, unique = true, name = "email")
+    @Column(nullable = false, length = 300, unique = true)
     private String email;
 
-    @Column(nullable = false, length = 200, name="password")
+    @Column(nullable = false, length = 200)
     private String password;
 
-    @Column(length = 30, name="phone_number")
-    private String phone_number;
+    @Column(length = 30)
+    @JsonProperty("phone_number")
+    private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status;
 
-    @Column(nullable = false, name="enroll_for_promotions")
-    private boolean enroll_for_promotions;
+    @Column(nullable = false)
+    @JsonProperty("enroll_for_promotions")
+    private boolean enrollForPromotions;
 
-    @Column(nullable = false, name="user_type")
-    private int user_type;
+    @Column(nullable = false)
+    @JsonProperty("user_type")
+    private int userType;
 
     // Enum for status field
     public enum Status {
@@ -54,8 +61,8 @@ public class UserInfo implements Serializable {
     // ✅ Default Constructor (Auto-sets default values)
     public UserInfo() {
         this.status = Status.Active;
-        this.enroll_for_promotions = false;
-        this.user_type = 2;
+        this.enrollForPromotions = false;
+        this.userType = 2;
     }
 
     // ✅ Auto-set default values before saving to database
@@ -64,26 +71,26 @@ public class UserInfo implements Serializable {
         if (this.status == null) {
             this.status = Status.Active;
         }
-        if (this.enroll_for_promotions == false) {
-            this.enroll_for_promotions = false;
+        if (this.enrollForPromotions == false) {
+            this.enrollForPromotions = false;
         }
-        if (this.user_type == 0) {
-            this.user_type = 2;
+        if (this.userType == 0) {
+            this.userType = 2;
         }
     }
 
     // ✅ Full Constructor (For Manual Object Creation)
-    public UserInfo(int userID, String first_name, String last_name, String email, String password, 
-                    String phone_number, Status status, boolean enroll_for_promotions, int user_type) {
+    public UserInfo(int userID, String firstName, String lastName, String email, String password, 
+                    String phoneNumber, Status status, boolean enrollForPromotions, int userType) {
         this.userID = userID;
-        this.first_name = first_name;
-        this.last_name = last_name;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.password = password;
-        this.phone_number = phone_number;
+        this.phoneNumber = phoneNumber;
         this.status = (status != null) ? status : Status.Active;
-        this.enroll_for_promotions = enroll_for_promotions;
-        this.user_type = user_type;
+        this.enrollForPromotions = enrollForPromotions;
+        this.userType = userType;
     }
 
     // Getters and Setters
@@ -91,11 +98,11 @@ public class UserInfo implements Serializable {
     public void setUserID(int userID) { this.userID = userID; }
     
 
-    public String getFirstName() { return first_name; }
-    public void setFirstName(String first_name) { this.first_name = first_name; }
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
 
-    public String getLastName() { return last_name; }
-    public void setLastName(String last_name) { this.last_name = last_name; }
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
@@ -103,15 +110,15 @@ public class UserInfo implements Serializable {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
-    public String getPhoneNumber() { return phone_number; }
-    public void setPhoneNumber(String phone_number) { this.phone_number = phone_number; }
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 
     public Status getStatus() { return status; }
     public void setStatus(Status status) { this.status = status; }
 
-    public boolean isEnrollForPromotions() { return enroll_for_promotions; }
-    public void setEnrollForPromotions(boolean enroll_for_promotions) { this.enroll_for_promotions = enroll_for_promotions; }
+    public boolean isEnrollForPromotions() { return enrollForPromotions; }
+    public void setEnrollForPromotions(boolean enrollForPromotions) { this.enrollForPromotions = enrollForPromotions; }
 
-    public int getUserType() { return user_type; }
-    public void setUserType(int user_type) { this.user_type = user_type; }
+    public int getUserType() { return userType; }
+    public void setUserType(int userType) { this.userType = userType; }
 }
