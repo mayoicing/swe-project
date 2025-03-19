@@ -19,6 +19,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/movieinfo/**", "/userinfo/**").permitAll() // Allow these endpoints without authentication
                 .anyRequest().authenticated() // Any other requests require authentication

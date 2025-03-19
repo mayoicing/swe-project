@@ -7,41 +7,68 @@ import styles from './PersonalInfoForm.module.css';
 
 export default function PersonalInfoForm() {
     const [formData, setFormData] = useState({
-        first_name: '',
-        last_name: '',
-        phone_number: '',
+        firstName: '',
+        lastName: '',
+        phoneNumber: '',
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        status: 'Active', // Default value
+        enrollForPromotions: false, // Default value
+        userType: 2, // Default value
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value, type, checked } = e.target;
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: type === 'checkbox' ? checked : value
+        }));
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-       
+
+        if (!formData.firstName || !formData.lastName || !formData.phoneNumber || !formData.email || !formData.password) {
+            alert('Please fill in all fields');
+            return;
+        }
+
         // check if password and confirm password match
         if (formData.password !== formData.confirmPassword) {
             alert('Passwords do not match');
             return;
         }
 
+        const userData = {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            phoneNumber: formData.phoneNumber,
+            email: formData.email,
+            password: formData.password,
+            status: formData.status,
+            enrollForPromotions: formData.enrollForPromotions,
+            userType: formData.userType
+        };
+
+        console.log("Final Payload:", JSON.stringify(userData)); // Debug what is actually sent
+
+
         try {
             // send form data to backend using Axios
-            const response = await axios.post("http://localhost:8080/userinfo/register", {
-                first_name: formData.first_name,
-                last_name: formData.last_name,
-                phone_number: formData.phone_number,
-                email: formData.email,
-                password: formData.password
+            const response = await axios.post("http://localhost:8080/userinfo/register", 
+                JSON.stringify(userData),
+                { headers: { 'Content-Type': 'application/json' }
             });
 
             console.log("Server Response:", response.data);
             alert("User registered successfully");
         } catch (error) {
-            console.error("Error registering user:", error);
+            if (axios.isAxiosError(error)) {
+                console.error("Error registering user:", error.response?.data || error.message);
+            } else {
+                console.error("Error registering user:", error);
+            }
             alert("Error registering user");
         }
     };
@@ -50,27 +77,28 @@ export default function PersonalInfoForm() {
         <div className={styles.formContainer}>
             <h1>Personal Information</h1>
             <form onSubmit={handleSubmit}>
-            {/*<form action="/registerPayment" method="POST">*/}
                 <div className={styles.inputForm}>
                     <div className={styles.fullName}>
                         <label>
                             First Name
                             <input 
                                 type="text" 
-                                name="first_name" 
-                                value={formData.first_name}
+                                name="firstName" 
+                                value={formData.firstName}
                                 onChange={handleChange}
                                 placeholder="Type here"
+                                required
                             />
                         </label>
                         <label>
                             Last Name
                             <input 
                                 type="text" 
-                                name="last_name" 
-                                value={formData.last_name}
+                                name="lastName" 
+                                value={formData.lastName}
                                 onChange={handleChange}
                                 placeholder="Type here"
+                                required
                             />
                         </label>
                     </div>
@@ -79,10 +107,11 @@ export default function PersonalInfoForm() {
                             Phone Number
                             <input 
                                 type="tel" 
-                                name="phone_number" 
-                                value={formData.phone_number}
+                                name="phoneNumber" 
+                                value={formData.phoneNumber}
                                 onChange={handleChange}
                                 placeholder="Type here"
+                                required
                             />
                         </label>
                         <label>
@@ -93,6 +122,7 @@ export default function PersonalInfoForm() {
                                 value={formData.email}
                                 onChange={handleChange}
                                 placeholder="Type here"
+                                required
                             />
                         </label>
                         <label>
@@ -103,19 +133,30 @@ export default function PersonalInfoForm() {
                                 value={formData.password}
                                 onChange={handleChange}
                                 placeholder="Type here"
+                                required
                             />
                         </label>
                         <label>
                             Confirm Password
                             <input 
-                                type="confirmPassword" 
+                                type="password" 
                                 name="confirmPassword" 
                                 value={formData.confirmPassword}
                                 onChange={handleChange}
                                 placeholder="Type here"
+                                required
                             />
                         </label>
                     </div>
+                    <label>
+                        <input 
+                            type="checkbox" 
+                            name="enrollForPromotions" 
+                            checked={formData.enrollForPromotions}
+                            onChange={handleChange}
+                        />
+                        Enroll for Promotions
+                    </label>
                     <div className={styles.buttonContainer}>
                         <input type="submit" value="Next" className={styles.submitButton}/>
                     </div>
