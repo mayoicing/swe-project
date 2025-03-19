@@ -7,15 +7,15 @@ import styles from './PersonalInfoForm.module.css';
 
 export default function PersonalInfoForm() {
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        phoneNumber: '',
+        first_name: '',
+        last_name: '',
+        phone_number: '',
         email: '',
         password: '',
         confirmPassword: '',
         status: 'Active', // Default value
-        enrollForPromotions: false, // Default value
-        userType: 2, // Default value
+        enroll_for_promotions: false, // Default value
+        user_type: 2, // Default value
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,7 +29,7 @@ export default function PersonalInfoForm() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!formData.firstName || !formData.lastName || !formData.phoneNumber || !formData.email || !formData.password) {
+        if (!formData.first_name || !formData.last_name || !formData.phone_number || !formData.email || !formData.password) {
             alert('Please fill in all fields');
             return;
         }
@@ -41,14 +41,14 @@ export default function PersonalInfoForm() {
         }
 
         const userData = {
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            phoneNumber: formData.phoneNumber,
+            first_name: formData.first_name,
+            last_name: formData.last_name,
+            phone_number: formData.phone_number,
             email: formData.email,
             password: formData.password,
             status: formData.status,
-            enrollForPromotions: formData.enrollForPromotions,
-            userType: formData.userType
+            enroll_for_promotions: formData.enroll_for_promotions,
+            user_type: formData.user_type
         };
 
         console.log("Final Payload:", JSON.stringify(userData)); // Debug what is actually sent
@@ -83,8 +83,8 @@ export default function PersonalInfoForm() {
                             First Name
                             <input 
                                 type="text" 
-                                name="firstName" 
-                                value={formData.firstName}
+                                name="first_name" 
+                                value={formData.first_name}
                                 onChange={handleChange}
                                 placeholder="Type here"
                                 required
@@ -94,8 +94,8 @@ export default function PersonalInfoForm() {
                             Last Name
                             <input 
                                 type="text" 
-                                name="lastName" 
-                                value={formData.lastName}
+                                name="last_name" 
+                                value={formData.last_name}
                                 onChange={handleChange}
                                 placeholder="Type here"
                                 required
@@ -107,8 +107,8 @@ export default function PersonalInfoForm() {
                             Phone Number
                             <input 
                                 type="tel" 
-                                name="phoneNumber" 
-                                value={formData.phoneNumber}
+                                name="phone_number" 
+                                value={formData.phone_number}
                                 onChange={handleChange}
                                 placeholder="Type here"
                                 required
@@ -151,8 +151,8 @@ export default function PersonalInfoForm() {
                     <label>
                         <input 
                             type="checkbox" 
-                            name="enrollForPromotions" 
-                            checked={formData.enrollForPromotions}
+                            name="enroll_for_promotions" 
+                            checked={formData.enroll_for_promotions}
                             onChange={handleChange}
                         />
                         Enroll for Promotions
