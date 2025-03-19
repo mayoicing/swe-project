@@ -62,7 +62,6 @@ public class UserInfo implements Serializable {
     public UserInfo() {
         this.status = Status.Active;
         this.enrollForPromotions = false;
-        this.userType = 2;
     }
 
     // ✅ Auto-set default values before saving to database
@@ -73,9 +72,6 @@ public class UserInfo implements Serializable {
         }
         if (this.enrollForPromotions == false) {
             this.enrollForPromotions = false;
-        }
-        if (this.userType == 0) {
-            this.userType = 2;
         }
     }
 

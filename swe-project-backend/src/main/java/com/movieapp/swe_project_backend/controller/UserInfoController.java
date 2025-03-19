@@ -55,7 +55,6 @@ public class UserInfoController {
 
         // Set default values before saving
         userInfo.setStatus(UserInfo.Status.Active); // Enum type
-        userInfo.setUserType(2); // user type 2 is customer
 
         // Save user info
         try {

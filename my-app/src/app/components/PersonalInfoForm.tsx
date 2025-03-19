@@ -21,8 +21,22 @@ export default function PersonalInfoForm() {
         const { name, value, type, checked } = e.target;
         setFormData(prevState => ({
             ...prevState,
-            [name]: type === 'checkbox' ? checked : value
+            [name]: type === 'checkbox' ? checked : value,
         }));
+
+        if (name == 'isAdmin' && checked) {
+            setFormData(prevState => ({
+                ...prevState,
+                user_type: 1, // Admin
+                isCustomer: false,
+            }));
+        } else if (name == 'isCustomer' && checked) {
+            setFormData(prevState => ({
+                ...prevState,
+                user_type: 2, // Customer
+                isAdmin: false,
+            }));
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -56,7 +70,7 @@ export default function PersonalInfoForm() {
                 JSON.stringify(userData),
                 { headers: { 'Content-Type': 'application/json' }
             });
-
+            
             console.log("Server Response:", response.data);
             alert("User registered successfully");
         } catch (error) {
@@ -153,6 +167,26 @@ export default function PersonalInfoForm() {
                             id="enrollForPromotions"
                         />
                         <label htmlFor="enrollForPromotions">Enroll for Promotions</label>
+                    </div>
+                    <div className={styles.checkboxContainer}>
+                        <input 
+                            type="checkbox" 
+                            name="isCustomer" 
+                            checked={formData.user_type === 2}
+                            onChange={handleChange}
+                            id="isCustomer"
+                        />
+                        <label htmlFor="isCustomer">Sign us as Customer</label>
+                    </div>
+                    <div className={styles.checkboxContainer}>
+                        <input 
+                            type="checkbox" 
+                            name="isAdmin" 
+                            checked={formData.user_type === 1}
+                            onChange={handleChange}
+                            id="isAdmin"
+                        />
+                        <label htmlFor="isAdmin">Sign us as Admin</label>
                     </div>
                     <div className={styles.buttonContainer}>
                         <input type="submit" value="Next" className={styles.submitButton}/>
