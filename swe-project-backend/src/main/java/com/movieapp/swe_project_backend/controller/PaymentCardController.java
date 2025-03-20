@@ -40,6 +40,15 @@ public class PaymentCardController {
     public ResponseEntity<Map<String, Object>> addPaymentCard(@RequestBody PaymentCard paymentCard) {
          try {
             // Check if user exists using the userID from the paymentCard object
+            System.out.println("Received PaymentCard: " + paymentCard);
+            System.out.println("User: " + paymentCard.getUser()); 
+
+            if (paymentCard.getUser() == null) {
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("error", "User is missing in the request");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+            }   
+            
             Optional<UserInfo> userOptional = userInfoService.getUserById(paymentCard.getUser().getUserID());
 
             // If user doesn't exist, return a bad request response
@@ -56,7 +65,7 @@ public class PaymentCardController {
             System.out.println("Payment Card will be saved for User: " + user.getUserID());
 
             // Save the payment card
-            PaymentCard savedCard = paymentCardRepository.save(paymentCard);
+            PaymentCard savedCard = paymentCardService.savePaymentCard(paymentCard);
             
             // Prepare the response with the cardID
             Map<String, Object> response = new HashMap<>();

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.movieapp.swe_project_backend.model.PaymentCard;
 import com.movieapp.swe_project_backend.repository.PaymentCardRepository;
+import org.springframework.transaction.annotation.Transactional;
 //import com.movieapp.swe_project_backend.util.EncryptionUtil;
 
 @Service
@@ -16,6 +17,7 @@ public class PaymentCardImp implements PaymentCardService {
     @Autowired
     private PaymentCardRepository paymentCardRepository;
 
+    @Transactional 
     @Override
     public PaymentCard savePaymentCard(PaymentCard paymentCard) {
        /*

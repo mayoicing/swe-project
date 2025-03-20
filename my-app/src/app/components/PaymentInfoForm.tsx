@@ -58,7 +58,10 @@ export default function PaymentInfoForm() {
             console.log("Sending Payment Data:", { ...paymentData, userID });
 
             const paymentResponse = await axios.post('http://localhost:8080/paymentcard/add', 
-                { ...paymentData, userID },
+                JSON.stringify({ 
+                    ...paymentData, 
+                    user: { userID }
+                }),
                 { headers: { 'Content-Type': 'application/json',
                     ...(token && { 'Authorization': `Bearer ${token}` }) 
                  }} 
@@ -73,7 +76,10 @@ export default function PaymentInfoForm() {
             const cardID = paymentResponse.data.cardID;
 
             const billingResponse = await axios.post('http://localhost:8080/billingaddress/add', 
-                { ...billingData, cardID },
+                JSON.stringify({ 
+                    ...billingData, 
+                    paymentCard: { cardID }
+                }),
                 { headers: { 'Content-Type': 'application/json' }} 
             );  
 
