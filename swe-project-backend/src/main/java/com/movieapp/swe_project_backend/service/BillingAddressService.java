@@ -27,4 +27,9 @@ public class BillingAddressService {
     public Optional<BillingAddress> getBillingAddressById(int id) {
         return billingAddressRepository.findById(id);
     }
+
+    // ✅ Delete Billing Address by ID
+    public void deleteBillingAddressById(int id) {
+        billingAddressRepository.deleteById(id);
+    }
 }
