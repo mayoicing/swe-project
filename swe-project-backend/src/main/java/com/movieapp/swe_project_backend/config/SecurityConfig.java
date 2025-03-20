@@ -21,7 +21,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/movieinfo/**", "/userinfo/**","/paymentcard/**","/billingaddress/**").permitAll() // Allow these endpoints without authentication
+                .requestMatchers("/movieinfo/**", "/userinfo/**","/paymentcard/**","/billingaddress/**","/castandcrew/**").permitAll() // Allow these endpoints without authentication
                 .anyRequest().authenticated() // Any other requests require authentication
             )
             .formLogin(formLogin -> formLogin
