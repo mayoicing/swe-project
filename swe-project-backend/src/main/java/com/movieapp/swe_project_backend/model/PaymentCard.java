@@ -1,6 +1,7 @@
 package com.movieapp.swe_project_backend.model;
 
-import java.util.Date;
+//import java.util.Date;
+import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -44,7 +45,7 @@ public class PaymentCard {
 
     @Column(name = "expDate", nullable = false) 
      @JsonProperty("expDate")
-    private Date expDate;
+    private LocalDate expDate;
 
     @Column(name = "cvv", nullable = false) 
      @JsonProperty("cvv")
@@ -58,7 +59,7 @@ public class PaymentCard {
     public PaymentCard() {}
 
     // ✅ Constructor
-    public PaymentCard(String cardNumber, UserInfo user, String cardholderName, CardType cardType, Date expDate, int cvv) {
+    public PaymentCard(String cardNumber, UserInfo user, String cardholderName, CardType cardType, LocalDate expDate, int cvv) {
         this.cardNumber = cardNumber;
         this.user = user;
         this.cardholderName = cardholderName;
@@ -83,8 +84,8 @@ public class PaymentCard {
     public CardType getCardType() { return cardType; }
     public void setCardType(CardType cardType) { this.cardType = cardType; }
 
-    public Date getExpDate() { return expDate; }
-    public void setExpDate(Date expDate) { this.expDate = expDate; }
+    public LocalDate getExpDate() { return expDate; }
+    public void setExpDate(LocalDate expDate) { this.expDate = expDate; }
 
     public int getCvv() { return cvv; }
     public void setCvv(int cvv) { this.cvv = cvv; }
