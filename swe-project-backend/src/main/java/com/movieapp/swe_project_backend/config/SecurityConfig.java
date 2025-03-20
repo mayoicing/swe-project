@@ -21,7 +21,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/movieinfo/**", "/userinfo/**").permitAll() // Allow these endpoints without authentication
+                .requestMatchers("/movieinfo/**", "/userinfo/**","/paymentcard/**").permitAll() // Allow these endpoints without authentication
                 .anyRequest().authenticated() // Any other requests require authentication
             )
             .formLogin(formLogin -> formLogin
@@ -45,7 +45,10 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfig = new CorsConfiguration();
         corsConfig.addAllowedOrigin("http://localhost:3000"); // Allow requests from your frontend (adjust if needed)
-        corsConfig.addAllowedMethod("*"); // Allow all HTTP methods (GET, POST, PUT, DELETE)
+        corsConfig.addAllowedMethod("GET");
+        corsConfig.addAllowedMethod("POST");
+        corsConfig.addAllowedMethod("PUT");
+        corsConfig.addAllowedMethod("DELETE");
         corsConfig.addAllowedHeader("*"); // Allow all headers
         corsConfig.setAllowCredentials(true); // Allow sending cookies
 
