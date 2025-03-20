@@ -55,9 +55,10 @@ export default function PaymentInfoForm() {
         }
         try {
             const token = localStorage.getItem('token');
+            console.log("Sending Payment Data:", { ...paymentData, userID });
 
             const paymentResponse = await axios.post('http://localhost:8080/paymentcard/add', 
-                JSON.stringify({ ...paymentData, userID }),
+                { ...paymentData, userID },
                 { headers: { 'Content-Type': 'application/json',
                     ...(token && { 'Authorization': `Bearer ${token}` }) 
                  }} 
@@ -72,7 +73,7 @@ export default function PaymentInfoForm() {
             const cardID = paymentResponse.data.cardID;
 
             const billingResponse = await axios.post('http://localhost:8080/billingaddress/add', 
-                JSON.stringify({ ...billingData, cardID}),
+                { ...billingData, cardID },
                 { headers: { 'Content-Type': 'application/json' }} 
             );  
 

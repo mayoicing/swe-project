@@ -2,6 +2,8 @@ package com.movieapp.swe_project_backend.model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -23,23 +25,29 @@ public class PaymentCard {
     private int CardID;  // Primary Key
 
     @Column(name = "cardNumber", length = 255, nullable = false)
+     @JsonProperty("cardNumber")
     private String cardNumber;  // Encrypted card number
 
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false) 
+     @JsonProperty("user")
     private UserInfo user;
 
     @Column(name = "cardholderName", length = 100, nullable = false) 
+     @JsonProperty("cardholderName")
     private String cardholderName;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "cardType", nullable = false) 
+     @JsonProperty("cardType")
     private CardType cardType;
 
     @Column(name = "expDate", nullable = false) 
+     @JsonProperty("expDate")
     private Date expDate;
 
     @Column(name = "cvv", nullable = false) 
+     @JsonProperty("cvv")
     private int cvv;
 
     public enum CardType {
