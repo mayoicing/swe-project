@@ -1,11 +1,41 @@
+'use client';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import styles from './UserProfileAcc.module.css';
 import Navbar from '../components/Navbar';
 import ProfileSidebar from '../components/ProfileSidebar';
 import ProfileIcon from '../images/profile-icon.png'
 import Image from 'next/image';
 
-// className={styles.}
+interface User {
+    first_name: string,
+    last_name: string,
+    phone_number: string,
+    email: string,
+}
+
 export default function UserProfileAcc() {
+    const [user, setUser] = useState<User | null>(null);
+
+    useEffect(() => {
+        axios
+            .get("http://localhost:8080/userinfo/get/1")
+            .then((response) => {
+                setUser(response.data); // Set fetchsed data into state
+            })
+            .catch((error) => {
+                console.error('Error fetching user data: ', error);
+            })
+    }, []); // Empty array = only runs when component mounts
+
+    const formatPhoneNumber = (phone_number: string) => {
+        const match = phone_number.match(/^(\d{3})(\d{3})(\d{4})$/);
+        if (match) {
+            return `(${match[1]}) ${match[2]}-${match[3]}`;
+        }
+        return phone_number;
+    };
+
     return(
         <>
             <Navbar/>
@@ -34,21 +64,21 @@ export default function UserProfileAcc() {
                         <h1>Personal Information</h1>
                         <div className={styles.grid}>
                             <div className={styles.category}>Full Name</div>
-                            <div>Jane Doe</div>
+                            <div>{user ? `${user.first_name} ${user.last_name}` : "Loading..."}</div>
                             <div></div>
                             <div></div>
                             <div className={styles.category}>Phone Number</div>
-                            <div>(123) 456 - 7890</div>
+                            <div>{user ? formatPhoneNumber(user.phone_number) : "Loading..."}</div>
                             <div></div>
                             <div></div>
                             <div className={styles.category}>Email Address</div>
-                            <div>janedoe123@gmail.com</div>
+                            <div>{user ? user.email : "Loading..."}</div>
                             <div></div>
                             <div></div>
                         </div>
                     </div>
                     <div className={styles.buttons}>
-                        <button className={styles.changePass}>Change Password</button><button className={styles.delete}>Delete Account</button>
+                        <button className={styles.editProfile}>Edit Profile</button><button className={styles.delete}>Delete Account</button>
                     </div>
                 </div>
 
