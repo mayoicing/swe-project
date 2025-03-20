@@ -10,35 +10,34 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "billingaddress") //Matches database table name exactly
+@Table(name = "billingaddress")
 public class BillingAddress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "`billingAddressID`", nullable = false)
+    @Column(name = "billingAddressID", nullable = false)
     private int billingAddressID;
 
     @OneToOne
-    @JoinColumn(name = "`cardID`", nullable = false) //Matches "cardID" in DB
+    @JoinColumn(name = "paymentCardID", nullable = false)  // Change reference to paymentCardID
     private PaymentCard paymentCard;
 
-    @Column(name = "`streetAddress`", nullable = true)
-    private int streetAddress;
+    @Column(name = "streetAddress", nullable = false)
+    private String streetAddress;
 
-    @Column(name = "`city`", length = 100, nullable = false)
+    @Column(name = "city", length = 100, nullable = false)
     private String city;
 
-    @Column(name = "`state`", length = 50, nullable = false)
+    @Column(name = "state", length = 50, nullable = false)
     private String state;
 
-    @Column(name = "`zip`", nullable = true)
+    @Column(name = "zip", nullable = false)
     private int zip;
 
-    //Default Constructor
+    // Constructors
     public BillingAddress() {}
 
-    //Constructor
-    public BillingAddress(PaymentCard paymentCard, int streetAddress, String city, String state, int zip) {
+    public BillingAddress(PaymentCard paymentCard, String streetAddress, String city, String state, int zip) {
         this.paymentCard = paymentCard;
         this.streetAddress = streetAddress;
         this.city = city;
@@ -46,15 +45,15 @@ public class BillingAddress {
         this.zip = zip;
     }
 
-    //Getters and Setters
+    // Getters and Setters
     public int getBillingAddressID() { return billingAddressID; }
     public void setBillingAddressID(int billingAddressID) { this.billingAddressID = billingAddressID; }
 
     public PaymentCard getPaymentCard() { return paymentCard; }
     public void setPaymentCard(PaymentCard paymentCard) { this.paymentCard = paymentCard; }
 
-    public int getStreetAddress() { return streetAddress; }
-    public void setStreetAddress(int streetAddress) { this.streetAddress = streetAddress; }
+    public String getStreetAddress() { return streetAddress; }
+    public void setStreetAddress(String streetAddress) { this.streetAddress = streetAddress; }
 
     public String getCity() { return city; }
     public void setCity(String city) { this.city = city; }

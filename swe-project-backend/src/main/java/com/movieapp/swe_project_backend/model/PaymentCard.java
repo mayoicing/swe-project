@@ -6,44 +6,49 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "paymentcard")  // ✅ Ensure correct table name
+@Table(name = "paymentcard")
 public class PaymentCard {
 
     @Id
-    @Column(name = "cardNumber", columnDefinition = "TEXT", nullable = false)  // ✅ Matches DB CamelCase
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  // Use an auto-generated ID
+    @Column(name = "paymentCardID")
+    private int paymentCardID;
+
+    @Column(name = "cardNumber", length = 255, nullable = false)  // Store encrypted card number
     private String cardNumber;
 
     @ManyToOne
-    @JoinColumn(name = "userID", nullable = false)  // ✅ Matches DB column
+    @JoinColumn(name = "userID", nullable = false)
     private UserInfo user;
 
-    @Column(name = "cardholderName", length = 100, nullable = false)  // ✅ Matches DB CamelCase
+    @Column(name = "cardholderName", length = 100, nullable = false)
     private String cardholderName;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "cardType", nullable = false)  // ✅ Matches DB CamelCase
+    @Column(name = "cardType", nullable = false)
     private CardType cardType;
 
-    @Column(name = "expDate", nullable = false)  // ✅ Matches DB CamelCase
+    @Column(name = "expDate", nullable = false)
     private Date expDate;
 
-    @Column(name = "cvv", nullable = false)  // ✅ Matches DB column
+    @Column(name = "cvv", nullable = false)
     private int cvv;
 
     public enum CardType {
         Credit, Debit
     }
 
-    // ✅ Default Constructor
+    // Constructors
     public PaymentCard() {}
 
-    // ✅ Constructor
     public PaymentCard(String cardNumber, UserInfo user, String cardholderName, CardType cardType, Date expDate, int cvv) {
         this.cardNumber = cardNumber;
         this.user = user;
@@ -53,7 +58,10 @@ public class PaymentCard {
         this.cvv = cvv;
     }
 
-    // ✅ Getters and Setters
+    // Getters and Setters
+    public int getPaymentCardID() { return paymentCardID; }
+    public void setPaymentCardID(int paymentCardID) { this.paymentCardID = paymentCardID; }
+
     public String getCardNumber() { return cardNumber; }
     public void setCardNumber(String cardNumber) { this.cardNumber = cardNumber; }
 

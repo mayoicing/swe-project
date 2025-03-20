@@ -2,6 +2,7 @@ package com.movieapp.swe_project_backend.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,8 @@ public class PaymentCardImp implements PaymentCardService {
     public PaymentCard savePaymentCard(PaymentCard paymentCard) {
         try {
             // Encrypt the card number before saving
-            paymentCard.setCardNumber(EncryptionUtil.encrypt(paymentCard.getCardNumber()));
+            String encryptedCardNumber = EncryptionUtil.encrypt(paymentCard.getCardNumber());
+            paymentCard.setCardNumber(encryptedCardNumber);
         } catch (Exception e) {
             throw new RuntimeException("Error encrypting card data", e);
         }
@@ -29,12 +31,30 @@ public class PaymentCardImp implements PaymentCardService {
 
     @Override
     public List<PaymentCard> getPaymentCardsByUserId(int userID) {
-        return paymentCardRepository.findByUserUserID(userID);
+        List<PaymentCard> encryptedCards = paymentCardRepository.findByUserUserID(userID);
+        
+        // Decrypt the card numbers before returning
+        return encryptedCards.stream().map(card -> {
+            try {
+                card.setCardNumber(EncryptionUtil.decrypt(card.getCardNumber()));
+            } catch (Exception e) {
+                throw new RuntimeException("Error decrypting card data", e);
+            }
+            return card;
+        }).collect(Collectors.toList());
     }
 
     @Override
     public Optional<PaymentCard> getPaymentCardByNumber(String cardNumber) {
-        return paymentCardRepository.findById(cardNumber);
+        return paymentCardRepository.findById(cardNumber).map(card -> {
+            try {
+                // Decrypt before returning
+                card.setCardNumber(EncryptionUtil.decrypt(card.getCardNumber()));
+            } catch (Exception e) {
+                throw new RuntimeException("Error decrypting card data", e);
+            }
+            return card;
+        });
     }
 
     @Override
