@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 public class PaymentCard {
 
     @Id
-    @Column(name = "cardNumber", length = 19, nullable = false)  // ✅ Matches DB CamelCase
+    @Column(name = "cardNumber", columnDefinition = "TEXT", nullable = false)  // ✅ Matches DB CamelCase
     private String cardNumber;
 
     @ManyToOne

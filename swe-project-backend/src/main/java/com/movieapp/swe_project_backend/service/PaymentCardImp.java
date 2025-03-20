@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.movieapp.swe_project_backend.model.PaymentCard;
 import com.movieapp.swe_project_backend.repository.PaymentCardRepository;
+import com.movieapp.swe_project_backend.util.EncryptionUtil;
 
 @Service
 public class PaymentCardImp implements PaymentCardService {
@@ -17,6 +18,12 @@ public class PaymentCardImp implements PaymentCardService {
 
     @Override
     public PaymentCard savePaymentCard(PaymentCard paymentCard) {
+        try {
+            // Encrypt the card number before saving
+            paymentCard.setCardNumber(EncryptionUtil.encrypt(paymentCard.getCardNumber()));
+        } catch (Exception e) {
+            throw new RuntimeException("Error encrypting card data", e);
+        }
         return paymentCardRepository.save(paymentCard);
     }
 
