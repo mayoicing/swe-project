@@ -1,6 +1,9 @@
 package com.movieapp.swe_project_backend.model;
 
-import java.util.Date;
+//import java.util.Date;
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,27 +22,33 @@ public class PaymentCard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incremented ID
-    @Column(name = "paymentCardID")
-    private int paymentCardID;  // Primary Key
+    @Column(name = "CardID")
+    private int CardID;  // Primary Key
 
     @Column(name = "cardNumber", length = 255, nullable = false)
+     @JsonProperty("cardNumber")
     private String cardNumber;  // Encrypted card number
 
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false) 
+     @JsonProperty("user")
     private UserInfo user;
 
     @Column(name = "cardholderName", length = 100, nullable = false) 
+     @JsonProperty("cardholderName")
     private String cardholderName;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "cardType", nullable = false) 
+     @JsonProperty("cardType")
     private CardType cardType;
 
     @Column(name = "expDate", nullable = false) 
-    private Date expDate;
+     @JsonProperty("expDate")
+    private LocalDate expDate;
 
     @Column(name = "cvv", nullable = false) 
+     @JsonProperty("cvv")
     private int cvv;
 
     public enum CardType {
@@ -50,7 +59,7 @@ public class PaymentCard {
     public PaymentCard() {}
 
     // ✅ Constructor
-    public PaymentCard(String cardNumber, UserInfo user, String cardholderName, CardType cardType, Date expDate, int cvv) {
+    public PaymentCard(String cardNumber, UserInfo user, String cardholderName, CardType cardType, LocalDate expDate, int cvv) {
         this.cardNumber = cardNumber;
         this.user = user;
         this.cardholderName = cardholderName;
@@ -60,8 +69,8 @@ public class PaymentCard {
     }
 
     // ✅ Getters and Setters
-    public int getPaymentCardID() { return paymentCardID; }
-    public void setPaymentCardID(int paymentCardID) { this.paymentCardID = paymentCardID; }
+    public int getCardID() { return CardID; }
+    public void setCardID(int CardID) { this.CardID = CardID; }
 
     public String getCardNumber() { return cardNumber; }
     public void setCardNumber(String cardNumber) { this.cardNumber = cardNumber; }
@@ -70,13 +79,13 @@ public class PaymentCard {
     public void setUser(UserInfo user) { this.user = user; }
 
     public String getCardholderName() { return cardholderName; }
-    public void setCardholderName(String cardholderName) { this.cardholderName = cardholderName; }
+    public void setCardholderName(String cardholderName) { this.cardholderName = cardholderName; } 
 
     public CardType getCardType() { return cardType; }
     public void setCardType(CardType cardType) { this.cardType = cardType; }
 
-    public Date getExpDate() { return expDate; }
-    public void setExpDate(Date expDate) { this.expDate = expDate; }
+    public LocalDate getExpDate() { return expDate; }
+    public void setExpDate(LocalDate expDate) { this.expDate = expDate; }
 
     public int getCvv() { return cvv; }
     public void setCvv(int cvv) { this.cvv = cvv; }

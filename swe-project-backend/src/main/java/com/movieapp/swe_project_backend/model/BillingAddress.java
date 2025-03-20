@@ -1,5 +1,7 @@
 package com.movieapp.swe_project_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,19 +21,24 @@ public class BillingAddress {
     private int billingAddressID;
 
     @OneToOne
-    @JoinColumn(name = "paymentCardID", nullable = false)  // Change reference to paymentCardID
+    @JoinColumn(name = "paymentCard", nullable = false)
+    @JsonProperty("paymentCard")
     private PaymentCard paymentCard;
 
     @Column(name = "streetAddress", nullable = false)
+     @JsonProperty("streetAddress")
     private String streetAddress;
 
     @Column(name = "city", length = 100, nullable = false)
+     @JsonProperty("city")
     private String city;
 
     @Column(name = "state", length = 50, nullable = false)
+     @JsonProperty("state")
     private String state;
 
     @Column(name = "zip", nullable = false)
+     @JsonProperty("zip")
     private int zip;
 
     // Constructors

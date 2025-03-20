@@ -1,3 +1,5 @@
+"use client";
+
 import PaymentInfoForm from "../components/PaymentInfoForm";
 import styles from './RegisterPayment.module.css';
 

@@ -1,6 +1,8 @@
 package com.movieapp.swe_project_backend.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.movieapp.swe_project_backend.model.BillingAddress;
+import com.movieapp.swe_project_backend.model.PaymentCard;
 import com.movieapp.swe_project_backend.service.BillingAddressService;
+import com.movieapp.swe_project_backend.service.PaymentCardService;
 
 @RestController
 @RequestMapping("/billingaddress")
@@ -23,11 +27,32 @@ public class BillingAddressController {
     @Autowired
     private BillingAddressService billingAddressService;
 
+    @Autowired
+    private PaymentCardService paymentCardService;
+
     // ✅ Add Billing Address
     @PostMapping("/add")
-    public String addBillingAddress(@RequestBody BillingAddress billingAddress) {
-        billingAddressService.saveBillingAddress(billingAddress);
-        return "Billing address added successfully!";
+    public ResponseEntity<?> addBillingAddress(@RequestBody BillingAddress billingAddress) {
+       Integer cardID = billingAddress.getPaymentCard().getCardID();
+
+        PaymentCard paymentCard = paymentCardService.getPaymentCardById(cardID).orElse(null);
+        
+        if (paymentCard == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Invalid cardID"));
+        }
+        // Set the PaymentCard to the BillingAddress
+        billingAddress.setPaymentCard(paymentCard);
+
+        // Save the BillingAddress
+        BillingAddress savedBillingAddress = billingAddressService.saveBillingAddress(billingAddress);
+
+        // Prepare the response
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Billing address added successfully!");
+        response.put("billingAddressID", savedBillingAddress.getBillingAddressID());
+        response.put("cardID", savedBillingAddress.getPaymentCard().getCardID());
+
+        return ResponseEntity.ok(response);      
     }
 
     // ✅ Get All Billing Addresses

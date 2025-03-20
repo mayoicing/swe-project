@@ -1,3 +1,5 @@
+"use client";
+
 import styles from './PaymentCard.module.css';
 import Image from 'next/image';
 import visaLogo from '../images/visa-logo.png';

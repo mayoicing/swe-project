@@ -1,3 +1,5 @@
+"use client";
+
 /* Page - RegisterPersonal */
 import RegisterPersonal from "./RegisterPersonal";
 

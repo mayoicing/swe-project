@@ -1,3 +1,5 @@
+"use client";
+
 import PersonalInfoForm from "../components/PersonalInfoForm";
 import styles from './RegisterPersonal.module.css';
 

@@ -1,6 +1,8 @@
 package com.movieapp.swe_project_backend.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,13 +49,13 @@ public class UserInfoController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody UserInfo userInfo) {
+    public ResponseEntity<Map<String, Object>> registerUser(@RequestBody UserInfo userInfo) {
         System.out.println("Received User Info: " + userInfo); // Log the received data
     
         // check if email already exists
         Optional<UserInfo> existingUser = userInfoService.getUserByEmail(userInfo.getEmail());
         if (existingUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already in use!");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", "Email already in use!"));
         }
         
         // encrypt password before saving
@@ -64,10 +66,16 @@ public class UserInfoController {
 
         // Save user info
         try {
-            userInfoService.saveUserInfo(userInfo);
-            return ResponseEntity.ok("User registered successfully!");
+            UserInfo savedUser = userInfoService.saveUserInfo(userInfo);
+
+            // Prepare response with userID and message
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "User registered successfully!");
+            response.put("userID", savedUser.getUserID());  // Add userID to the response
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving user information!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Error saving user information!"));
         }
     }
 }
