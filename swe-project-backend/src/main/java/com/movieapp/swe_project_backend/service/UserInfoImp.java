@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.movieapp.swe_project_backend.model.UserInfo;
 import com.movieapp.swe_project_backend.repository.UserInfoRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Service
 public class UserInfoImp implements UserInfoService {
@@ -41,5 +41,10 @@ public class UserInfoImp implements UserInfoService {
         @Override
     public Optional<UserInfo> getUserByEmail(String email) {
         return userInfoRepository.findByEmail(email);
+    }
+
+        @Override
+    public List<UserInfo> getUsersByUserType(int userTypeId) {
+        return userInfoRepository.findByUserType(userTypeId);
     }
 }

@@ -12,4 +12,6 @@ public interface UserInfoService {
     Optional<UserInfo> getUserById(int userId);
     Optional<String> getUserEmailById(int userId);
     Optional<UserInfo> getUserByEmail(String email);
+
+    List<UserInfo> getUsersByUserType(int userTypeId);
 }

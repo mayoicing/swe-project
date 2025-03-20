@@ -40,6 +40,12 @@ public class UserInfoController {
         return userInfoService.getUserByEmail(email);
     }
 
+    // ✅ Fetch users by user_typeid (GET request)
+    @GetMapping("/type/{userTypeId}")
+    public List<UserInfo> getUsersByUserType(@PathVariable int userTypeId) {
+        return userInfoService.getUsersByUserType(userTypeId);
+    }
+
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody UserInfo userInfo) {
         System.out.println("Received User Info: " + userInfo); // Log the received data
