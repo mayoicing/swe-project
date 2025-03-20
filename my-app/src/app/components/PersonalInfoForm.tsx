@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import styles from './PersonalInfoForm.module.css';
 
 export default function PersonalInfoForm() {
+    const router = useRouter();
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
@@ -70,9 +72,14 @@ export default function PersonalInfoForm() {
                 JSON.stringify(userData),
                 { headers: { 'Content-Type': 'application/json' }
             });
+
+            const { userID } = response.data;
+            localStorage.setItem('userID', userID);
             
-            console.log("Server Response:", response.data);
-            alert("User registered successfully");
+            // Navigate to the next page
+            router.push('/registerPayment');
+            //console.log("Server Response:", response.data);
+            //alert("User registered successfully");
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 console.error("Error registering user:", error.response?.data || error.message);

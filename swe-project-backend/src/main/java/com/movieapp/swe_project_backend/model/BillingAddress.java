@@ -19,7 +19,7 @@ public class BillingAddress {
     private int billingAddressID;
 
     @OneToOne
-    @JoinColumn(name = "paymentCardID", nullable = false)  // Change reference to paymentCardID
+    @JoinColumn(name = "paymentCard", nullable = false)  // Change reference to PaymentCard
     private PaymentCard paymentCard;
 
     @Column(name = "streetAddress", nullable = false)

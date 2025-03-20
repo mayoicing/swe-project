@@ -19,8 +19,8 @@ public class PaymentCard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incremented ID
-    @Column(name = "paymentCardID")
-    private int paymentCardID;  // Primary Key
+    @Column(name = "CardID")
+    private int CardID;  // Primary Key
 
     @Column(name = "cardNumber", length = 255, nullable = false)
     private String cardNumber;  // Encrypted card number
@@ -60,8 +60,8 @@ public class PaymentCard {
     }
 
     // ✅ Getters and Setters
-    public int getPaymentCardID() { return paymentCardID; }
-    public void setPaymentCardID(int paymentCardID) { this.paymentCardID = paymentCardID; }
+    public int getCardID() { return CardID; }
+    public void setCardID(int CardID) { this.CardID = CardID; }
 
     public String getCardNumber() { return cardNumber; }
     public void setCardNumber(String cardNumber) { this.cardNumber = cardNumber; }
@@ -70,7 +70,7 @@ public class PaymentCard {
     public void setUser(UserInfo user) { this.user = user; }
 
     public String getCardholderName() { return cardholderName; }
-    public void setCardholderName(String cardholderName) { this.cardholderName = cardholderName; }
+    public void setCardholderName(String cardholderName) { this.cardholderName = cardholderName; } 
 
     public CardType getCardType() { return cardType; }
     public void setCardType(CardType cardType) { this.cardType = cardType; }

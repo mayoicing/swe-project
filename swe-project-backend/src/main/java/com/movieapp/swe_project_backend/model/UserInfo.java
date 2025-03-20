@@ -1,9 +1,12 @@
 package com.movieapp.swe_project_backend.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,6 +14,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
@@ -22,6 +26,9 @@ public class UserInfo implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "userID") // ✅ Explicitly mapped
     private int userID;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private final List<PaymentCard> paymentCards = new ArrayList<>();
 
     @Column(name = "first_name", nullable = false, length = 100) // ✅ Maps to 'first_name'
     @JsonProperty("first_name")
@@ -89,6 +96,10 @@ public class UserInfo implements Serializable {
     }
 
     // ✅ Getters and Setters
+    
+    public List<PaymentCard> getPaymentCards() {
+        return paymentCards;
+    }
     public int getUserID() { return userID; }
     public void setUserID(int userID) { this.userID = userID; }
 

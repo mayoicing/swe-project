@@ -1,3 +1,5 @@
+"use client";
+
 /* Page - RegisterConfirm */
 import RegisterConfirm from './RegisterConfirm';
 
