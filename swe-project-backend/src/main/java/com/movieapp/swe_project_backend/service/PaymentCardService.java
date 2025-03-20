@@ -8,6 +8,6 @@ import com.movieapp.swe_project_backend.model.PaymentCard;
 public interface PaymentCardService {
     PaymentCard savePaymentCard(PaymentCard paymentCard);
     List<PaymentCard> getPaymentCardsByUserId(int userID);
-    Optional<PaymentCard> getPaymentCardByNumber(String cardNumber);
-    void deletePaymentCard(String cardNumber);
+    Optional<PaymentCard> getPaymentCardById(int paymentCardID); // Changed from cardNumber to paymentCardID
+    void deletePaymentCard(int paymentCardID); // Changed from cardNumber to paymentCardID
 }

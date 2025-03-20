@@ -45,8 +45,8 @@ public class PaymentCardImp implements PaymentCardService {
     }
 
     @Override
-    public Optional<PaymentCard> getPaymentCardByNumber(String cardNumber) {
-        return paymentCardRepository.findById(cardNumber).map(card -> {
+    public Optional<PaymentCard> getPaymentCardById(int paymentCardID) {
+        return paymentCardRepository.findById(paymentCardID).map(card -> {
             try {
                 // Decrypt before returning
                 card.setCardNumber(EncryptionUtil.decrypt(card.getCardNumber()));
@@ -58,7 +58,7 @@ public class PaymentCardImp implements PaymentCardService {
     }
 
     @Override
-    public void deletePaymentCard(String cardNumber) {
-        paymentCardRepository.deleteById(cardNumber);
+    public void deletePaymentCard(int paymentCardID) {
+        paymentCardRepository.deleteById(paymentCardID);
     }
 }

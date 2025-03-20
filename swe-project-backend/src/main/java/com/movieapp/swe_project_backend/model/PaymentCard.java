@@ -14,41 +14,42 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "paymentcard")
+@Table(name = "paymentcard") 
 public class PaymentCard {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // Use an auto-generated ID
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incremented ID
     @Column(name = "paymentCardID")
-    private int paymentCardID;
+    private int paymentCardID;  // Primary Key
 
-    @Column(name = "cardNumber", length = 255, nullable = false)  // Store encrypted card number
-    private String cardNumber;
+    @Column(name = "cardNumber", length = 255, nullable = false)
+    private String cardNumber;  // Encrypted card number
 
     @ManyToOne
-    @JoinColumn(name = "userID", nullable = false)
+    @JoinColumn(name = "userID", nullable = false) 
     private UserInfo user;
 
-    @Column(name = "cardholderName", length = 100, nullable = false)
+    @Column(name = "cardholderName", length = 100, nullable = false) 
     private String cardholderName;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "cardType", nullable = false)
+    @Column(name = "cardType", nullable = false) 
     private CardType cardType;
 
-    @Column(name = "expDate", nullable = false)
+    @Column(name = "expDate", nullable = false) 
     private Date expDate;
 
-    @Column(name = "cvv", nullable = false)
+    @Column(name = "cvv", nullable = false) 
     private int cvv;
 
     public enum CardType {
         Credit, Debit
     }
 
-    // Constructors
+    // ✅ Default Constructor
     public PaymentCard() {}
 
+    // ✅ Constructor
     public PaymentCard(String cardNumber, UserInfo user, String cardholderName, CardType cardType, Date expDate, int cvv) {
         this.cardNumber = cardNumber;
         this.user = user;
@@ -58,7 +59,7 @@ public class PaymentCard {
         this.cvv = cvv;
     }
 
-    // Getters and Setters
+    // ✅ Getters and Setters
     public int getPaymentCardID() { return paymentCardID; }
     public void setPaymentCardID(int paymentCardID) { this.paymentCardID = paymentCardID; }
 
