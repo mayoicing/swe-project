@@ -1,0 +1,67 @@
+package com.movieapp.swe_project_backend.model;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "billingaddress") //Matches database table name exactly
+public class BillingAddress {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "`billingAddressID`", nullable = false)
+    private int billingAddressID;
+
+    @OneToOne
+    @JoinColumn(name = "`cardID`", nullable = false) //Matches "cardID" in DB
+    private PaymentCard paymentCard;
+
+    @Column(name = "`streetAddress`", nullable = true)
+    private int streetAddress;
+
+    @Column(name = "`city`", length = 100, nullable = false)
+    private String city;
+
+    @Column(name = "`state`", length = 50, nullable = false)
+    private String state;
+
+    @Column(name = "`zip`", nullable = true)
+    private int zip;
+
+    //Default Constructor
+    public BillingAddress() {}
+
+    //Constructor
+    public BillingAddress(PaymentCard paymentCard, int streetAddress, String city, String state, int zip) {
+        this.paymentCard = paymentCard;
+        this.streetAddress = streetAddress;
+        this.city = city;
+        this.state = state;
+        this.zip = zip;
+    }
+
+    //Getters and Setters
+    public int getBillingAddressID() { return billingAddressID; }
+    public void setBillingAddressID(int billingAddressID) { this.billingAddressID = billingAddressID; }
+
+    public PaymentCard getPaymentCard() { return paymentCard; }
+    public void setPaymentCard(PaymentCard paymentCard) { this.paymentCard = paymentCard; }
+
+    public int getStreetAddress() { return streetAddress; }
+    public void setStreetAddress(int streetAddress) { this.streetAddress = streetAddress; }
+
+    public String getCity() { return city; }
+    public void setCity(String city) { this.city = city; }
+
+    public String getState() { return state; }
+    public void setState(String state) { this.state = state; }
+
+    public int getZip() { return zip; }
+    public void setZip(int zip) { this.zip = zip; }
+}

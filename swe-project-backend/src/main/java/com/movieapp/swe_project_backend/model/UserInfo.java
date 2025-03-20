@@ -15,45 +15,44 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users") // ✅ Table name remains as 'users'
 public class UserInfo implements Serializable {
 
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "userID") // ✅ Explicitly mapped
     private int userID;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "first_name", nullable = false, length = 100) // ✅ Maps to 'first_name'
     @JsonProperty("first_name")
     private String firstName;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "last_name", nullable = false, length = 100) // ✅ Maps to 'last_name'
     @JsonProperty("last_name")
     private String lastName;
 
-    @Column(nullable = false, length = 300, unique = true)
+    @Column(name = "email", nullable = false, length = 300, unique = true)
     private String email;
 
-    @Column(nullable = false, length = 200)
+    @Column(name = "password", nullable = false, length = 200)
     private String password;
 
-    @Column(length = 30)
+    @Column(name = "phone_number", length = 30) // ✅ Maps to 'phone_number'
     @JsonProperty("phone_number")
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "status", nullable = false) // ✅ Maps to 'status'
     private Status status;
 
-    @Column(nullable = false)
+    @Column(name = "enroll_for_promotions", nullable = false) // ✅ Maps to 'enroll_for_promotions'
     @JsonProperty("enroll_for_promotions")
     private boolean enrollForPromotions;
 
-    @Column(nullable = false)
+    @Column(name = "user_type", nullable = false) // ✅ Maps to 'user_type'
     @JsonProperty("user_type")
     private int userType;
 
-    // Enum for status field
     public enum Status {
         Active, Inactive, Suspended
     }
@@ -70,12 +69,12 @@ public class UserInfo implements Serializable {
         if (this.status == null) {
             this.status = Status.Active;
         }
-        if (this.enrollForPromotions == false) {
+        if (!this.enrollForPromotions) {
             this.enrollForPromotions = false;
         }
     }
 
-    // ✅ Full Constructor (For Manual Object Creation)
+    // ✅ Full Constructor
     public UserInfo(int userID, String firstName, String lastName, String email, String password, 
                     String phoneNumber, Status status, boolean enrollForPromotions, int userType) {
         this.userID = userID;
@@ -89,10 +88,9 @@ public class UserInfo implements Serializable {
         this.userType = userType;
     }
 
-    // Getters and Setters
+    // ✅ Getters and Setters
     public int getUserID() { return userID; }
     public void setUserID(int userID) { this.userID = userID; }
-    
 
     public String getFirstName() { return firstName; }
     public void setFirstName(String firstName) { this.firstName = firstName; }

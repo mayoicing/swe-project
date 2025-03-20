@@ -12,28 +12,28 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "paymentcard")
+@Table(name = "paymentcard")  // ✅ Ensure correct table name
 public class PaymentCard {
 
     @Id
-    @Column(name = "cardNumber", length = 19, nullable = false)
+    @Column(name = "cardNumber", length = 19, nullable = false)  // ✅ Matches DB CamelCase
     private String cardNumber;
 
     @ManyToOne
-    @JoinColumn(name = "userID", nullable = false)
+    @JoinColumn(name = "userID", nullable = false)  // ✅ Matches DB column
     private UserInfo user;
 
-    @Column(name = "cardholderName", length = 100, nullable = false)
+    @Column(name = "cardholderName", length = 100, nullable = false)  // ✅ Matches DB CamelCase
     private String cardholderName;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "cardType", nullable = false)
+    @Column(name = "cardType", nullable = false)  // ✅ Matches DB CamelCase
     private CardType cardType;
 
-    @Column(name = "expDate", nullable = false)
+    @Column(name = "expDate", nullable = false)  // ✅ Matches DB CamelCase
     private Date expDate;
 
-    @Column(name = "cvv", nullable = false)
+    @Column(name = "cvv", nullable = false)  // ✅ Matches DB column
     private int cvv;
 
     public enum CardType {
