@@ -13,6 +13,7 @@ import com.amazonaws.services.kms.model.EncryptResult;
 import com.amazonaws.services.kms.model.DecryptResult;
 import org.springframework.beans.factory.annotation.Value;
 import java.nio.ByteBuffer;
+import java.util.Base64;
 import java.util.stream.Collectors;
 import com.movieapp.swe_project_backend.model.PaymentCard;
 import com.movieapp.swe_project_backend.repository.PaymentCardRepository;
@@ -77,7 +78,7 @@ public class PaymentCardImp implements PaymentCardService {
     private String decryptData(String encryptedData) {
         // Assuming encryptedData is stored as a Base64 encoded string
         ByteBuffer encryptedByteBuffer = ByteBuffer.wrap(Base64.getDecoder().decode(encryptedData));
-        
+
         DecryptRequest decryptRequest = new DecryptRequest().withCiphertextBlob(encryptedByteBuffer);
         DecryptResult decryptResult = kmsClient.decrypt(decryptRequest);
         return new String(decryptResult.getPlaintext().array());
