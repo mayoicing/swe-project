@@ -67,7 +67,7 @@ export default function EditAddress() {
     return (
         <div className={styles.formContainer}>
             <h1>Edit Address</h1>
-            <form action="/" method="POST" className={styles.inputForm}>
+            <form action="/userProfilePayment" method="POST" className={styles.inputForm}>
                 <label>Street Address<input type="text" name="streetAddress" placeholder="Type here"/></label>
                 <label>City<input type="text" name="city" placeholder="Type here"/></label>
                 <label>State<input type="text" name="state" placeholder="Type here"/></label>

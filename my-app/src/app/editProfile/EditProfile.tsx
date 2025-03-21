@@ -60,7 +60,7 @@ export default function EditProfile() {
     return (
         <div className={styles.formContainer}>
             <h1>Edit Profile</h1>
-            <form action="/" method="POST" className={styles.inputForm}>
+            <form action="/userProfileAcc" method="POST" className={styles.inputForm}>
                 <label>First Name<input type="text" name="first_name" placeholder="Type here"/></label>
                 <label>Last Name<input type="text" name="last_name" placeholder="Type here"/></label>
                 <label>Password<input type="password" name="password" placeholder="Type here"/></label>
