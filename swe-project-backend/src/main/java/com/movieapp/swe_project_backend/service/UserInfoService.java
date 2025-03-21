@@ -13,6 +13,6 @@ public interface UserInfoService {
     Optional<String> getUserEmailById(int userId);
     Optional<UserInfo> getUserByEmail(String email);
 
-    List<UserInfo> getUsersByUserType(int userTypeId);
+    List<UserInfo> getUsersByUserType(UserInfo.UserType userType);
     void deleteUser(int userID);
 }

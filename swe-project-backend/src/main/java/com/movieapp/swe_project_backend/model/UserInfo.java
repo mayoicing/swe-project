@@ -56,12 +56,17 @@ public class UserInfo implements Serializable {
     @JsonProperty("enroll_for_promotions")
     private boolean enrollForPromotions;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "user_type", nullable = false) // ✅ Maps to 'user_type'
     @JsonProperty("user_type")
-    private int userType;
+    private UserType userType;
 
     public enum Status {
         Active, Inactive, Suspended
+    }
+
+    public enum UserType {
+        Admin, Customer
     }
 
     // ✅ Default Constructor (Auto-sets default values)
@@ -83,7 +88,7 @@ public class UserInfo implements Serializable {
 
     // ✅ Full Constructor
     public UserInfo(int userID, String firstName, String lastName, String email, String password, 
-                    String phoneNumber, Status status, boolean enrollForPromotions, int userType) {
+                    String phoneNumber, Status status, boolean enrollForPromotions, UserType userType) {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -124,6 +129,6 @@ public class UserInfo implements Serializable {
     public boolean isEnrollForPromotions() { return enrollForPromotions; }
     public void setEnrollForPromotions(boolean enrollForPromotions) { this.enrollForPromotions = enrollForPromotions; }
 
-    public int getUserType() { return userType; }
-    public void setUserType(int userType) { this.userType = userType; }
+    public UserType getUserType() { return userType; }
+    public void setUserType(UserType userType) { this.userType = userType; }
 }

@@ -15,7 +15,7 @@ export default function LoginForm() {
     
     // 🔁 Auto-login if admin token exists
     useEffect(() => {
-        const token = localStorage.getItem('adminAuthToken');
+        const token = localStorage.getItem('authToken');
         if (token) {
             router.push('/adminMovie'); // Redirect to admin dashboard
         }
@@ -32,15 +32,15 @@ export default function LoginForm() {
             });
 
             if (response.status === 200) {
-                const { adminID, token } = response.data;
+                const { userID, token } = response.data;
 
                 // Save to localStorage or sessionStorage based on 'rememberMe' state
                 if (rememberMe) {
-                    localStorage.setItem("adminAuthToken", token);
-                    localStorage.setItem("adminID", adminID.toString());
+                    localStorage.setItem("authToken", token);
+                    localStorage.setItem("userID", userID.toString());
                 } else {
                     sessionStorage.setItem("authToken", token);
-                    sessionStorage.setItem("adminID", adminID.toString());
+                    sessionStorage.setItem("userID", userID.toString());
                 }
 
                 router.push('/adminMovie'); // Redirect to admin panel

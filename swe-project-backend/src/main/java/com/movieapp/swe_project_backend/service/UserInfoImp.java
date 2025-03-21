@@ -43,8 +43,8 @@ public class UserInfoImp implements UserInfoService {
     }
 
         @Override
-    public List<UserInfo> getUsersByUserType(int userTypeId) {
-        return userInfoRepository.findByUserType(userTypeId);
+    public List<UserInfo> getUsersByUserType(UserInfo.UserType userType) {
+        return userInfoRepository.findByUserType(userType);
     }
 
         @Override

@@ -16,7 +16,7 @@ export default function PersonalInfoForm() {
         confirmPassword: "",
         status: "Active", // Default value
         enroll_for_promotions: false, // Default value
-        user_type: 2, // Default is Customer
+        user_type: 'Customer', // Default is Customer
     });
 
     // Handles change for all input fields and checkboxes
@@ -28,8 +28,9 @@ export default function PersonalInfoForm() {
         }));
     };
 
+    
     // Handles role button toggle between Customer and Admin
-    const handleUserTypeChange = (userType: number) => {
+    const handleUserTypeChange = (userType: 'Admin' | 'Customer') => {
         setFormData((prev) => ({
             ...prev,
             user_type: userType,
@@ -190,15 +191,15 @@ export default function PersonalInfoForm() {
                     <div className={styles.roleSelector}>
                         <button
                             type="button"
-                            className={`${styles.roleButton} ${formData.user_type === 2 ? styles.active : ""}`}
-                            onClick={() => handleUserTypeChange(2)}
+                            className={`${styles.roleButton} ${formData.user_type === 'Customer' ? styles.active : ""}`}
+                            onClick={() => handleUserTypeChange('Customer')}
                         >
                             Sign up as Customer
                         </button>
                         <button
                             type="button"
-                            className={`${styles.roleButton} ${formData.user_type === 1 ? styles.active : ""}`}
-                            onClick={() => handleUserTypeChange(1)}
+                            className={`${styles.roleButton} ${formData.user_type === 'Admin' ? styles.active : ""}`}
+                            onClick={() => handleUserTypeChange('Admin')}
                         >
                             Sign up as Admin
                         </button>
