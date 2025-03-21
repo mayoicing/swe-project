@@ -5,15 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.amazonaws.services.kms.AWSKMS;
-import com.amazonaws.services.kms.AWSKMSClientBuilder;
-import com.amazonaws.services.kms.model.DecryptRequest;
-import com.amazonaws.services.kms.model.EncryptRequest;
-import com.amazonaws.services.kms.model.EncryptResult;
-import com.amazonaws.services.kms.model.DecryptResult;
 import org.springframework.beans.factory.annotation.Value;
-import java.nio.ByteBuffer;
-import java.util.Base64;
 import java.util.stream.Collectors;
 import com.movieapp.swe_project_backend.model.PaymentCard;
 import com.movieapp.swe_project_backend.repository.PaymentCardRepository;
@@ -22,40 +14,22 @@ import com.movieapp.swe_project_backend.util.EncryptionUtil;
 
 @Service
 public class PaymentCardImp implements PaymentCardService {
-    private final AWSKMS kmsClient;
-
-    @Value("${aws.kms.keyId}") // Injecting the key ID from the application properties
-    private String kmsKeyId;
 
     @Autowired
-    private PaymentCardRepository paymentCardRepository;
-
-    public PaymentCardImp() {
-        this.kmsClient = AWSKMSClientBuilder.defaultClient(); // Default KMS client
-    }
+    private PaymentCardRepository PaymentCardRepository;
 
     @Transactional 
     @Override
     public PaymentCard savePaymentCard(PaymentCard paymentCard) {   
         try {
-            // Encrypt the card number using KMS
-            ByteBuffer encryptedData = encryptData(paymentCard.getCardNumber());
-            String encryptedCardNumber = Base64.getEncoder().encodeToString(encryptedData.array());
-             //paymentCard.setCardNumber(encryptedData.toString());
+            // Encrypt the card number before saving
+            String encryptedCardNumber = EncryptionUtil.encrypt(paymentCard.getCardNumber());
             paymentCard.setCardNumber(encryptedCardNumber);
         } catch (Exception e) {
             throw new RuntimeException("Error encrypting card data", e);
         }
         
         return paymentCardRepository.save(paymentCard);
-    }
-
-    private ByteBuffer encryptData(String data) {
-        EncryptRequest encryptRequest = new EncryptRequest()
-            .withKeyId(kmsKeyId)
-            .withPlaintext(ByteBuffer.wrap(data.getBytes()));
-        EncryptResult encryptResult = kmsClient.encrypt(encryptRequest);
-        return encryptResult.getCiphertextBlob();
     }
 
     @Override
@@ -65,23 +39,14 @@ public class PaymentCardImp implements PaymentCardService {
         // Decrypt the card numbers before returning
         return encryptedCards.stream().map(card -> {
             try {
-                card.setCardNumber(decryptData(card.getCardNumber()));
+                card.setCardNumber(EncryptionUtil.decrypt(card.getCardNumber()));
             } catch (Exception e) {
                 throw new RuntimeException("Error decrypting card data", e);
             }
             return card;
         }).collect(Collectors.toList());
         
-       //return encryptedCards;
-    }
-
-    private String decryptData(String encryptedData) {
-        // Assuming encryptedData is stored as a Base64 encoded string
-        ByteBuffer encryptedByteBuffer = ByteBuffer.wrap(Base64.getDecoder().decode(encryptedData));
-
-        DecryptRequest decryptRequest = new DecryptRequest().withCiphertextBlob(encryptedByteBuffer);
-        DecryptResult decryptResult = kmsClient.decrypt(decryptRequest);
-        return new String(decryptResult.getPlaintext().array());
+        return encryptedCards;
     }
 
     @Override
@@ -90,7 +55,7 @@ public class PaymentCardImp implements PaymentCardService {
            
             try {
                 // Decrypt before returning
-                card.setCardNumber(decryptData(card.getCardNumber()));
+                card.setCardNumber(EncryptionUtil.decrypt(card.getCardNumber()));
             } catch (Exception e) {
                 throw new RuntimeException("Error decrypting card data", e);
             }

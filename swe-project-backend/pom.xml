@@ -53,11 +53,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-    		<groupId>com.amazonaws</groupId>
-    		<artifactId>aws-java-sdk-kms</artifactId>
-   			<version>1.12.100</version>
-		</dependency>
 	</dependencies>
 	
 
