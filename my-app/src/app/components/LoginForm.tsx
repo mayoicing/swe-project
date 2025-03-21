@@ -15,9 +15,9 @@ export default function LoginForm() {
 
     // 🔁 Auto-login if token exists
     useEffect(() => {
-        const storedUserID = localStorage.getItem('userID') || sessionStorage.getItem('userID');
-        if (storedUserID) {
-            router.push('/home');
+        const token = localStorage.getItem('authToken');
+        if (token) {
+            router.push('/');
         }
     }, [router]);
 
@@ -26,7 +26,7 @@ export default function LoginForm() {
         setError('');
 
         try {
-            console.log("🔐 Raw password being sent:", `"${password}"`);
+            //console.log("🔐 Raw password being sent:", `"${password}"`);
 
             const response = await axios.post("http://localhost:8080/userinfo/login", {
                 email,
@@ -34,16 +34,19 @@ export default function LoginForm() {
             });
 
             if (response.status === 200) {
-                const { userID } = response.data;
-
+                const { userID, token } = response.data;
+                
+                /*
                 // ✅ Save to localStorage or sessionStorage
                 if (rememberMe) {
                     localStorage.setItem("userID", userID);
                 } else {
                     sessionStorage.setItem("userID", userID);
                 }
-
-                router.push('/home');
+                */
+                localStorage.setItem("authToken", token);
+                localStorage.setItem("userID", userID.toString());
+                router.push('/');
             }
         } catch (err: any) {
             if (err.response?.status === 404) {
@@ -59,9 +62,36 @@ export default function LoginForm() {
     return (
         <div className={styles.formContainer}>
             <h1>Log In</h1>
-            <form action="/" method="POST" className={styles.inputForm}>
-                <label>Email Address<input type="email" name="email" placeholder="Enter here"/></label>
-                <label>Password<input type="password" name="password" placeholder="Enter here"/></label>
+            {error && <p className={styles.error}>{error}</p>}
+            <form onSubmit={handleSubmit} className={styles.inputForm}>
+                <label>
+                    Email Address
+                        <input 
+                            type="email" 
+                            name="email" 
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Enter here"
+                            required
+                        />
+                </label>
+                <label>
+                    Password
+                    <input 
+                        type="password" 
+                        name="password" 
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Enter here"
+                        required
+                    />
+                </label>
+                <label>
+                    <input
+                        type="checkbox" 
+                        checked={rememberMe} 
+                        onChange={(e) => setRememberMe(e.target.checked)} 
+                    />
+                    Remember me?
+                </label>
                 <div className={styles.buttonContainer}>
                     <input type="submit" value="Log In" className={styles.submitButton} />
                 </div>

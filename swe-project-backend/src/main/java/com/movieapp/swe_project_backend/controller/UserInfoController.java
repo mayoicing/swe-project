@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.movieapp.swe_project_backend.model.UserInfo;
 import com.movieapp.swe_project_backend.service.EmailService;
+import com.movieapp.swe_project_backend.service.JwtService;
 import com.movieapp.swe_project_backend.service.UserInfoService;
 
 @RestController
@@ -31,6 +32,9 @@ public class UserInfoController {
 
     @Autowired
     private EmailService emailService; // ✅ Inject EmailService
+
+    @Autowired
+    private JwtService jwtService; // ✅ Inject JwtService
 
     @GetMapping("/getAll")
     public List<UserInfo> getAllUsers() {
@@ -102,5 +106,33 @@ public class UserInfoController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Error deleting user!"));
         }
+    }
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, Object>> loginUser(@RequestBody Map<String, String> loginRequest) {
+        String email = loginRequest.get("email");
+        String password = loginRequest.get("password");
+
+        Optional<UserInfo> userOptional = userInfoService.getUserByEmail(email);
+
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "Email not found"));
+        }
+
+        UserInfo user = userOptional.get();
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        if (!encoder.matches(password, user.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Incorrect password"));
+        }
+
+        // ✅ Generate JWT Token
+        String token = jwtService.generateToken(user);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Login successful!");
+        response.put("userID", user.getUserID());
+        response.put("token", token); // Send the token to the frontend
+
+        return ResponseEntity.ok(response);
     }
 }
