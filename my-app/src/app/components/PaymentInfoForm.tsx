@@ -40,51 +40,39 @@ export default function PaymentInfoForm() {
 
     const handleCompleteRegistration = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-    
+
         const userID = localStorage.getItem('userID');
-        if (!userID) {
-            console.error('❌ User ID not found');
-            return;
-        }
-    
+        if (!userID) return;
+
         const hasPaymentInfo = 
-        paymentData.cardholderName.trim() !== "" ||
-        paymentData.cardNumber.trim() !== "" ||
-        paymentData.expDate.trim() !== "" ||
-        paymentData.cvv.trim() !== "";
-    
-    
+            paymentData.cardholderName.trim() !== "" ||
+            paymentData.cardNumber.trim() !== "" ||
+            paymentData.expDate.trim() !== "" ||
+            paymentData.cvv.trim() !== "";
+
         try {
             let cardID: number | null = null;
-    
+
             if (hasPaymentInfo) {
-                const payload = {
-                    ...paymentData,
-                    user: { userID: parseInt(userID, 10) }
-                };
-                console.log("📦 Sending payment payload to backend:", payload);
-    
                 const paymentResponse = await axios.post(
                     "http://localhost:8080/paymentcard/add",
-                    payload,
                     {
-                        headers: {
-                            'Content-Type': 'application/json',
-                        }
+                        ...paymentData,
+                        user: { userID: parseInt(userID, 10) }
+                    },
+                    {
+                        headers: { 'Content-Type': 'application/json' }
                     }
                 );
-    
-                console.log("✅ Payment Response from Backend:", paymentResponse.data);
-    
+
                 if (!paymentResponse.data.cardID) {
-                    console.error("❌ Error: cardID not received from backend");
                     alert("Error processing payment info");
                     return;
                 }
-    
+
                 cardID = paymentResponse.data.cardID;
-    
-                const billingResponse = await axios.post(
+
+                await axios.post(
                     "http://localhost:8080/billingaddress/add",
                     {
                         ...billingData,
@@ -94,22 +82,15 @@ export default function PaymentInfoForm() {
                         headers: { 'Content-Type': 'application/json' }
                     }
                 );
-    
-                console.log("✅ Billing Response from Backend:", billingResponse.data);
-            } else {
-                console.log("⚠️ No payment info entered, skipping payment step.");
             }
-    
+
             alert("🎉 Registration Complete!");
             localStorage.removeItem('userID');
             router.push('/registerConfirm');
-    
         } catch (error) {
-            console.error('❌ Error submitting payment info:', error);
             alert("Error submitting payment info");
         }
     };
-    
 
     return (
         <div className={styles.formContainer}>
