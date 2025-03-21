@@ -81,16 +81,14 @@ export default function LoginForm() {
                         required
                     />
                 </label>
-                <label className={styles.rememberMe}>
-  <input
-    type="checkbox"
-    checked={rememberMe}
-    onChange={(e) => setRememberMe(e.target.checked)}
-  />
-  <span>Remember Me</span>
-</label>
-
-
+                    <label className={styles.rememberMe}>
+                    <input
+                        type="checkbox"
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)}
+                    />
+                    <span>Remember Me</span>
+                    </label>
                 {error && <p className={styles.error}>{error}</p>}
 
                 <div className={styles.buttonContainer}>
@@ -99,7 +97,7 @@ export default function LoginForm() {
             </form>
 
             <div className={styles.navigation}>
-                <Link href='/'>Forget password?</Link>
+                <Link href='/forgetPassword' className={styles.admin}>Forget password?</Link>
                 <Link href='/loginAdmin' className={styles.admin}>Admin Login</Link>
             </div>
             <div className={styles.signup}>
