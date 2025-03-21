@@ -47,4 +47,9 @@ public class UserInfoImp implements UserInfoService {
     public List<UserInfo> getUsersByUserType(int userTypeId) {
         return userInfoRepository.findByUserType(userTypeId);
     }
+
+        @Override
+    public void deleteUser(int userID) {
+        userInfoRepository.deleteById(userID);
+    }
 }
