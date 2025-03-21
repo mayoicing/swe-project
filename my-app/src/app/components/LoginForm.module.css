@@ -12,6 +12,7 @@
     width: 80%;
     padding: 20px;
     margin: 150px auto;
+    margin-top: 250px;
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -47,13 +48,14 @@
     padding: 10px 20px;
 }
 
-.inputForm input:focus { /* How button looks when clicked on */
-    outline: none;
-}
-
 .buttonContainer { /* Container for button */
     display: flex;
     justify-content: center;
+}
+
+.inputForm input[type="checkbox"] {
+    width: auto;
+    margin-right: auto;
 }
 
 .submitButton { /* Submit button*/
@@ -81,4 +83,53 @@
 
 .admin {
     float: right;
+}
+
+.rememberMe {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    color: #333;
+  }
+  
+  .rememberMe input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #0070f3; /* or your brand color */
+    cursor: pointer;
+  }
+  
+  .navigation {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+  
+  .navigation a {
+    font-size: 0.9rem;
+    color: #0070f3;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  .navigation a:hover {
+    color: #005bb5;
+  }
+  
+  .admin {
+    font-weight: 500;
+    color: #e63946; /* Optional: distinguish admin link */
+  }
+  
+
+.signup {
+    text-decoration: underline;
+}
+
+.signup a:hover {
+    color: #2C3851;
 }

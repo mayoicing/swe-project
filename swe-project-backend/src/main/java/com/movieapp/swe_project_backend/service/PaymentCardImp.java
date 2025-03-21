@@ -2,14 +2,14 @@ package com.movieapp.swe_project_backend.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Value;
-import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.movieapp.swe_project_backend.model.PaymentCard;
 import com.movieapp.swe_project_backend.repository.PaymentCardRepository;
-import org.springframework.transaction.annotation.Transactional;
 import com.movieapp.swe_project_backend.util.EncryptionUtil;
 
 @Service
@@ -20,49 +20,76 @@ public class PaymentCardImp implements PaymentCardService {
 
     @Transactional 
     @Override
-    public PaymentCard savePaymentCard(PaymentCard paymentCard) {   
-        /*
+    public PaymentCard savePaymentCard(PaymentCard paymentCard) {
         try {
-            // Encrypt the card number before saving
-            String encryptedCardNumber = EncryptionUtil.encrypt(paymentCard.getCardNumber());
-            paymentCard.setCardNumber(encryptedCardNumber);
+            // 🔍 Debug Log: Check received data
+            System.out.println("🟢 Received Card Data (Before Encryption): " + paymentCard.getCardNumber());
+
+            // ✅ Ensure the card is not already encrypted before encrypting
+            if (!paymentCard.getCardNumber().contains("=")) { // Base64 encrypted strings contain '='
+                String encryptedCardNumber = EncryptionUtil.encrypt(paymentCard.getCardNumber());
+                paymentCard.setCardNumber(encryptedCardNumber);
+                System.out.println("🔐 Saving Encrypted Card Number: " + encryptedCardNumber);
+            } else {
+                System.out.println("⚠️ Data already encrypted, skipping encryption.");
+            }
+
         } catch (Exception e) {
             throw new RuntimeException("Error encrypting card data", e);
         }
-        */
         return paymentCardRepository.save(paymentCard);
     }
 
     @Override
     public List<PaymentCard> getPaymentCardsByUserId(int userID) {
         List<PaymentCard> encryptedCards = paymentCardRepository.findByUserUserID(userID);
-        /*
-        // Decrypt the card numbers before returning
+
         return encryptedCards.stream().map(card -> {
             try {
-                card.setCardNumber(EncryptionUtil.decrypt(card.getCardNumber()));
+                String decryptedCardNumber = EncryptionUtil.decrypt(card.getCardNumber());
+                System.out.println("🔓 Decrypted card number: " + decryptedCardNumber);
+
+                // ✅ Create a separate response object
+                PaymentCard responseCard = new PaymentCard(
+                    decryptedCardNumber,
+                    card.getUser(),
+                    card.getCardholderName(),
+                    card.getCardType(),
+                    card.getExpDate(),
+                    card.getCvv()
+                );
+                responseCard.setCardID(card.getCardID()); // Keep original ID
+                return responseCard;
+
             } catch (Exception e) {
                 throw new RuntimeException("Error decrypting card data", e);
             }
-            return card;
         }).collect(Collectors.toList());
-        */
-        return encryptedCards;
     }
 
     @Override
     public Optional<PaymentCard> getPaymentCardById(int paymentCardID) {
         return paymentCardRepository.findById(paymentCardID).map(card -> {
-           /*
             try {
-                // Decrypt before returning
-                card.setCardNumber(EncryptionUtil.decrypt(card.getCardNumber()));
+                String decryptedCardNumber = EncryptionUtil.decrypt(card.getCardNumber());
+                System.out.println("🔓 Decrypted single card number: " + decryptedCardNumber);
+
+                // ✅ Create a separate response object
+                PaymentCard responseCard = new PaymentCard(
+                    decryptedCardNumber,
+                    card.getUser(),
+                    card.getCardholderName(),
+                    card.getCardType(),
+                    card.getExpDate(),
+                    card.getCvv()
+                );
+                responseCard.setCardID(card.getCardID()); // Keep original ID
+                return responseCard;
+
             } catch (Exception e) {
                 throw new RuntimeException("Error decrypting card data", e);
             }
-            */
-            return card;
-        }); 
+        });
     }
 
     @Override

@@ -14,4 +14,5 @@ public interface UserInfoService {
     Optional<UserInfo> getUserByEmail(String email);
 
     List<UserInfo> getUsersByUserType(int userTypeId);
+    void deleteUser(int userID);
 }

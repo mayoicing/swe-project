@@ -67,6 +67,11 @@
     font-weight: bolder;
 }
 
+.promotionCheckbox {
+    font-size: 18px;
+    font-weight: bolder;
+}
+
 .buttons {
     display: flex;
     gap: 30px;
@@ -85,6 +90,14 @@
     background-color: #FEF7FF;
 }
 
+.editProfile:active {
+    background-color: #9DC2EE;
+}
+
 .delete {
     background-color: #EF6161;
+}
+
+.delete:active {
+    background-color: #963e3e;
 }

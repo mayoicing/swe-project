@@ -2,9 +2,12 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import dynamic from 'next/dynamic';
 import axios from 'axios';
-import styles from './PaymentInfoForm.module.css'
+import styles from './PaymentInfoForm.module.css';
+import Image from 'next/image';
+
+import creditCardIcon from '../images/credit-card-icon.png';
+import debitCardIcon from '../images/debit-card-icon.png';
 
 export default function PaymentInfoForm() {
     const [paymentData, setPaymentData] = useState({
@@ -27,20 +30,11 @@ export default function PaymentInfoForm() {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         if (["cardholderName", "cardNumber", "expDate", "cvv"].includes(name)) {
-            setPaymentData(prevState => ({
-                ...prevState,
-                [name]: value,
-            }));
+            setPaymentData(prevState => ({ ...prevState, [name]: value }));
         } else if (name === "cardType") {
-            setPaymentData(prevState => ({
-                ...prevState,
-                cardType: value,  // Ensure only one card type is selected
-            }));
+            setPaymentData(prevState => ({ ...prevState, cardType: value }));
         } else {
-            setBillingData(prevState => ({
-                ...prevState,
-                [name]: value,
-            }));
+            setBillingData(prevState => ({ ...prevState, [name]: value }));
         }
     };
 
@@ -48,55 +42,55 @@ export default function PaymentInfoForm() {
         e.preventDefault();
 
         const userID = localStorage.getItem('userID');
+        if (!userID) return;
 
-        if (!userID) {
-            console.error('User ID not found');
-            return;
-        }
+        const hasPaymentInfo = 
+            paymentData.cardholderName.trim() !== "" ||
+            paymentData.cardNumber.trim() !== "" ||
+            paymentData.expDate.trim() !== "" ||
+            paymentData.cvv.trim() !== "";
+
         try {
-            const token = localStorage.getItem('token');
-            console.log("Sending Payment Data:", { ...paymentData, userID });
+            let cardID: number | null = null;
 
-            const paymentResponse = await axios.post('http://localhost:8080/paymentcard/add', 
-                JSON.stringify({ 
-                    ...paymentData, 
-                    user: { userID }
-                }),
-                { headers: { 'Content-Type': 'application/json',
-                    ...(token && { 'Authorization': `Bearer ${token}` }) 
-                 }} 
-            );
+            if (hasPaymentInfo) {
+                const paymentResponse = await axios.post(
+                    "http://localhost:8080/paymentcard/add",
+                    {
+                        ...paymentData,
+                        user: { userID: parseInt(userID, 10) }
+                    },
+                    {
+                        headers: { 'Content-Type': 'application/json' }
+                    }
+                );
 
-            if (!paymentResponse.data.cardID) {
-                console.error("Error: cardID not received");
-                alert("Error processing payment info");
-                return;
+                if (!paymentResponse.data.cardID) {
+                    alert("Error processing payment info");
+                    return;
+                }
+
+                cardID = paymentResponse.data.cardID;
+
+                await axios.post(
+                    "http://localhost:8080/billingaddress/add",
+                    {
+                        ...billingData,
+                        paymentCard: { cardID }
+                    },
+                    {
+                        headers: { 'Content-Type': 'application/json' }
+                    }
+                );
             }
 
-            const cardID = paymentResponse.data.cardID;
-
-            const billingResponse = await axios.post('http://localhost:8080/billingaddress/add', 
-                JSON.stringify({ 
-                    ...billingData, 
-                    paymentCard: { cardID }
-                }),
-                { headers: { 'Content-Type': 'application/json' }} 
-            );  
-
-            console.log("Payment Response:", paymentResponse.data);
-            console.log("Billing Response:", billingResponse.data);
-
-            alert("Registration Complete!");
-            // Clear local storage
+            alert("🎉 Registration Complete!");
             localStorage.removeItem('userID');
-
             router.push('/registerConfirm');
         } catch (error) {
-            console.error('Error submitting payment info:', error);
             alert("Error submitting payment info");
         }
-
-    }
+    };
 
     return (
         <div className={styles.formContainer}>
@@ -105,45 +99,64 @@ export default function PaymentInfoForm() {
                 <label>Cardholder Name
                     <input type="text" name="cardholderName" placeholder="Type here" onChange={handleChange} />
                 </label>
-                <label>Card Number<input type="number" pattern="[0-9]*" name="cardNumber" placeholder="Type here" onChange={handleChange}/></label>
+                <label>Card Number
+                    <input type="number" pattern="[0-9]*" name="cardNumber" placeholder="Type here" onChange={handleChange} />
+                </label>
                 <div className={styles.otherCardInfo}>
-                    <label>Expiration Date<input type="date" name="expDate" placeholder="Type here" onChange={handleChange}/></label>
-                    <label>CVV<input type="number" pattern="[0-9]*" name="cvv" placeholder="Type here" onChange={handleChange}/></label>
+                    <label>Expiration Date
+                        <input type="date" name="expDate" placeholder="Type here" onChange={handleChange} />
+                    </label>
+                    <label>CVV
+                        <input type="number" pattern="[0-9]*" name="cvv" placeholder="Type here" onChange={handleChange} />
+                    </label>
                 </div>
                 <div className={styles.cardTypeContainer}>
                     <label>Card Type:</label>
                     <div className={styles.radioButtons}>
-                        <label>
-                            <input
-                                type="radio"
-                                name="cardType"
-                                value="Debit"
-                                checked={paymentData.cardType === "Debit"}
-                                onChange={handleChange}
-                            />
-                            Debit
+                        <input
+                            type="radio"
+                            id="credit"
+                            name="cardType"
+                            value="Credit"
+                            checked={paymentData.cardType === "Credit"}
+                            onChange={handleChange}
+                        />
+                        <label htmlFor="credit" className={paymentData.cardType === "Credit" ? styles.selected : ""}>
+                            <Image src={creditCardIcon} alt="Credit Card" width={40} height={40} />
+                            <span>Credit Card</span>
                         </label>
-                        <label>
-                            <input
-                                type="radio"
-                                name="cardType"
-                                value="Credit"
-                                checked={paymentData.cardType === "Credit"}
-                                onChange={handleChange}
-                            />
-                            Credit
+
+                        <input
+                            type="radio"
+                            id="debit"
+                            name="cardType"
+                            value="Debit"
+                            checked={paymentData.cardType === "Debit"}
+                            onChange={handleChange}
+                        />
+                        <label htmlFor="debit" className={paymentData.cardType === "Debit" ? styles.selected : ""}>
+                            <Image src={debitCardIcon} alt="Debit Card" width={40} height={40} />
+                            <span>Debit Card</span>
                         </label>
                     </div>
                 </div>
 
-                <label>Billing Address <input type="text" name="streetAddress" placeholder="Type here" onChange={handleChange}/></label>
+                <label>Billing Address
+                    <input type="text" name="streetAddress" placeholder="Type here" onChange={handleChange} />
+                </label>
                 <div className={styles.otherAddressInfo}>
-                    <label>City<input type="text" name="city" placeholder="Type here" onChange={handleChange}/></label>
-                    <label>State<input type="text" name="state" placeholder="Type here" onChange={handleChange}/></label>
-                    <label>Zip Code<input type="number" pattern="[0-9]*" name="zip" placeholder="Type here" onChange={handleChange}/></label>
+                    <label>City
+                        <input type="text" name="city" placeholder="Type here" onChange={handleChange} />
+                    </label>
+                    <label>State
+                        <input type="text" name="state" placeholder="Type here" onChange={handleChange} />
+                    </label>
+                    <label>Zip Code
+                        <input type="number" pattern="[0-9]*" name="zip" placeholder="Type here" onChange={handleChange} />
+                    </label>
                 </div>
                 <div className={styles.buttonContainer}>
-                    <input type="submit" value="Complete Registration" className={styles.submitButton}/>
+                    <input type="submit" value="Complete Registration" className={styles.submitButton} />
                 </div>
             </form>
         </div>

@@ -6,16 +6,19 @@ import Navbar from '../components/Navbar';
 import ProfileSidebar from '../components/ProfileSidebar';
 import ProfileIcon from '../images/profile-icon.png'
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface User {
     first_name: string,
     last_name: string,
     phone_number: string,
     email: string,
+    enroll_for_promotions: number;
 }
 
 export default function UserProfileAcc() {
     const [user, setUser] = useState<User | null>(null);
+    const [isChecked, setIsChecked] = useState(false);
 
     useEffect(() => {
         axios
@@ -34,6 +37,19 @@ export default function UserProfileAcc() {
             return `(${match[1]}) ${match[2]}-${match[3]}`;
         }
         return phone_number;
+    };
+
+    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const checked = event.target.checked;
+        setIsChecked(checked);
+        const newEnrollForPromotions = checked ? 1 : 0;
+        console.log(newEnrollForPromotions);
+        setUser((prevUser) => {
+            if (prevUser) {
+                return { ...prevUser, enroll_for_promotions: newEnrollForPromotions };
+            }
+            return prevUser;
+        });
     };
 
     return(
@@ -75,10 +91,22 @@ export default function UserProfileAcc() {
                             <div>{user ? user.email : "Loading..."}</div>
                             <div></div>
                             <div></div>
+                            <form className={styles.promotionCheckbox}>
+                                <label>
+                                    Enroll in Promotions? <input 
+                                        type="checkbox"
+                                        checked={isChecked}
+                                        onChange={handleCheckboxChange}
+                                    />
+                                </label>
+                            </form>
                         </div>
                     </div>
                     <div className={styles.buttons}>
-                        <button className={styles.editProfile}>Edit Profile</button><button className={styles.delete}>Delete Account</button>
+                        <Link href='/editProfile'>
+                            <button className={styles.editProfile}>Edit Profile</button>
+                        </Link>
+                        <button className={styles.delete}>Delete Account</button>
                     </div>
                 </div>
 

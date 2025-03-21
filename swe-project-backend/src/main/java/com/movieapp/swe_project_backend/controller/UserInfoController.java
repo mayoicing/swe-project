@@ -9,13 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.movieapp.swe_project_backend.model.UserInfo;
 import com.movieapp.swe_project_backend.service.UserInfoService;
@@ -76,6 +70,23 @@ public class UserInfoController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Error saving user information!"));
+        }
+    }
+
+    // ✅ DELETE USER FUNCTION
+    @DeleteMapping("/delete/{userID}")
+    public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable int userID) {
+        Optional<UserInfo> user = userInfoService.getUserById(userID);
+        
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "User not found!"));
+        }
+
+        try {
+            userInfoService.deleteUser(userID);
+            return ResponseEntity.ok(Map.of("message", "User deleted successfully!"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Error deleting user!"));
         }
     }
 }
