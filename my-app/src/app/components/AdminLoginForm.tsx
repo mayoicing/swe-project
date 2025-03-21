@@ -34,9 +34,14 @@ export default function LoginForm() {
             if (response.status === 200) {
                 const { adminID, token } = response.data;
 
-                // ✅ Store admin token securely
-                localStorage.setItem("adminAuthToken", token);
-                localStorage.setItem("adminID", adminID.toString());
+                // Save to localStorage or sessionStorage based on 'rememberMe' state
+                if (rememberMe) {
+                    localStorage.setItem("adminAuthToken", token);
+                    localStorage.setItem("adminID", adminID.toString());
+                } else {
+                    sessionStorage.setItem("authToken", token);
+                    sessionStorage.setItem("adminID", adminID.toString());
+                }
 
                 router.push('/adminMovie'); // Redirect to admin panel
             }

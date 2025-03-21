@@ -27,25 +27,30 @@ export default function LoginForm() {
 
         try {
             //console.log("🔐 Raw password being sent:", `"${password}"`);
+            console.log("Email:", email);
+            console.log("Password:", password);
 
             const response = await axios.post("http://localhost:8080/userinfo/login", {
                 email,
                 password
+            }, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
             });
 
             if (response.status === 200) {
                 const { userID, token } = response.data;
-                
-                /*
-                // ✅ Save to localStorage or sessionStorage
-                if (rememberMe) {
-                    localStorage.setItem("userID", userID);
-                } else {
-                    sessionStorage.setItem("userID", userID);
-                }
-                */
+ 
+            // ✅ Save to localStorage or sessionStorage
+            if (rememberMe) {
                 localStorage.setItem("authToken", token);
                 localStorage.setItem("userID", userID.toString());
+            } else {
+                sessionStorage.setItem("authToken", token);
+                sessionStorage.setItem("userID", userID.toString());
+            }
+                    
                 router.push('/');
             }
         } catch (err: any) {
