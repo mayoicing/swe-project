@@ -12,5 +12,5 @@ import com.movieapp.swe_project_backend.model.UserInfo;
 public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
     Optional<UserInfo> findByEmail(String email);  // Fetch by Email
 
-    List<UserInfo> findByUserType(int userTypeId);  // Fetch all users by user_typeid
+    List<UserInfo> findByUserType(UserInfo.UserType userType);  // Fetch all users by user_typeid
 }

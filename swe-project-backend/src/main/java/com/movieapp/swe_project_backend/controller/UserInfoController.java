@@ -50,9 +50,9 @@ public class UserInfoController {
         return userInfoService.getUserByEmail(email);
     }
 
-    @GetMapping("/type/{userTypeId}")
-    public List<UserInfo> getUsersByUserType(@PathVariable int userTypeId) {
-        return userInfoService.getUsersByUserType(userTypeId);
+    @GetMapping("/type/{userType}")
+    public List<UserInfo> getUsersByUserType(@PathVariable UserInfo.UserType userType) {
+        return userInfoService.getUsersByUserType(userType);
     }
 
     @PostMapping("/register")
