@@ -9,9 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.movieapp.swe_project_backend.model.UserInfo;
+import com.movieapp.swe_project_backend.service.EmailService;
 import com.movieapp.swe_project_backend.service.UserInfoService;
 
 @RestController
@@ -20,6 +28,9 @@ public class UserInfoController {
 
     @Autowired
     private UserInfoService userInfoService;
+
+    @Autowired
+    private EmailService emailService; // ✅ Inject EmailService
 
     @GetMapping("/getAll")
     public List<UserInfo> getAllUsers() {
@@ -36,7 +47,6 @@ public class UserInfoController {
         return userInfoService.getUserByEmail(email);
     }
 
-    // ✅ Fetch users by user_typeid (GET request)
     @GetMapping("/type/{userTypeId}")
     public List<UserInfo> getUsersByUserType(@PathVariable int userTypeId) {
         return userInfoService.getUsersByUserType(userTypeId);
@@ -44,40 +54,44 @@ public class UserInfoController {
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> registerUser(@RequestBody UserInfo userInfo) {
-        System.out.println("Received User Info: " + userInfo); // Log the received data
-    
-        // check if email already exists
+        System.out.println("Received User Info: " + userInfo);
+
+        // Check if email already exists
         Optional<UserInfo> existingUser = userInfoService.getUserByEmail(userInfo.getEmail());
         if (existingUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", "Email already in use!"));
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("message", "Email already in use!"));
         }
-        
-        // encrypt password before saving
+
+        // Encrypt password before saving
         userInfo.setPassword(new BCryptPasswordEncoder().encode(userInfo.getPassword()));
+        userInfo.setStatus(UserInfo.Status.Active); // Default Status
 
-        // Set default values before saving
-        userInfo.setStatus(UserInfo.Status.Active); // Enum type
-
-        // Save user info
         try {
+            // Save User
             UserInfo savedUser = userInfoService.saveUserInfo(userInfo);
 
-            // Prepare response with userID and message
+            // ✅ Send Confirmation Email
+            emailService.sendConfirmationEmail(savedUser.getEmail(), savedUser.getFirstName());
+
+            System.out.println("📩 Confirmation email sent to: " + savedUser.getEmail());
+
+            // Prepare response
             Map<String, Object> response = new HashMap<>();
             response.put("message", "User registered successfully!");
-            response.put("userID", savedUser.getUserID());  // Add userID to the response
+            response.put("userID", savedUser.getUserID());
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Error saving user information!"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Error saving user information!"));
         }
     }
 
-    // ✅ DELETE USER FUNCTION
     @DeleteMapping("/delete/{userID}")
     public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable int userID) {
         Optional<UserInfo> user = userInfoService.getUserById(userID);
-        
+
         if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "User not found!"));
         }
