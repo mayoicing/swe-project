@@ -58,6 +58,8 @@ export default function LoginForm() {
                 setError("Email not found.");
             } else if (err.response?.status === 401) {
                 setError("Incorrect password.");
+            } else if (err.response?.status === 403) {
+                setError(err.response.data.message); 
             } else {
                 setError("Login failed. Please try again.");
             }

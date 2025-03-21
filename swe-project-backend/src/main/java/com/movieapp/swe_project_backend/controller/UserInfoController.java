@@ -131,11 +131,30 @@ public class UserInfoController {
         */
 
 
+
+
+
+
+
+
         // For testing purposes, compare plain text password
          if (!password.equals(user.getPassword())) {  // Compare plaintext passwords
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Incorrect password"));
         }     
 
+
+
+
+
+
+
+
+
+
+        // Check user type for user login
+        if (user.getUserType() == UserInfo.UserType.Admin) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", "Please use the admin login!"));
+        }
 
 
         
@@ -147,6 +166,60 @@ public class UserInfoController {
         response.put("message", "Login successful!");
         response.put("userID", user.getUserID());
         response.put("token", token); // Send the token to the frontend
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/adminlogin")
+    public ResponseEntity<Map<String, Object>> loginAdmin(@RequestBody Map<String, String> loginRequest) {
+        String email = loginRequest.get("email");
+        String password = loginRequest.get("password");
+
+        Optional<UserInfo> userOptional = userInfoService.getUserByEmail(email);
+
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "Email not found"));
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        UserInfo user = userOptional.get();
+        // Compare plaintext passwords for now (remove later when using BCrypt)
+        if (!password.equals(user.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Incorrect password"));
+        }
+
+
+
+
+
+
+
+
+
+
+        // Check that the user is an Admin
+        if (user.getUserType() == UserInfo.UserType.Customer) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", "Please use the user login!"));
+        }
+
+        // ✅ Generate JWT Token
+        String token = jwtService.generateToken(user);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Login successful!");
+        response.put("userID", user.getUserID());
+        response.put("token", token);
 
         return ResponseEntity.ok(response);
     }

@@ -26,7 +26,7 @@ export default function LoginForm() {
         setError('');
 
         try {
-            const response = await axios.post("http://localhost:8080/userinfo/login", {
+            const response = await axios.post("http://localhost:8080/userinfo/adminlogin", {
                 email,
                 password
             });
@@ -50,6 +50,8 @@ export default function LoginForm() {
                 setError("Admin email not found.");
             } else if (err.response?.status === 401) {
                 setError("Incorrect password.");
+            } else if (err.response?.status === 403) {
+                setError(err.response.data.message);
             } else {
                 setError("Login failed. Please try again.");
             }
