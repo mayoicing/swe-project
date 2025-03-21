@@ -67,6 +67,11 @@
     font-weight: bolder;
 }
 
+.promotionCheckbox {
+    font-size: 18px;
+    font-weight: bolder;
+}
+
 .buttons {
     display: flex;
     gap: 30px;
