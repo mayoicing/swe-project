@@ -1,11 +1,39 @@
+"use client";
 import styles from './UserProfilePayment.module.css';
 import PaymentCard from '../components/PaymentCard';
 import NoCard from '../components/NoCard';
 import Navbar from '../components/Navbar';
 import ProfileSidebar from '../components/ProfileSidebar';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
+interface Address {
+    billingAddressID: number;
+    billingAddress: string;
+    streetAddress: string;
+    city: string;
+    state: string;
+    zip: number;
+    paymentCardID: number;
+}
 
 export default function UserProfilePayment() {
+    const [address, setAddress] = useState<Address | null>(null);
+    
+    useEffect(() => {
+        axios
+            .get("http://localhost:8080/billingaddress/get/1")
+            .then((response) => {
+                
+                setAddress(response.data);
+                console.log('Sending Response:', address); // Or results[0]
+
+            })
+            .catch((error) => {
+                console.error('Error fetching billing address: ', error);
+            })
+    }, []);
+
     return (
         <>
             <Navbar/>
@@ -31,19 +59,19 @@ export default function UserProfilePayment() {
 
                         <div className={styles.grid}>
                             <div className={styles.category}>Street Address</div>
-                            <div>123 Fake Address Rd</div>
+                            <div>{address ? `${address.streetAddress}` : "Loading..."}</div>
                             <div></div>
                             <div></div>
                             <div className={styles.category}>City</div>
-                            <div>Athens</div>
+                            <div>{address ? `${address.city}` : "Loading..."}</div>
                             <div></div>
                             <div></div>
                             <div className={styles.category}>State</div>
-                            <div>Georgia</div>
+                            <div>{address ? `${address.state}` : "Loading..."}</div>
                             <div></div>
                             <div></div>
                             <div className={styles.category}>Zip Code</div>
-                            <div>30601</div>
+                            <div>{address ? `${address.zip}` : "Loading..."}</div>
                             <div></div>
                             <div></div>
                         </div>

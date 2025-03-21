@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import dynamic from 'next/dynamic';
 import axios from 'axios';
 import styles from './PaymentInfoForm.module.css'
 
@@ -34,7 +33,7 @@ export default function PaymentInfoForm() {
         } else if (name === "cardType") {
             setPaymentData(prevState => ({
                 ...prevState,
-                cardType: value,  // Ensure only one card type is selected
+                cardType: value,
             }));
         } else {
             setBillingData(prevState => ({
@@ -48,55 +47,76 @@ export default function PaymentInfoForm() {
         e.preventDefault();
 
         const userID = localStorage.getItem('userID');
-
         if (!userID) {
-            console.error('User ID not found');
+            console.error('❌ User ID not found');
             return;
         }
+
         try {
             const token = localStorage.getItem('token');
-            console.log("Sending Payment Data:", { ...paymentData, userID });
 
-            const paymentResponse = await axios.post('http://localhost:8080/paymentcard/add', 
-                JSON.stringify({ 
-                    ...paymentData, 
-                    user: { userID }
-                }),
-                { headers: { 'Content-Type': 'application/json',
-                    ...(token && { 'Authorization': `Bearer ${token}` }) 
-                 }} 
+            // 🔹 Log the payment data before sending
+            console.log("🔄 Sending Payment Data to Backend: ", { 
+                ...paymentData, 
+                user: { userID: parseInt(userID, 10) }
+            });
+
+            // 🔹 Send Payment Data
+            const paymentResponse = await axios.post(
+                "http://localhost:8080/paymentcard/add",
+                {
+                    ...paymentData,
+                    user: { userID: parseInt(userID, 10) }
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(token && { 'Authorization': `Bearer ${token}` })
+                    }
+                }
             );
 
+            console.log("✅ Payment Response from Backend:", paymentResponse.data);
+
             if (!paymentResponse.data.cardID) {
-                console.error("Error: cardID not received");
+                console.error("❌ Error: cardID not received from backend");
                 alert("Error processing payment info");
                 return;
             }
 
             const cardID = paymentResponse.data.cardID;
 
-            const billingResponse = await axios.post('http://localhost:8080/billingaddress/add', 
-                JSON.stringify({ 
-                    ...billingData, 
+            // 🔹 Log the billing data before sending
+            console.log("🔄 Sending Billing Data to Backend: ", {
+                ...billingData,
+                paymentCard: { cardID }
+            });
+
+            // 🔹 Send Billing Data
+            const billingResponse = await axios.post(
+                "http://localhost:8080/billingaddress/add",
+                {
+                    ...billingData,
                     paymentCard: { cardID }
-                }),
-                { headers: { 'Content-Type': 'application/json' }} 
-            );  
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
 
-            console.log("Payment Response:", paymentResponse.data);
-            console.log("Billing Response:", billingResponse.data);
+            console.log("✅ Billing Response from Backend:", billingResponse.data);
 
-            alert("Registration Complete!");
-            // Clear local storage
+            alert("🎉 Registration Complete!");
             localStorage.removeItem('userID');
-
             router.push('/registerConfirm');
+
         } catch (error) {
-            console.error('Error submitting payment info:', error);
+            console.error('❌ Error submitting payment info:', error);
             alert("Error submitting payment info");
         }
-
-    }
+    };
 
     return (
         <div className={styles.formContainer}>
@@ -105,10 +125,16 @@ export default function PaymentInfoForm() {
                 <label>Cardholder Name
                     <input type="text" name="cardholderName" placeholder="Type here" onChange={handleChange} />
                 </label>
-                <label>Card Number<input type="number" pattern="[0-9]*" name="cardNumber" placeholder="Type here" onChange={handleChange}/></label>
+                <label>Card Number
+                    <input type="number" pattern="[0-9]*" name="cardNumber" placeholder="Type here" onChange={handleChange} />
+                </label>
                 <div className={styles.otherCardInfo}>
-                    <label>Expiration Date<input type="date" name="expDate" placeholder="Type here" onChange={handleChange}/></label>
-                    <label>CVV<input type="number" pattern="[0-9]*" name="cvv" placeholder="Type here" onChange={handleChange}/></label>
+                    <label>Expiration Date
+                        <input type="date" name="expDate" placeholder="Type here" onChange={handleChange} />
+                    </label>
+                    <label>CVV
+                        <input type="number" pattern="[0-9]*" name="cvv" placeholder="Type here" onChange={handleChange} />
+                    </label>
                 </div>
                 <div className={styles.cardTypeContainer}>
                     <label>Card Type:</label>
@@ -136,14 +162,22 @@ export default function PaymentInfoForm() {
                     </div>
                 </div>
 
-                <label>Billing Address <input type="text" name="streetAddress" placeholder="Type here" onChange={handleChange}/></label>
+                <label>Billing Address
+                    <input type="text" name="streetAddress" placeholder="Type here" onChange={handleChange} />
+                </label>
                 <div className={styles.otherAddressInfo}>
-                    <label>City<input type="text" name="city" placeholder="Type here" onChange={handleChange}/></label>
-                    <label>State<input type="text" name="state" placeholder="Type here" onChange={handleChange}/></label>
-                    <label>Zip Code<input type="number" pattern="[0-9]*" name="zip" placeholder="Type here" onChange={handleChange}/></label>
+                    <label>City
+                        <input type="text" name="city" placeholder="Type here" onChange={handleChange} />
+                    </label>
+                    <label>State
+                        <input type="text" name="state" placeholder="Type here" onChange={handleChange} />
+                    </label>
+                    <label>Zip Code
+                        <input type="number" pattern="[0-9]*" name="zip" placeholder="Type here" onChange={handleChange} />
+                    </label>
                 </div>
                 <div className={styles.buttonContainer}>
-                    <input type="submit" value="Complete Registration" className={styles.submitButton}/>
+                    <input type="submit" value="Complete Registration" className={styles.submitButton} />
                 </div>
             </form>
         </div>
