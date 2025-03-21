@@ -4,19 +4,20 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.stereotype.Service;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
+ 
+import org.springframework.stereotype.Service;
 
-import com.movieapp.swe_project_backend.model.UserInfo; 
+import com.movieapp.swe_project_backend.model.UserInfo;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
-    private final String SECRET_KEY = Keys.hmacShaKeyFor("gV4zBkc4fd2N3a3yH7XsDw==".getBytes());
+    private final SecretKey SECRET_KEY = Keys.hmacShaKeyFor("gV4zBkc4fd2N3a3yH7XsDw==".getBytes());
 
     public String generateToken(UserInfo user) {
         Map<String, Object> claims = new HashMap<>();

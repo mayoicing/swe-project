@@ -1,17 +1,18 @@
 package com.movieapp.swe_project_backend.config;
 
 import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.movieapp.swe_project_backend.service.JwtService;
 import com.movieapp.swe_project_backend.model.UserInfo;
+import com.movieapp.swe_project_backend.service.JwtService;
 import com.movieapp.swe_project_backend.service.UserInfoService;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,6 +56,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // Set the authentication context for the current request
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
+        } catch (ExpiredJwtException e) {
+            // Handle expired token
+            jwtLogger.error("Token expired: {}", e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token expired");
         } catch (Exception e) {
             // Log the exception
             jwtLogger.error("JWT Token validation failed: {}", e.getMessage());

@@ -1,19 +1,19 @@
 
 package com.movieapp.swe_project_backend.config;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import com.movieapp.swe_project_backend.service.JwtService;
+import com.movieapp.swe_project_backend.service.UserInfoService;
 
 @Configuration
 @EnableWebSecurity
@@ -24,7 +24,10 @@ public class SecurityConfig {
     
     @Autowired
     private JwtService jwtService; // Inject JwtService (this should be used in the filter)
+    @Autowired
+    private UserInfoService userInfoService; // Inject UserInfoService
 
+    // Security filter chain using Lambda DSL
     // Security filter chain using Lambda DSL
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -72,10 +75,10 @@ public class SecurityConfig {
 
         return source;
     }
-    
+        
      // ✅ JWT Authentication Filter
     @Bean
     public JwtAuthenticationFilter jwtAuthFilter() {
-        return new JwtAuthenticationFilter(jwtService);
+        return new JwtAuthenticationFilter(jwtService, userInfoService);
     }
 }
