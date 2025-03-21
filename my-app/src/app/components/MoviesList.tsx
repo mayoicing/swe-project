@@ -37,8 +37,8 @@ export default function MoviesList() {
     <section className={styles.container}>
       <h2 className={styles.h2}>Movies</h2>
       <div className={styles.movieGrid}>
-        {movies.map((movie) => (
-            <div key={movie.movieID || undefined} className={styles.movieCard}>  
+        {movies.map((movie, index) => (
+            <div key={movie.movieID ?? `movie-${index}`} className={styles.movieCard}>  
             {/* Movie Banner */}
             <Link href={`/movieDetails`} style={{ textDecoration: 'none', color: 'inherit' }}>
               <div className={styles.posterContainer}>
