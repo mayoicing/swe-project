@@ -15,9 +15,9 @@ export default function LoginForm() {
 
     // 🔁 Auto-login if token exists
     useEffect(() => {
-        const storedUserID = localStorage.getItem('userID') || sessionStorage.getItem('userID');
-        if (storedUserID) {
-            router.push('/home');
+        const token = localStorage.getItem('authToken');
+        if (token) {
+            router.push('/');
         }
     }, [router]);
 
@@ -26,22 +26,32 @@ export default function LoginForm() {
         setError('');
 
         try {
+            //console.log("🔐 Raw password being sent:", `"${password}"`);
+            console.log("Email:", email);
+            console.log("Password:", password);
+
             const response = await axios.post("http://localhost:8080/userinfo/login", {
                 email,
                 password
+            }, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
             });
 
             if (response.status === 200) {
-                const { userID } = response.data;
-
-                // ✅ Save to localStorage or sessionStorage
-                if (rememberMe) {
-                    localStorage.setItem("userID", userID);
-                } else {
-                    sessionStorage.setItem("userID", userID);
-                }
-
-                router.push('/home');
+                const { userID, token } = response.data;
+ 
+            // ✅ Save to localStorage or sessionStorage
+            if (rememberMe) {
+                localStorage.setItem("authToken", token);
+                localStorage.setItem("userID", userID.toString());
+            } else {
+                sessionStorage.setItem("authToken", token);
+                sessionStorage.setItem("userID", userID.toString());
+            }
+                    
+                router.push('/');
             }
         } catch (err: any) {
             if (err.response?.status === 404) {
@@ -57,40 +67,36 @@ export default function LoginForm() {
     return (
         <div className={styles.formContainer}>
             <h1>Log In</h1>
+            {error && <p className={styles.error}>{error}</p>}
             <form onSubmit={handleSubmit} className={styles.inputForm}>
                 <label>
                     Email Address
-                    <input
-                        type="email"
-                        name="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Enter here"
-                        required
-                    />
+                        <input 
+                            type="email" 
+                            name="email" 
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Enter here"
+                            required
+                        />
                 </label>
-
                 <label>
                     Password
-                    <input
-                        type="password"
-                        name="password"
-                        value={password}
+                    <input 
+                        type="password" 
+                        name="password" 
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Enter here"
                         required
                     />
                 </label>
-                    <label className={styles.rememberMe}>
+                <label>
                     <input
-                        type="checkbox"
-                        checked={rememberMe}
-                        onChange={(e) => setRememberMe(e.target.checked)}
+                        type="checkbox" 
+                        checked={rememberMe} 
+                        onChange={(e) => setRememberMe(e.target.checked)} 
                     />
-                    <span>Remember Me</span>
-                    </label>
-                {error && <p className={styles.error}>{error}</p>}
-
+                    Remember me?
+                </label>
                 <div className={styles.buttonContainer}>
                     <input type="submit" value="Log In" className={styles.submitButton} />
                 </div>

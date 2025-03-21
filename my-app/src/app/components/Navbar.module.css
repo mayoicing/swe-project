@@ -63,3 +63,27 @@
 .links li:hover a {
     text-decoration: underline;
 }
+
+/* Style for the Logout button */
+.logout {
+    background-color: transparent;
+    color: white;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 10px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.logout:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+/* Optional: Adding a specific hover effect for better visibility */
+.logout:focus {
+    outline: none;
+}

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.movieapp.swe_project_backend.model.PaymentCard;
 import com.movieapp.swe_project_backend.model.UserInfo;
-import com.movieapp.swe_project_backend.repository.PaymentCardRepository;
 import com.movieapp.swe_project_backend.service.PaymentCardService;
 import com.movieapp.swe_project_backend.service.UserInfoService;
 
@@ -29,8 +28,6 @@ public class PaymentCardController {
     @Autowired
     private PaymentCardService paymentCardService;
 
-    @Autowired
-    private PaymentCardRepository paymentCardRepository;
 
     @Autowired
     private UserInfoService userInfoService;

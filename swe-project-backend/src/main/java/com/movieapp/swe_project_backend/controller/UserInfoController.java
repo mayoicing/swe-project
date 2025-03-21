@@ -8,7 +8,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.movieapp.swe_project_backend.model.UserInfo;
 import com.movieapp.swe_project_backend.service.EmailService;
+import com.movieapp.swe_project_backend.service.JwtService;
 import com.movieapp.swe_project_backend.service.UserInfoService;
 
 @RestController
@@ -31,6 +31,9 @@ public class UserInfoController {
 
     @Autowired
     private EmailService emailService; // ✅ Inject EmailService
+
+    @Autowired
+    private JwtService jwtService; // ✅ Inject JwtService
 
     @GetMapping("/getAll")
     public List<UserInfo> getAllUsers() {
@@ -64,7 +67,8 @@ public class UserInfoController {
         }
 
         // Encrypt password before saving
-        userInfo.setPassword(new BCryptPasswordEncoder().encode(userInfo.getPassword()));
+        //userInfo.setPassword(new BCryptPasswordEncoder().encode(userInfo.getPassword()));
+        userInfo.setPassword(userInfo.getPassword()); // plain text for debugging
         userInfo.setStatus(UserInfo.Status.Active); // Default Status
 
         try {
@@ -102,5 +106,48 @@ public class UserInfoController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Error deleting user!"));
         }
+    }
+    
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, Object>> loginUser(@RequestBody Map<String, String> loginRequest) {
+        String email = loginRequest.get("email");
+        String password = loginRequest.get("password");
+
+        Optional<UserInfo> userOptional = userInfoService.getUserByEmail(email);
+
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "Email not found"));
+        }
+        System.out.println("Received email: " + email); // debugging
+        System.out.println("Received password: " + password); // debugging
+
+        UserInfo user = userOptional.get();
+        /*
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        if (!encoder.matches(password, user.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Incorrect password"));
+        }
+        */
+
+
+        // For testing purposes, compare plain text password
+         if (!password.equals(user.getPassword())) {  // Compare plaintext passwords
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Incorrect password"));
+        }     
+
+
+
+        
+          
+        // ✅ Generate JWT Token
+        String token = jwtService.generateToken(user);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Login successful!");
+        response.put("userID", user.getUserID());
+        response.put("token", token); // Send the token to the frontend
+
+        return ResponseEntity.ok(response);
     }
 }
