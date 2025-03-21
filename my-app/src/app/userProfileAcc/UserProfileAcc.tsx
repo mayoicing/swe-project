@@ -6,6 +6,7 @@ import Navbar from '../components/Navbar';
 import ProfileSidebar from '../components/ProfileSidebar';
 import ProfileIcon from '../images/profile-icon.png'
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface User {
     first_name: string,
@@ -78,7 +79,10 @@ export default function UserProfileAcc() {
                         </div>
                     </div>
                     <div className={styles.buttons}>
-                        <button className={styles.editProfile}>Edit Profile</button><button className={styles.delete}>Delete Account</button>
+                        <Link href='/editProfile'>
+                            <button className={styles.editProfile}>Edit Profile</button>
+                        </Link>
+                        <button className={styles.delete}>Delete Account</button>
                     </div>
                 </div>
 

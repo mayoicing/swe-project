@@ -6,6 +6,7 @@ import Navbar from '../components/Navbar';
 import ProfileSidebar from '../components/ProfileSidebar';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import Link from 'next/link';
 
 interface Address {
     billingAddressID: number;
@@ -54,7 +55,10 @@ export default function UserProfilePayment() {
                         <hr className={styles.horizontal} />
 
                         <div className={styles.addressSection}>
-                            <h1>Shipping Address</h1> <button>Change Address</button>
+                            <h1>Billing Address</h1> 
+                            <Link href='/editAddress'>
+                                <button>Change Address</button>
+                            </Link>
                         </div>
 
                         <div className={styles.grid}>
