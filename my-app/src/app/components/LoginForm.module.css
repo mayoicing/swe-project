@@ -82,3 +82,44 @@
 .admin {
     float: right;
 }
+
+.rememberMe {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    color: #333;
+  }
+  
+  .rememberMe input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #0070f3; /* or your brand color */
+    cursor: pointer;
+  }
+  
+  .navigation {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+  
+  .navigation a {
+    font-size: 0.9rem;
+    color: #0070f3;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  .navigation a:hover {
+    color: #005bb5;
+  }
+  
+  .admin {
+    font-weight: 500;
+    color: #e63946; /* Optional: distinguish admin link */
+  }
+  
