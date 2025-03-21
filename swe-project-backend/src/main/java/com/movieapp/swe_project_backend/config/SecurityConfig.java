@@ -1,6 +1,6 @@
 
 package com.movieapp.swe_project_backend.config;
-import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,15 +19,18 @@ import com.movieapp.swe_project_backend.service.UserInfoService;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
+  
     private JwtAuthenticationFilter jwtAuthFilter; // Inject JWT filter
-    
-    @Autowired
     private JwtService jwtService; // Inject JwtService (this should be used in the filter)
-    @Autowired
     private UserInfoService userInfoService; // Inject UserInfoService
 
-    // Security filter chain using Lambda DSL
+     // Constructor injection to avoid circular dependency
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter, JwtService jwtService, UserInfoService userInfoService) {
+        this.jwtAuthFilter = jwtAuthFilter;
+        this.jwtService = jwtService;
+        this.userInfoService = userInfoService;
+    }
+
     // Security filter chain using Lambda DSL
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
