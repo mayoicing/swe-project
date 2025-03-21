@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.movieapp.swe_project_backend.model.UserInfo;
@@ -17,9 +16,9 @@ public class UserInfoImp implements UserInfoService {
     private UserInfoRepository userInfoRepository;
 
     @Override
-    public UserInfo saveUserInfo(UserInfo userInfo) {
+    public UserInfo saveUserInfo(UserInfo userInfo) {  
        // Hash the password before saving
-       userInfo.setPassword(new BCryptPasswordEncoder().encode(userInfo.getPassword()));
+       //userInfo.setPassword(new BCryptPasswordEncoder().encode(userInfo.getPassword()));
         return userInfoRepository.save(userInfo);
     }
 

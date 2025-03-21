@@ -12,12 +12,12 @@ export default function LoginForm() {
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState('');
     const router = useRouter();
-
-    // 🔁 Auto-login if token exists
+    
+    // 🔁 Auto-login if admin token exists
     useEffect(() => {
-        const storedUserID = localStorage.getItem('userID') || sessionStorage.getItem('userID');
-        if (storedUserID) {
-            router.push('/home');
+        const token = localStorage.getItem('adminAuthToken');
+        if (token) {
+            router.push('/adminMovie'); // Redirect to admin dashboard
         }
     }, [router]);
 
@@ -32,20 +32,22 @@ export default function LoginForm() {
             });
 
             if (response.status === 200) {
-                const { userID } = response.data;
+                const { adminID, token } = response.data;
 
-                // ✅ Save to localStorage or sessionStorage
+                // Save to localStorage or sessionStorage based on 'rememberMe' state
                 if (rememberMe) {
-                    localStorage.setItem("userID", userID);
+                    localStorage.setItem("adminAuthToken", token);
+                    localStorage.setItem("adminID", adminID.toString());
                 } else {
-                    sessionStorage.setItem("userID", userID);
+                    sessionStorage.setItem("authToken", token);
+                    sessionStorage.setItem("adminID", adminID.toString());
                 }
 
-                router.push('/home');
+                router.push('/adminMovie'); // Redirect to admin panel
             }
         } catch (err: any) {
             if (err.response?.status === 404) {
-                setError("Email not found.");
+                setError("Admin email not found.");
             } else if (err.response?.status === 401) {
                 setError("Incorrect password.");
             } else {
@@ -57,40 +59,36 @@ export default function LoginForm() {
     return (
         <div className={styles.formContainer}>
             <h1>Log In</h1>
+            {error && <p className={styles.error}>{error}</p>}
             <form onSubmit={handleSubmit} className={styles.inputForm}>
                 <label>
                     Email Address
-                    <input
-                        type="email"
-                        name="email"
-                        value={email}
+                    <input 
+                        type="email" 
+                        name="email" 
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Enter here"
+                        placeholder="Enter here" 
                         required
                     />
                 </label>
-
                 <label>
                     Password
-                    <input
-                        type="password"
-                        name="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Enter here"
+                    <input 
+                        type="password" 
+                        name="password" 
+                        onChange={(e) => setPassword(e.target.value)} 
+                        placeholder="Enter here" 
                         required
                     />
                 </label>
-                    <label className={styles.rememberMe}>
-                    <input
-                        type="checkbox"
-                        checked={rememberMe}
+                <label>
+                    Remember me? 
+                    <input 
+                        type="checkbox" 
+                        name="rememeberMe"
                         onChange={(e) => setRememberMe(e.target.checked)}
                     />
-                    <span>Remember Me</span>
-                    </label>
-                {error && <p className={styles.error}>{error}</p>}
-
+                </label>
                 <div className={styles.buttonContainer}>
                     <input type="submit" value="Log In" className={styles.submitButton} />
                 </div>
