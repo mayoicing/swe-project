@@ -26,8 +26,6 @@ export default function LoginForm() {
         setError('');
 
         try {
-            console.log("🔐 Raw password being sent:", `"${password}"`);
-
             const response = await axios.post("http://localhost:8080/userinfo/login", {
                 email,
                 password
@@ -59,18 +57,54 @@ export default function LoginForm() {
     return (
         <div className={styles.formContainer}>
             <h1>Log In</h1>
-            <form action="/" method="POST" className={styles.inputForm}>
-                <label>Email Address<input type="email" name="email" placeholder="Enter here"/></label>
-                <label>Password<input type="password" name="password" placeholder="Enter here"/></label>
+            <form onSubmit={handleSubmit} className={styles.inputForm}>
+                <label>
+                    Email Address
+                    <input
+                        type="email"
+                        name="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Enter here"
+                        required
+                    />
+                </label>
+
+                <label>
+                    Password
+                    <input
+                        type="password"
+                        name="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Enter here"
+                        required
+                    />
+                </label>
+                <label className={styles.rememberMe}>
+  <input
+    type="checkbox"
+    checked={rememberMe}
+    onChange={(e) => setRememberMe(e.target.checked)}
+  />
+  <span>Remember Me</span>
+</label>
+
+
+                {error && <p className={styles.error}>{error}</p>}
+
                 <div className={styles.buttonContainer}>
                     <input type="submit" value="Log In" className={styles.submitButton} />
                 </div>
             </form>
+
             <div className={styles.navigation}>
-                    <Link href='/'>Forget password?</Link>
-                    <Link href='/loginAdmin' className={styles.admin}>Admin Login</Link>
+                <Link href='/'>Forget password?</Link>
+                <Link href='/loginAdmin' className={styles.admin}>Admin Login</Link>
             </div>
-            <div className={styles.signup}><Link href='/registerPersonal'>Don't have an account? Create one here!</Link></div>
+            <div className={styles.signup}>
+                <Link href='/registerPersonal'>Don't have an account? Create one here!</Link>
+            </div>
         </div>
     );
 }

@@ -33,7 +33,7 @@
     gap: 5px;
 }
 
-.inputForm label { /* Form labels for input fields */
+.inputForm label:not(.rememberMe) { /* Form labels for input fields */
     display: block;
     width: 100%;
     padding: 10px;
@@ -53,15 +53,11 @@
     justify-content: center;
 }
 
-.inputForm input[type="checkbox"] {
-    width: auto;
-    margin-right: auto;
-}
-
 .submitButton { /* Submit button*/
     background-color: #2c2c2c;
     color: #f5f5f5;
-    padding: 5px 500px;
+    width: 100%;
+    padding: 12px;
     border-radius: 10px;
     margin-top: 15px;
     margin-bottom: 10px;
@@ -69,12 +65,6 @@
 
 .submitButton:active {
     background-color: #444444;
-}
-
-.navigation {
-    text-decoration: underline;
-    margin-top: 5px;
-    margin-bottom: 50px;
 }
 
 .navigation a:hover {
@@ -88,48 +78,43 @@
 .rememberMe {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 8px;
     font-size: 0.9rem;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
     color: #333;
-  }
-  
-  .rememberMe input[type="checkbox"] {
+    white-space: nowrap;
+  }  
+
+.rememberMe input[type="checkbox"] {
     width: 16px;
     height: 16px;
-    accent-color: #0070f3; /* or your brand color */
+    accent-color: #0070f3;
     cursor: pointer;
-  }
-  
-  .navigation {
-    margin-top: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    align-items: flex-start;
-  }
-  
-  .navigation a {
-    font-size: 0.9rem;
-    color: #0070f3;
-    text-decoration: none;
-    transition: color 0.2s ease;
-  }
-  
-  .navigation a:hover {
-    color: #005bb5;
-  }
-  
-  .admin {
-    font-weight: 500;
-    color: #e63946; /* Optional: distinguish admin link */
-  }
-  
-
-.signup {
-    text-decoration: underline;
+    margin: 0; /* Removes auto margin that was pushing it */
+    flex-shrink: 0; /* Ensures checkbox doesn't resize unexpectedly */
 }
 
-.signup a:hover {
-    color: #2C3851;
-}
+  
+    .navigation {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+        margin-top: 1rem;
+        margin-bottom: 50px;
+        text-decoration: underline;
+    }
+    .navigation a {
+        font-size: 0.9rem;
+        color: #0070f3;
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+    .signup {
+        text-decoration: underline;
+    }
+
+    .signup a:hover {
+        color: #2C3851;
+    }
