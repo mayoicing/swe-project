@@ -17,7 +17,7 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
-    private final SecretKey SECRET_KEY = Keys.hmacShaKeyFor("gV4zBkc4fd2N3a3yH7XsDw==".getBytes());
+    private final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     public String generateToken(UserInfo user) {
         Map<String, Object> claims = new HashMap<>();
