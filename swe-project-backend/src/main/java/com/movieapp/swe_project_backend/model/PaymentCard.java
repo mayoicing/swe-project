@@ -1,8 +1,8 @@
 package com.movieapp.swe_project_backend.model;
 
-//import java.util.Date;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
@@ -26,29 +26,29 @@ public class PaymentCard {
     private int CardID;  // Primary Key
 
     @Column(name = "cardNumber", length = 255, nullable = false)
-     @JsonProperty("cardNumber")
+    @JsonProperty("cardNumber")
     private String cardNumber;  // Encrypted card number
 
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false) 
-     @JsonProperty("user")
+    @JsonBackReference // 🔴 Prevents infinite loop when serializing PaymentCard
     private UserInfo user;
 
     @Column(name = "cardholderName", length = 100, nullable = false) 
-     @JsonProperty("cardholderName")
+    @JsonProperty("cardholderName")
     private String cardholderName;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "cardType", nullable = false) 
-     @JsonProperty("cardType")
+    @JsonProperty("cardType")
     private CardType cardType;
 
     @Column(name = "expDate", nullable = false) 
-     @JsonProperty("expDate")
+    @JsonProperty("expDate")
     private LocalDate expDate;
 
     @Column(name = "cvv", nullable = false) 
-     @JsonProperty("cvv")
+    @JsonProperty("cvv")
     private int cvv;
 
     public enum CardType {
