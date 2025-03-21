@@ -16,11 +16,12 @@ import com.movieapp.swe_project_backend.util.EncryptionUtil;
 public class PaymentCardImp implements PaymentCardService {
 
     @Autowired
-    private PaymentCardRepository PaymentCardRepository;
+    private PaymentCardRepository paymentCardRepository;
 
     @Transactional 
     @Override
     public PaymentCard savePaymentCard(PaymentCard paymentCard) {   
+        /*
         try {
             // Encrypt the card number before saving
             String encryptedCardNumber = EncryptionUtil.encrypt(paymentCard.getCardNumber());
@@ -28,14 +29,14 @@ public class PaymentCardImp implements PaymentCardService {
         } catch (Exception e) {
             throw new RuntimeException("Error encrypting card data", e);
         }
-        
+        */
         return paymentCardRepository.save(paymentCard);
     }
 
     @Override
     public List<PaymentCard> getPaymentCardsByUserId(int userID) {
         List<PaymentCard> encryptedCards = paymentCardRepository.findByUserUserID(userID);
-        
+        /*
         // Decrypt the card numbers before returning
         return encryptedCards.stream().map(card -> {
             try {
@@ -45,20 +46,21 @@ public class PaymentCardImp implements PaymentCardService {
             }
             return card;
         }).collect(Collectors.toList());
-        
+        */
         return encryptedCards;
     }
 
     @Override
     public Optional<PaymentCard> getPaymentCardById(int paymentCardID) {
         return paymentCardRepository.findById(paymentCardID).map(card -> {
-           
+           /*
             try {
                 // Decrypt before returning
                 card.setCardNumber(EncryptionUtil.decrypt(card.getCardNumber()));
             } catch (Exception e) {
                 throw new RuntimeException("Error decrypting card data", e);
             }
+            */
             return card;
         }); 
     }
