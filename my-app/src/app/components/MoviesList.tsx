@@ -21,15 +21,15 @@ export default function MoviesList() {
     axios
       .get("http://localhost:8080/movieinfo/getAll") // Fetch all movies
       .then((response) => {
-        const decodedMovies = response.data.map((movie: Movie) => ({
-          ...movie,
-          poster: decodeURIComponent(movie.poster.trimEnd()), // Decode poster URL
-        }));
-        
-        setMovies(decodedMovies); // Store movies in state
-      })
-      .catch((error) => {
-        console.error("Error fetching movie data: ", error);
+      
+        const decodedMovies = response.data.map((movie: any) => {
+          return {
+            ...movie,
+            poster: decodeURIComponent(movie.poster.trimEnd()),
+          };
+        });
+      
+        setMovies(decodedMovies);
       });
   }, []);
 
@@ -38,7 +38,7 @@ export default function MoviesList() {
       <h2 className={styles.h2}>Movies</h2>
       <div className={styles.movieGrid}>
         {movies.map((movie) => (
-            <div key={movie.movieID} className={styles.movieCard}>  
+            <div key={movie.movieID || undefined} className={styles.movieCard}>  
             {/* Movie Banner */}
             <Link href={`/movieDetails`} style={{ textDecoration: 'none', color: 'inherit' }}>
               <div className={styles.posterContainer}>
