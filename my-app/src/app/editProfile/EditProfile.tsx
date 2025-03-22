@@ -1,7 +1,7 @@
 "use client";
 import styles from './EditProfile.module.css';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
 interface User {
@@ -17,18 +17,29 @@ export default function EditProfile() {
         last_name: "",
         password: "",
     });
-       
+    
+    const userIDString = localStorage.getItem("userID") || sessionStorage.getItem("userID") || "0";
+    const userID = parseInt(userIDString, 10);
+    const [isPasswordChangeVisible, setIsPasswordChangeVisible] = useState(false);
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const router = useRouter();
+
     useEffect(() => {
-        axios.get("https://localhost:8080/userinfo/get/1")
+        axios.get(`http://localhost:8080/userinfo/get/${userID}`)
         .then((response) => {
             const fetchedUser = response.data;
             setUser(fetchedUser);
-            setFormData(fetchedUser);
+            setFormData({
+                first_name: fetchedUser.first_name,
+                last_name: fetchedUser.last_name,
+                password: "", // Do not fill in password field
+            });
         })
         .catch((error) => {
             console.error("Error fetching user data: ", error);
         });
-    });
+    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -38,10 +49,19 @@ export default function EditProfile() {
         });
     };
 
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        if (name === "currentPassword") {
+            setCurrentPassword(value);
+        } else {
+            setNewPassword(value);
+        }
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault;
 
-        // Send only filled blanks
+        // Prepare the data to update, only send fields that have changed
         const updatedData: Partial<User> = {};
 
         if (formData.first_name !== user?.first_name) {
@@ -50,20 +70,82 @@ export default function EditProfile() {
         if (formData.last_name !== user?.last_name) {
             updatedData.last_name = formData.last_name;
         }
-        if (formData.password !== user?.password) {
-            updatedData.password = formData.password;
+
+         // Only update password if current password is provided
+         if (isPasswordChangeVisible && currentPassword && newPassword) {
+            updatedData.password = newPassword;
         }
 
-        // Axios stuff (not complete)
+        axios
+            .put("https://localhost:8080/userinfo/update/1", updatedData) // Correct endpoint for updating
+            .then((response) => {
+                console.log("Profile updated successfully:", response.data);
+                router.push("/userProfileAcc");
+            })
+            .catch((error) => {
+                console.error("Error updating profile:", error);
+            });
+    };
+
+    const handleChangePasswordClick = () => {
+        setIsPasswordChangeVisible(true);
     };
     
     return (
         <div className={styles.formContainer}>
             <h1>Edit Profile</h1>
-            <form action="/userProfileAcc" method="POST" className={styles.inputForm}>
-                <label>First Name<input type="text" name="first_name" placeholder="Type here"/></label>
-                <label>Last Name<input type="text" name="last_name" placeholder="Type here"/></label>
-                <label>Password<input type="password" name="password" placeholder="Type here"/></label>
+            <form onSubmit={handleSubmit} className={styles.inputForm}>
+                <label>
+                    First Name <span className={styles.editLabel}>(Edit)</span>
+                    <input 
+                        type="text" 
+                        name="first_name" 
+                        placeholder="Type here"
+                        value={formData.first_name}
+                        onChange={handleChange}
+                    />
+                </label>
+                <label>
+                    Last Name <span className={styles.editLabel}>(Edit)</span>
+                    <input 
+                        type="text" 
+                        name="last_name" 
+                        placeholder="Type here"
+                        value={formData.last_name}
+                        onChange={handleChange}
+                    />
+                </label>
+
+                {/* Change Password Section */}
+                <div className={styles.changePasswordSection}>
+                    <h2>Change Password (Optional)</h2>
+                    <label>
+                        Please enter your current password
+                        <input
+                            type="password"
+                            name="currentPassword"
+                            placeholder="Current password"
+                            value={currentPassword}
+                            onChange={handlePasswordChange}
+                        />
+                    </label>
+                    <button type="button" onClick={handleChangePasswordClick}>Next</button>
+
+                    {isPasswordChangeVisible && (
+                        <>
+                            <label>
+                                Please enter new password
+                                <input
+                                    type="password"
+                                    name="newPassword"
+                                    placeholder="New password"
+                                    value={newPassword}
+                                    onChange={handlePasswordChange}
+                                />
+                            </label>
+                        </>
+                    )}
+                </div>
                 <div className={styles.buttonContainer}>
                     <input type="submit" value="Update" className={styles.submitButton}/>
                 </div>

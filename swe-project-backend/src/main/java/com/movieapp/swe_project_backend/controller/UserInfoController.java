@@ -91,6 +91,40 @@ public class UserInfoController {
                     .body(Map.of("message", "Error saving user information!"));
         }
     }
+    
+    @PostMapping("/update-promotions/{userID}")
+    public ResponseEntity<Map<String, Object>> updatePromotions(
+            @PathVariable int userID,
+            @RequestBody Map<String, Boolean> request) {
+
+        Optional<UserInfo> userOptional = userInfoService.getUserById(userID);
+
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "User not found!"));
+        }
+
+        UserInfo user = userOptional.get();
+        boolean enrollForPromotions = request.getOrDefault("enroll_for_promotions", false); // Default to 0 if missing
+
+        user.setEnrollForPromotions(enrollForPromotions); // Update field
+
+        try {
+            UserInfo updatedUser = userInfoService.saveUserInfo(user); // Save changes to DB
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Promotions preference updated successfully!");
+            response.put("user", updatedUser);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Error updating promotions preference!"));
+        }   
+    }
+
+
+
+
 
     @DeleteMapping("/delete/{userID}")
     public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable int userID) {

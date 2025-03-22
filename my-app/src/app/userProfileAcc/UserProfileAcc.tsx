@@ -13,23 +13,28 @@ interface User {
     last_name: string,
     phone_number: string,
     email: string,
-    enroll_for_promotions: number;
+    enroll_for_promotions: boolean;
 }
 
 export default function UserProfileAcc() {
     const [user, setUser] = useState<User | null>(null);
     const [isChecked, setIsChecked] = useState(false);
-
+    const userIDString = localStorage.getItem("userID") || sessionStorage.getItem("userID") || "0";
+    const userID = parseInt(userIDString, 10);
+    
     useEffect(() => {
+        if (!userID) return; // Ensure we have a userID before making the request
+
         axios
-            .get("http://localhost:8080/userinfo/get/1")
+            .get(`http://localhost:8080/userinfo/get/${userID}`)
             .then((response) => {
                 setUser(response.data); // Set fetchsed data into state
+                setIsChecked(response.data.enroll_for_promotions); // Set checkbox state
             })
             .catch((error) => {
                 console.error('Error fetching user data: ', error);
             })
-    }, []); // Empty array = only runs when component mounts
+    }, [userID]); // // Runs when userID changes
 
     const formatPhoneNumber = (phone_number: string) => {
         const match = phone_number.match(/^(\d{3})(\d{3})(\d{4})$/);
@@ -39,18 +44,21 @@ export default function UserProfileAcc() {
         return phone_number;
     };
 
+    // Handle checkbox change
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const checked = event.target.checked;
-        setIsChecked(checked);
-        const newEnrollForPromotions = checked ? 1 : 0;
-        console.log(newEnrollForPromotions);
-        setUser((prevUser) => {
-            if (prevUser) {
-                return { ...prevUser, enroll_for_promotions: newEnrollForPromotions };
-            }
-            return prevUser;
-        });
-    };
+        setIsChecked(checked); // Update checkbox UI immediately
+        //const newEnrollForPromotions = checked ? 1 : 0;
+
+        if (user) {
+            setUser({ ...user, enroll_for_promotions: checked }); // Update local user state
+        }
+
+         // Update backend with new preference
+         axios
+         .post(`http://localhost:8080/userinfo/update-promotions/${userID}`, { enroll_for_promotions: checked})
+         .catch(error => console.error("Error updating promotions status: ", error));
+        };
 
     return(
         <>

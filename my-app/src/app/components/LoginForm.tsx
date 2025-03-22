@@ -26,7 +26,6 @@ export default function LoginForm() {
         setError('');
 
         try {
-            //console.log("🔐 Raw password being sent:", `"${password}"`);
             console.log("Email:", email);
             console.log("Password:", password);
 
