@@ -22,9 +22,9 @@ import com.movieapp.swe_project_backend.service.UserInfoService;
 public class SecurityConfig {
 
   
-    private JwtAuthenticationFilter jwtAuthFilter; // Inject JWT filter
-    private JwtService jwtService; // Inject JwtService (this should be used in the filter)
-    private UserInfoService userInfoService; // Inject UserInfoService
+    private final JwtAuthenticationFilter jwtAuthFilter; // Inject JWT filter
+    private final JwtService jwtService; // Inject JwtService (this should be used in the filter)
+    private final UserInfoService userInfoService; // Inject UserInfoService
 
      // Constructor injection to avoid circular dependency
     public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter, JwtService jwtService, UserInfoService userInfoService) {
@@ -90,6 +90,6 @@ public class SecurityConfig {
      // BCryptPasswordEncoder for password encoding
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(10);
     }
 }

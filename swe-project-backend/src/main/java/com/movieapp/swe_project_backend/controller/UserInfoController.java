@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,8 +68,7 @@ public class UserInfoController {
         }
 
         // Encrypt password before saving
-        //userInfo.setPassword(new BCryptPasswordEncoder().encode(userInfo.getPassword()));
-        userInfo.setPassword(userInfo.getPassword()); // plain text for debugging
+        userInfo.setPassword(new BCryptPasswordEncoder(10).encode(userInfo.getPassword()));
         userInfo.setStatus(UserInfo.Status.Active); // Default Status
 
         try {
@@ -118,47 +118,19 @@ public class UserInfoController {
         if (userOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "Email not found"));
         }
-        System.out.println("Received email: " + email); // debugging
-        System.out.println("Received password: " + password); // debugging
 
         UserInfo user = userOptional.get();
-        /*
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
 
         if (!encoder.matches(password, user.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Incorrect password"));
         }
-        */
-
-
-
-
-
-
-
-
-        // For testing purposes, compare plain text password
-         if (!password.equals(user.getPassword())) {  // Compare plaintext passwords
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Incorrect password"));
-        }     
-
-
-
-
-
-
-
-
-
 
         // Check user type for user login
         if (user.getUserType() == UserInfo.UserType.Admin) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", "Please use the admin login!"));
         }
-
-
-        
-          
+           
         // ✅ Generate JWT Token
         String token = jwtService.generateToken(user);
 
@@ -181,32 +153,12 @@ public class UserInfoController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "Email not found"));
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
         UserInfo user = userOptional.get();
-        // Compare plaintext passwords for now (remove later when using BCrypt)
-        if (!password.equals(user.getPassword())) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
+
+        if (!encoder.matches(password, user.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Incorrect password"));
         }
-
-
-
-
-
-
-
-
-
 
         // Check that the user is an Admin
         if (user.getUserType() == UserInfo.UserType.Customer) {

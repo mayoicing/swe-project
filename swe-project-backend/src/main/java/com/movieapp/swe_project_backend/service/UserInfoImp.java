@@ -17,8 +17,6 @@ public class UserInfoImp implements UserInfoService {
 
     @Override
     public UserInfo saveUserInfo(UserInfo userInfo) {  
-       // Hash the password before saving
-       //userInfo.setPassword(new BCryptPasswordEncoder().encode(userInfo.getPassword()));
         return userInfoRepository.save(userInfo);
     }
 
