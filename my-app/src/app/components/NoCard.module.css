@@ -1,6 +1,7 @@
 /* Style - NoCard */
 
 .noCard {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11,4 +12,24 @@
     border-radius: 10px;
     font-size: 20px;
     font-weight: bolder;
+}
+
+.button {
+    position: absolute;
+    padding: 5px 20px;
+    border-width: 2px;
+    border-radius: 10px;
+    background-color: white;
+    color: #2C3851;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+}
+
+.button:active {
+    border-color: #9DC2EE;
+    background-color: #9DC2EE;
+}
+
+.noCard:hover .button {
+    visibility: visible;
 }
