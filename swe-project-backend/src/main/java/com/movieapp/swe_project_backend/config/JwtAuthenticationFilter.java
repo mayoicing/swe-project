@@ -46,14 +46,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         
        try {
             String email = jwtService.extractEmail(token); // Extract email from the token
-
+            
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserInfo user = userInfoService.getUserByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+
+                Integer userId = jwtService.extractUserID(token);  // Extract user ID
 
                 // Create the authentication object without authorities
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         user, null, null // No authorities for now
                 );
+
+                authentication.setDetails(userId);  // Set userId in the details
 
                 // Set the authentication context for the current request
                 SecurityContextHolder.getContext().setAuthentication(authentication);

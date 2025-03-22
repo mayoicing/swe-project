@@ -15,4 +15,5 @@ public interface UserInfoService {
 
     List<UserInfo> getUsersByUserType(UserInfo.UserType userType);
     void deleteUser(int userID);
+    Integer getUserIdFromSession();
 }

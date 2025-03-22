@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.movieapp.swe_project_backend.model.UserInfo;
 import com.movieapp.swe_project_backend.service.EmailService;
 import com.movieapp.swe_project_backend.service.JwtService;
+import com.movieapp.swe_project_backend.service.UserInfoImp;
 import com.movieapp.swe_project_backend.service.UserInfoService;
 
 @RestController
@@ -35,6 +37,9 @@ public class UserInfoController {
 
     @Autowired
     private JwtService jwtService; // ✅ Inject JwtService
+
+    @Autowired
+    private UserInfoImp userInfoImp; // ✅ Inject UserInfoImp
 
     @GetMapping("/getAll")
     public List<UserInfo> getAllUsers() {
@@ -91,7 +96,7 @@ public class UserInfoController {
                     .body(Map.of("message", "Error saving user information!"));
         }
     }
-    
+
     @PostMapping("/update-promotions/{userID}")
     public ResponseEntity<Map<String, Object>> updatePromotions(
             @PathVariable int userID,
@@ -121,6 +126,68 @@ public class UserInfoController {
                     .body(Map.of("message", "Error updating promotions preference!"));
         }   
     }
+
+    // Update user information
+    @PutMapping("/update/{userID}")
+    public ResponseEntity<UserInfo> updateUserInfo(@PathVariable("userID") int userId, @RequestBody UserInfo updatedUserInfo) {
+        // Fetch the user from the database by ID
+        UserInfo existingUser = userInfoService.getUserById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Update the user's details (first name, last name, etc.)
+        if (updatedUserInfo.getFirstName() != null) {
+            existingUser.setFirstName(updatedUserInfo.getFirstName());
+        }
+        if (updatedUserInfo.getLastName() != null) {
+            existingUser.setLastName(updatedUserInfo.getLastName());
+        }
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+
+        // Check if the password has been changed and encrypt it if so
+        if (updatedUserInfo.getPassword() != null && !updatedUserInfo.getPassword().equals(existingUser.getPassword())) {
+            String encryptedPassword = passwordEncoder.encode(updatedUserInfo.getPassword());
+            existingUser.setPassword(encryptedPassword);
+        }
+
+        // Save the updated user back to the database
+        userInfoService.saveUserInfo(existingUser);
+
+        return ResponseEntity.ok(existingUser); // Return updated user info
+    }
+
+    @PostMapping("/verifyPassword")
+    public ResponseEntity<Map<String, Object>> verifyPassword(@RequestBody Map<String, String> request) {
+        String enteredPassword = request.get("password");
+        Integer userId = userInfoImp.getUserIdFromSession(); // Retrieve user ID from session or context
+
+        if (userId == null) {
+            // Handle the case where no user is logged in
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", "User not authenticated.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+
+        // Fetch the user from the database
+        UserInfo user = userInfoService.getUserById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Verify the entered password matches the stored password
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        boolean isPasswordMatch = passwordEncoder.matches(enteredPassword, user.getPassword());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", isPasswordMatch);
+
+        if (!isPasswordMatch) {
+            response.put("message", "Incorrect password.");
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+
 
 
 
