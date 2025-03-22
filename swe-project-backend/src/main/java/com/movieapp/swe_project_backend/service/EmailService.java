@@ -26,4 +26,23 @@ public class EmailService {
         mailSender.send(message);
         System.out.println("📩 Confirmation email sent to: " + toEmail);
     }
+
+    public void sendResetCodeEmail(String toEmail, String resetCode) {
+        String subject = "🔒 Password Reset Code";
+        String body = "Hello,\n\n"
+            + "You requested a password reset. Please use the following code to reset your password:\n\n"
+            + resetCode + "\n\n"
+            + "This code will expire in 15 minutes.\n\n"
+            + "To reset your password, go to:\n"
+            + "http://localhost:3000/changePassword\n\n"
+            + "If you did not request this, you can ignore this email.\n\n"
+            + "Best regards,\nThe MovieApp Team";
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject(subject);
+        message.setText(body);
+
+        mailSender.send(message);
+}
 }

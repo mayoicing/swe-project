@@ -1,7 +1,9 @@
 package com.movieapp.swe_project_backend.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +19,9 @@ public class UserInfoImp implements UserInfoService {
 
     @Autowired
     private UserInfoRepository userInfoRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public UserInfo saveUserInfo(UserInfo userInfo) {  
@@ -52,21 +57,33 @@ public class UserInfoImp implements UserInfoService {
     public void deleteUser(int userID) {
         userInfoRepository.deleteById(userID);
     }
-    
+
     @Override
     public Integer getUserIdFromSession() {
-        // Get the authentication object from the security context
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         if (authentication != null && authentication instanceof UsernamePasswordAuthenticationToken) {
-            // Extract the userId from the details stored in the authentication token
             Object userId = authentication.getDetails();
-
-            // Return userId, ensuring it's an Integer
             if (userId instanceof Integer) {
                 return (Integer) userId;
             }
         }
-        return null; // If no userId is found or no authentication object, return null
+        return null;
+    }
+
+    @Override
+    public void generateResetCodeForUser(String email) {
+        Optional<UserInfo> userOpt = userInfoRepository.findByEmail(email);
+        if (userOpt.isPresent()) {
+            UserInfo user = userOpt.get();
+            String code = String.format("%06d", new Random().nextInt(999999)); // 6-digit code
+            user.setResetCode(code);
+            user.setResetCodeExpiry(LocalDateTime.now().plusMinutes(15));
+            userInfoRepository.save(user);
+
+            // Send the reset code via email
+            emailService.sendResetCodeEmail(user.getEmail(), code);
+        } else {
+            throw new RuntimeException("User not found with that email.");
+        }
     }
 }

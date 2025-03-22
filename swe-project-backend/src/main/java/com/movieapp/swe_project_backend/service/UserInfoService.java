@@ -16,4 +16,7 @@ public interface UserInfoService {
     List<UserInfo> getUsersByUserType(UserInfo.UserType userType);
     void deleteUser(int userID);
     Integer getUserIdFromSession();
+
+    // 🔐 New method to generate and set reset code
+    void generateResetCodeForUser(String email);
 }

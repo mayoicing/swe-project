@@ -1,6 +1,7 @@
 package com.movieapp.swe_project_backend.model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,6 +61,13 @@ public class UserInfo implements Serializable {
     @Column(name = "user_type", nullable = false) // ✅ Maps to 'user_type'
     @JsonProperty("user_type")
     private UserType userType;
+
+    @Column(name = "reset_code")
+    private String resetCode;
+
+    @Column(name = "reset_code_expiry")
+    private LocalDateTime resetCodeExpiry;
+
 
     public enum Status {
         Active, Inactive, Suspended
@@ -131,4 +139,20 @@ public class UserInfo implements Serializable {
 
     public UserType getUserType() { return userType; }
     public void setUserType(UserType userType) { this.userType = userType; }
+
+    public String getResetCode() {
+        return resetCode;
+    }
+
+    public void setResetCode(String resetCode) {
+        this.resetCode = resetCode;
+    }
+
+    public LocalDateTime getResetCodeExpiry() {
+        return resetCodeExpiry;
+    }
+
+    public void setResetCodeExpiry(LocalDateTime resetCodeExpiry) {
+        this.resetCodeExpiry = resetCodeExpiry;
+    }
 }

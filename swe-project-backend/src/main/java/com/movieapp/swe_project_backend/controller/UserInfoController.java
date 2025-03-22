@@ -276,4 +276,53 @@ public class UserInfoController {
 
         return ResponseEntity.ok(response);
     }
+
+        // 🔐 Step 1: Request password reset (sends reset code via email)
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Map<String, String>> handleForgotPassword(@RequestBody Map<String, String> payload) {
+        String email = payload.get("email");
+
+        try {
+            userInfoService.generateResetCodeForUser(email); // Generates and sends code
+            return ResponseEntity.ok(Map.of("message", "Reset code sent to your email."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("message", "Email not found or failed to send reset code."));
+        }
+    }
+
+    // 🔒 Step 2: Verify reset code + change password
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, String>> resetPassword(@RequestBody Map<String, String> payload) {
+        String email = payload.get("email");
+        String code = payload.get("resetCode");
+        String newPassword = payload.get("newPassword");
+
+        Optional<UserInfo> userOpt = userInfoService.getUserByEmail(email);
+
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "User not found."));
+        }
+
+        UserInfo user = userOpt.get();
+
+        if (user.getResetCode() == null || !user.getResetCode().equals(code)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Invalid reset code."));
+        }
+
+        if (user.getResetCodeExpiry() == null || user.getResetCodeExpiry().isBefore(java.time.LocalDateTime.now())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Reset code has expired."));
+        }
+
+        // All good, update password
+        String encryptedPassword = new BCryptPasswordEncoder(10).encode(newPassword);
+        user.setPassword(encryptedPassword);
+        user.setResetCode(null); // Clear the used code
+        user.setResetCodeExpiry(null);
+        userInfoService.saveUserInfo(user);
+
+        return ResponseEntity.ok(Map.of("message", "Password reset successful!"));
+    }
+
+
 }

@@ -39,7 +39,23 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/movieinfo/**", "/userinfo/**","/paymentcard/**","/billingaddress/**","/castandcrew/**","/usertype/**","/promocode/**").permitAll() // Allow these endpoints without authentication
+                .requestMatchers(
+                    "/movieinfo/**",
+                    "/userinfo/register",
+                    "/userinfo/forgot-password",
+                    "/userinfo/reset-password",
+                    "/userinfo/getAll",
+                    "/userinfo/get/**",
+                    "/userinfo/getByEmail",
+                    "/userinfo/type/**",
+                    "/userinfo/login",
+                    "/userinfo/adminlogin",
+                    "/paymentcard/**",
+                    "/billingaddress/**",
+                    "/castandcrew/**",
+                    "/usertype/**",
+                    "/promocode/**"
+                ).permitAll()
                 .anyRequest().authenticated() // Any other requests require authentication
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No sessions
