@@ -76,7 +76,8 @@ export default function PaymentInfoForm() {
                     "http://localhost:8080/billingaddress/add",
                     {
                         ...billingData,
-                        paymentCard: { cardID }
+                        paymentCard: { cardID },
+                        userID: { userID: parseInt(userID, 10) }
                     },
                     {
                         headers: { 'Content-Type': 'application/json' }
