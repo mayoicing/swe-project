@@ -49,17 +49,28 @@ export default function UserProfileAcc() {
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const checked = event.target.checked;
         setIsChecked(checked); // Update checkbox UI immediately
-        //const newEnrollForPromotions = checked ? 1 : 0;
 
         if (user) {
             setUser({ ...user, enroll_for_promotions: checked }); // Update local user state
         }
 
+        const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+
+        if (token) {
          // Update backend with new preference
          axios
-         .post(`http://localhost:8080/userinfo/update-promotions/${userID}`, { enroll_for_promotions: checked})
+         .post(`http://localhost:8080/userinfo/update-promotions/${userID}`, 
+            { enroll_for_promotions: checked },
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+         )
          .catch(error => console.error("Error updating promotions status: ", error));
-        };
+        }
+    };
 
     return(
         <>

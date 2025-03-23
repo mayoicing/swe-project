@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 import com.movieapp.swe_project_backend.model.BillingAddress;
-//import com.movieapp.swe_project_backend.model.UserInfo;
 
 @Repository
 public interface BillingAddressRepository extends JpaRepository<BillingAddress, Integer> {
