@@ -20,10 +20,13 @@ interface Address {
 
 export default function UserProfilePayment() {
     const [address, setAddress] = useState<Address | null>(null);
+    const userIDString = localStorage.getItem("userID") || sessionStorage.getItem("userID") || "0";
+    const userID = parseInt(userIDString, 10);
     
     useEffect(() => {
+        if (!userID) return;
         axios
-            .get("http://localhost:8080/billingaddress/get/1")
+            .get(`http://localhost:8080/billingaddress/get/${userID}`)
             .then((response) => {
                 
                 setAddress(response.data);
@@ -33,7 +36,7 @@ export default function UserProfilePayment() {
             .catch((error) => {
                 console.error('Error fetching billing address: ', error);
             })
-    }, []);
+    }, [userID]);
 
     return (
         <>

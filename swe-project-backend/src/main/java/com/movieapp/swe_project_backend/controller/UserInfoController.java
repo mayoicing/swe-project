@@ -187,12 +187,6 @@ public class UserInfoController {
         return ResponseEntity.ok(response);
     }
 
-
-
-
-
-
-
     @DeleteMapping("/delete/{userID}")
     public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable int userID) {
         Optional<UserInfo> user = userInfoService.getUserById(userID);

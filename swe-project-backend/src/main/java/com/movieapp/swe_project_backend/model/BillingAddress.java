@@ -41,15 +41,21 @@ public class BillingAddress {
      @JsonProperty("zip")
     private int zip;
 
+    @OneToOne
+    @JoinColumn(name = "userID", nullable = false)
+    @JsonProperty("userID")
+    private UserInfo userID;
+
     // Constructors
     public BillingAddress() {}
 
-    public BillingAddress(PaymentCard paymentCard, String streetAddress, String city, String state, int zip) {
+    public BillingAddress(PaymentCard paymentCard, String streetAddress, String city, String state, int zip, UserInfo userID) {
         this.paymentCard = paymentCard;
         this.streetAddress = streetAddress;
         this.city = city;
         this.state = state;
         this.zip = zip;
+        this.userID = userID;
     }
 
     // Getters and Setters
@@ -70,4 +76,7 @@ public class BillingAddress {
 
     public int getZip() { return zip; }
     public void setZip(int zip) { this.zip = zip; }
+
+    public UserInfo getUserID() { return userID; }
+    public void setUserID(UserInfo userID) { this.userID = userID; }
 }
