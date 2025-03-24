@@ -12,6 +12,7 @@ interface PaymentCardProps {
   }
 
 export default function PaymentCard({
+  cardID,
   cardholderName,
   cardNumber,
   expDate,
@@ -25,7 +26,7 @@ export default function PaymentCard({
         <p>{expDate}</p>
         <p>{cardType}</p>
       </div>
-      <Link href="/editCard" className={styles.editButton}>
+      <Link href={`/editCard?cardID=${cardID}`} className={styles.editButton}>
         Edit
       </Link>
     </div>
