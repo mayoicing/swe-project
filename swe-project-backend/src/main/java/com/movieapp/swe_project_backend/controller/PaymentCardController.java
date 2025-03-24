@@ -92,6 +92,7 @@ public class PaymentCardController {
             card.setCardNumber(updatedCard.getCardNumber());
             card.setExpDate(updatedCard.getExpDate());
             card.setCardType(updatedCard.getCardType());
+            card.setCvv(updatedCard.getCvv());
 
             paymentCardService.savePaymentCard(card);
             return ResponseEntity.ok("Card updated successfully");

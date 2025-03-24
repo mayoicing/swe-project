@@ -2,7 +2,7 @@
 
 import styles from './EditCard.module.css';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import Image from 'next/image';
 import creditCardIcon from '../images/credit-card-icon.png';
@@ -28,28 +28,29 @@ export default function EditCard() {
   });
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const cardID = searchParams.get('cardID');
   const userID = localStorage.getItem('userID') || sessionStorage.getItem('userID');
 
   useEffect(() => {
-    if (!userID) return;
-    axios.get(`http://localhost:8080/paymentcard/user/${userID}`)
+    if (!cardID) return;
+
+    axios.get(`http://localhost:8080/paymentcard/${cardID}`)
       .then((res) => {
-        if (res.data.length > 0) {
-          const latestCard = res.data[0];
-          setPaymentData({
-            cardID: latestCard.cardID,
-            cardholderName: latestCard.cardholderName,
-            cardNumber: latestCard.cardNumber,
-            expDate: latestCard.expDate,
-            cvv: '', // leave blank for security
-            cardType: latestCard.cardType,
-          });
-        }
+        const card = res.data;
+        setPaymentData({
+          cardID: card.cardID,
+          cardholderName: card.cardholderName,
+          cardNumber: card.cardNumber,
+          expDate: card.expDate,
+          cvv: card.cvv,
+          cardType: card.cardType,
+        });
       })
       .catch((err) => {
         console.error('Error fetching card data:', err);
       });
-  }, [userID]);
+  }, [cardID]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -98,7 +99,6 @@ export default function EditCard() {
           <input
             type="date"
             name="expDate"
-            placeholder="Type here"
             value={paymentData.expDate}
             onChange={handleChange}
           />
@@ -112,6 +112,7 @@ export default function EditCard() {
             onChange={handleChange}
           />
         </label>
+
         <label>Card Type:</label>
         <div className={styles.radioButtons}>
           <input
