@@ -1,150 +1,150 @@
 "use client";
+
 import styles from './EditCard.module.css';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
 import Image from 'next/image';
-import { useState } from 'react';
-import { useRouter } from 'next/router';
 import creditCardIcon from '../images/credit-card-icon.png';
 import debitCardIcon from '../images/debit-card-icon.png';
 
+interface CardData {
+  cardID: number;
+  cardholderName: string;
+  cardNumber: string;
+  expDate: string;
+  cvv: string;
+  cardType: string;
+}
 
 export default function EditCard() {
-    const [paymentData, setPaymentData] = useState({
-            cardholderName: '',
-            cardNumber: '',
-            expDate: '',
-            cvv: '',
-            cardType: '',
-        });
-    
-        const [billingData, setBillingData] = useState({
-            streetAddress: '',
-            city: '',
-            state: '',
-            zip: '',
-        });
-    
-        //const router = useRouter();
-    
-        const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-            const { name, value } = e.target;
-            if (["cardholderName", "cardNumber", "expDate", "cvv"].includes(name)) {
-                setPaymentData(prevState => ({ ...prevState, [name]: value }));
-            } else if (name === "cardType") {
-                setPaymentData(prevState => ({ ...prevState, cardType: value }));
-            } else {
-                setBillingData(prevState => ({ ...prevState, [name]: value }));
-            }
-        };
-    
-    return (
-        <div className={styles.formContainer}>
-            <h1>Edit Card</h1>
-            <form className={styles.inputForm}>
-                <label>Cardholder Name
-                    <input
-                        type="text"
-                        name="cardHolderName"
-                        placeholder="Type here"
-                        onChange={handleChange}
-                    />
-                </label>
-                <label>
-                    Card Number
-                    <input
-                        type="text"
-                        name="cardNumber"
-                        placeholder="Type here"
-                        onChange={handleChange}
-                    />
-                </label>
-                <label>
-                    Expiration Date
-                    <input
-                        type="date"
-                        name="expDate"
-                        placeholder="Type here"
-                        onChange={handleChange}
-                    />
-                </label>
-                <label>
-                    CVV
-                    <input
-                        type="number"
-                        name="cvv"
-                        placeholder="Type here"
-                        onChange={handleChange}
-                    />
-                </label>
-                <label>Card Type:</label>
-                    <div className={styles.radioButtons}>
-                        <input
-                            type="radio"
-                            id="credit"
-                            name="cardType"
-                            value="Credit"
-                            placeholder="Type here"
-                            onChange={handleChange}
-                        />
-                        <label htmlFor="credit" className={paymentData.cardType === "Credit" ? styles.selected : ""}>
-                            <Image src={creditCardIcon} alt="Credit Card" width={40} height={40} />
-                            <span>Credit Card</span>
-                        </label>
-                        <input
-                            type="radio"
-                            id="debit"
-                            name="cardType"
-                            value="Debit"
-                            placeholder="Type here"
-                            onChange={handleChange}
-                        />
-                         <label htmlFor="debit" className={paymentData.cardType === "Debit" ? styles.selected : ""}>
-                            <Image src={debitCardIcon} alt="Debit Card" width={40} height={40} />
-                            <span>Debit Card</span>
-                        </label>
-                    </div>
-                <label>Billing Address
-                    <input 
-                        type="text" 
-                        name="streetAddress" 
-                        placeholder="Type here" 
-                        onChange={handleChange}
-                    />
-                </label>
-                <div className={styles.otherAddressInfo}>
-                    <label>City
-                        <input 
-                            type="text" 
-                            name="city" 
-                            placeholder="Type here" 
-                            onChange={handleChange}
-                        />
-                    </label>
-                    <label>State
-                        <input 
-                            type="text"
-                            name="state" 
-                            placeholder="Type here" 
-                            onChange={handleChange}
-                        />
-                    </label>
-                    <label>Zip Code
-                        <input 
-                            type="number" 
-                            pattern="[0-9]*" 
-                            name="zip" 
-                            placeholder="Type here"
-                            onChange={handleChange}
-                        />
-                    </label>
-                </div>
-                <div className={styles.buttonContainer}>
-                    <input 
-                        type="submit" 
-                        value="Update Card" 
-                        className={styles.submitButton}
-                    />
-                </div>
-            </form>
+  const [paymentData, setPaymentData] = useState<CardData>({
+    cardID: 0,
+    cardholderName: '',
+    cardNumber: '',
+    expDate: '',
+    cvv: '',
+    cardType: '',
+  });
+
+  const router = useRouter();
+  const userID = localStorage.getItem('userID') || sessionStorage.getItem('userID');
+
+  useEffect(() => {
+    if (!userID) return;
+    axios.get(`http://localhost:8080/paymentcard/user/${userID}`)
+      .then((res) => {
+        if (res.data.length > 0) {
+          const latestCard = res.data[0];
+          setPaymentData({
+            cardID: latestCard.cardID,
+            cardholderName: latestCard.cardholderName,
+            cardNumber: latestCard.cardNumber,
+            expDate: latestCard.expDate,
+            cvv: '', // leave blank for security
+            cardType: latestCard.cardType,
+          });
+        }
+      })
+      .catch((err) => {
+        console.error('Error fetching card data:', err);
+      });
+  }, [userID]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPaymentData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userID) return;
+
+    axios.put(`http://localhost:8080/paymentcard/update`, {
+      ...paymentData,
+      user: { userID: parseInt(userID) },
+    })
+    .then(() => {
+      router.push('/userProfilePayment');
+    })
+    .catch((err) => {
+      console.error('Failed to update card:', err);
+    });
+  };
+
+  return (
+    <div className={styles.formContainer}>
+      <h1>Edit Card</h1>
+      <form className={styles.inputForm} onSubmit={handleSubmit}>
+        <label>Cardholder Name
+          <input
+            type="text"
+            name="cardholderName"
+            placeholder="Type here"
+            value={paymentData.cardholderName}
+            onChange={handleChange}
+          />
+        </label>
+        <label>Card Number
+          <input
+            type="text"
+            name="cardNumber"
+            placeholder="Type here"
+            value={paymentData.cardNumber}
+            onChange={handleChange}
+          />
+        </label>
+        <label>Expiration Date
+          <input
+            type="date"
+            name="expDate"
+            placeholder="Type here"
+            value={paymentData.expDate}
+            onChange={handleChange}
+          />
+        </label>
+        <label>CVV
+          <input
+            type="password"
+            name="cvv"
+            placeholder="Type here"
+            value={paymentData.cvv}
+            onChange={handleChange}
+          />
+        </label>
+        <label>Card Type:</label>
+        <div className={styles.radioButtons}>
+          <input
+            type="radio"
+            id="credit"
+            name="cardType"
+            value="Credit"
+            checked={paymentData.cardType === 'Credit'}
+            onChange={handleChange}
+          />
+          <label htmlFor="credit" className={paymentData.cardType === 'Credit' ? styles.selected : ''}>
+            <Image src={creditCardIcon} alt="Credit Card" width={40} height={40} />
+            <span>Credit Card</span>
+          </label>
+
+          <input
+            type="radio"
+            id="debit"
+            name="cardType"
+            value="Debit"
+            checked={paymentData.cardType === 'Debit'}
+            onChange={handleChange}
+          />
+          <label htmlFor="debit" className={paymentData.cardType === 'Debit' ? styles.selected : ''}>
+            <Image src={debitCardIcon} alt="Debit Card" width={40} height={40} />
+            <span>Debit Card</span>
+          </label>
         </div>
-    );
+
+        <div className={styles.buttonContainer}>
+          <input type="submit" value="Update Card" className={styles.submitButton} />
+        </div>
+      </form>
+    </div>
+  );
 }
