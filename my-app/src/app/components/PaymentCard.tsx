@@ -4,7 +4,7 @@ import styles from './PaymentCard.module.css';
 import Link from 'next/link';
 
 interface PaymentCardProps {
-    cardID: number; // ✅ Add this line
+    cardID: number;
     cardholderName: string;
     cardNumber: string;
     expDate: string;

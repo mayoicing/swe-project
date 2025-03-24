@@ -82,7 +82,6 @@ export default function MoviesList() {
               height="450"
               src={selectedTrailer + '?autoplay=1'}
               title="Movie Trailer"
-              frameBorder="0"
               allow="autoplay; encrypted-media"
               allowFullScreen
             ></iframe>

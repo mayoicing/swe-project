@@ -34,8 +34,8 @@ const SeatSelection: React.FC = () => {
 
   const handleConfirmSelection = () => {
     if (selectedSeats.length === maxSeats) {
-      localStorage.setItem("selectedSeats", JSON.stringify(selectedSeats)); // ✅ Save seats to localStorage
-      router.push("./checkoutAddress"); // ✅ Navigate to Checkout Address Page
+      localStorage.setItem("selectedSeats", JSON.stringify(selectedSeats));
+      router.push("./checkoutAddress");
     }
   };
 

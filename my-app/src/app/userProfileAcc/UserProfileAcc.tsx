@@ -35,7 +35,7 @@ export default function UserProfileAcc() {
             .catch((error) => {
                 console.error('Error fetching user data: ', error);
             })
-    }, [userID]); // // Runs when userID changes
+    }, [userID]); // Runs when userID changes
 
     const formatPhoneNumber = (phone_number: string) => {
         const match = phone_number.match(/^(\d{3})(\d{3})(\d{4})$/);
