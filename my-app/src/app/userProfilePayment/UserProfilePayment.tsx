@@ -64,31 +64,22 @@ export default function UserProfilePayment() {
 
   const renderCards = () => {
     const cardElements = cards.slice(0, 3).map((card) => (
-      <div key={card.cardID} className={styles.card}>
-        <PaymentCard
-          cardID={card.cardID}
-          cardholderName={card.cardholderName}
-          cardNumber={card.cardNumber}
-          expDate={card.expDate}
-          cardType={card.cardType}
-        />
-      </div>
+    <PaymentCard
+      key={card.cardID}
+      cardID={card.cardID}
+      cardholderName={card.cardholderName}
+      cardNumber={card.cardNumber}
+      expDate={card.expDate}
+      cardType={card.cardType}
+    />
     ));
   
     if (cards.length < 3) {
       // Only render ONE add button slot
       cardElements.push(
-        <div key="add-new-card" className={styles.card}>
-          <NoCard />
-          <div className={styles.addButtonContainer}>
-            <Link href="/addCard">
-              <button className={styles.addButton}>Add New Card</button>
-            </Link>
-          </div>
-        </div>
+      <NoCard key="add-new-card" showAddButton />
       );
     }
-  
     return cardElements;
   };
 

@@ -81,23 +81,3 @@
     gap: 20px;
     flex-wrap: wrap;
   }
-  .card {
-    position: relative;
-    width: 250px;
-    height: 200px;
-    border: 2px solid white;
-    border-radius: 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .emptyCard {
-    border: 2px dashed #ccc;
-    background-color: transparent;
-  }
-  
-  .card:hover .addButtonContainer {
-    opacity: 1;
-  }
-  

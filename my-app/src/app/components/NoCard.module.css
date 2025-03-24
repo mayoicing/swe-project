@@ -1,35 +1,47 @@
-/* Style - NoCard */
-
-.noCard {
+.card {
+    background-color: #2C3851;;
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid white; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     position: relative;
+    width: 300px;
+    height: 180px;
+    transition: transform 0.3s ease;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    color: white;
-    width: 350px;
-    height: 200px;
-    border: 2px white solid;
-    border-radius: 10px;
+    text-align: center;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .cardContent {
     font-size: 20px;
-    font-weight: bolder;
-}
-
-.button {
+    font-weight: bold;
+  }
+  
+  .addButton {
     position: absolute;
-    padding: 5px 20px;
-    border-width: 2px;
-    border-radius: 10px;
+    bottom: 10px;
+    right: 15px;
     background-color: white;
-    color: #2C3851;
-    visibility: hidden;
+    color: black;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    opacity: 0;
     transition: opacity 0.3s ease;
-}
-
-.button:active {
-    border-color: #9DC2EE;
-    background-color: #9DC2EE;
-}
-
-.noCard:hover .button {
-    visibility: visible;
-}
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+  }
+  
+  .card:hover .addButton {
+    opacity: 1;
+  }
+  

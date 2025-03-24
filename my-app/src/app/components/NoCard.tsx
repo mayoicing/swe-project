@@ -8,11 +8,13 @@ interface NoCardProps {
 
 export default function NoCard({ showAddButton = false }: NoCardProps) {
   return (
-    <div className={styles.noCard}>
-      No Card
+    <div className={styles.card}>
+      <div className={styles.cardContent}>
+        <p>No Card</p>
+      </div>
       {showAddButton && (
-        <Link href="/addCard">
-          <button className={styles.button}>Add New Card</button>
+        <Link href="/addCard" className={styles.addButton}>
+          Add New Card
         </Link>
       )}
     </div>
