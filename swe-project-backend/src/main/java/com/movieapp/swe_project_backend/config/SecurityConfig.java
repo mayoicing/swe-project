@@ -54,6 +54,8 @@ public class SecurityConfig {
                     "/paymentcard/**",
                     "/billingaddress/**",
                     "/castandcrew/**",
+                    "/billingaddress/update/**",
+                    "/billingaddress/update-or-create",
                     "/usertype/**",
                     "/promocode/**"
                 ).permitAll()

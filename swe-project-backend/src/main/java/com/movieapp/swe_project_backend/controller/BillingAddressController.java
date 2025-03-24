@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,7 +23,6 @@ import com.movieapp.swe_project_backend.model.UserInfo;
 import com.movieapp.swe_project_backend.service.BillingAddressService;
 import com.movieapp.swe_project_backend.service.PaymentCardService;
 import com.movieapp.swe_project_backend.service.UserInfoService;
-
 
 @RestController
 @RequestMapping("/billingaddress")
@@ -43,53 +41,38 @@ public class BillingAddressController {
     @PostMapping("/add")
     public ResponseEntity<?> addBillingAddress(@RequestBody BillingAddress billingAddress) {
         try {
-            System.out.println("Received BillingAddress: " + billingAddress);
-            System.out.println("User: " + billingAddress.getUserID()); 
-
             if (billingAddress.getUserID() == null) {
-                Map<String, Object> errorResponse = new HashMap<>();
-                errorResponse.put("error", "User is missing in the request");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-            }   
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "User is missing in the request"));
+            }
 
             Integer cardID = billingAddress.getPaymentCard().getCardID();
-            Optional<UserInfo> userOptional = userInfoService.getUserById(billingAddress.getUserID().getUserID());  
+            Optional<UserInfo> userOptional = userInfoService.getUserById(billingAddress.getUserID().getUserID());
 
-            // If user doesn't exist, return a bad request response
             if (userOptional.isEmpty()) {
-                Map<String, Object> errorResponse = new HashMap<>();
-                errorResponse.put("error", "User not found");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "User not found"));
             }
-    
+
             UserInfo user = userOptional.get();
-            billingAddress.setUserID(user);  // Ensure the billing address is linked to the user
+            billingAddress.setUserID(user);
 
             PaymentCard paymentCard = paymentCardService.getPaymentCardById(cardID).orElse(null);
-        
             if (paymentCard == null) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Invalid cardID"));
             }
-            // Set the PaymentCard to the BillingAddress
             billingAddress.setPaymentCard(paymentCard);
 
-            // Save the BillingAddress
             BillingAddress savedBillingAddress = billingAddressService.saveBillingAddress(billingAddress);
 
-            // Prepare the response
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Billing address added successfully!");
             response.put("billingAddressID", savedBillingAddress.getBillingAddressID());
             response.put("cardID", savedBillingAddress.getPaymentCard().getCardID());
             response.put("userID", savedBillingAddress.getUserID().getUserID());
 
-            return ResponseEntity.ok(response);  
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            // Handle unexpected errors
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Error saving billing address");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-        }    
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Error saving billing address"));
+        }
     }
 
     // ✅ Get All Billing Addresses
@@ -124,22 +107,44 @@ public class BillingAddressController {
         }
     }
 
-    @PutMapping("/update/{billingAddressID}")
-    public ResponseEntity<?> updateBillingAddress(@PathVariable int billingAddressID, 
-                                              @RequestBody BillingAddress updatedAddress,
-                                              @RequestHeader("Authorization") String authToken) {
+    // ✅ Create or Update Billing Address for a User
+    @PutMapping("/update")
+    public ResponseEntity<?> createOrUpdateBillingAddress(@RequestBody BillingAddress newAddress) {
         try {
-            // Validate the user through the token and get the userID
-            int userID = billingAddressService.getUserIDFromToken(authToken);
-        
-            // Call the service layer to handle the update logic
-            BillingAddress updated = billingAddressService.updateBillingAddress(userID, billingAddressID, updatedAddress);
+            if (newAddress.getUserID() == null) {
+                return ResponseEntity.badRequest().body(Map.of("error", "User is missing"));
+            }
 
-            // Return the updated address with a success response
-            return ResponseEntity.ok(updated);
+            Integer userId = newAddress.getUserID().getUserID();
+            Optional<UserInfo> userOpt = userInfoService.getUserById(userId);
+            if (userOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "User not found"));
+            }
+
+            UserInfo user = userOpt.get();
+            List<BillingAddress> existingAddresses = billingAddressService.getBillingAddressesByUserID(userId);
+
+            BillingAddress addressToSave;
+            if (!existingAddresses.isEmpty()) {
+                // Update existing address
+                BillingAddress existing = existingAddresses.get(0);
+                existing.setStreetAddress(newAddress.getStreetAddress());
+                existing.setCity(newAddress.getCity());
+                existing.setState(newAddress.getState());
+                existing.setZip(newAddress.getZip());
+                addressToSave = existing;
+            } else {
+                // Create new address
+                newAddress.setUserID(user);
+                addressToSave = newAddress;
+            }
+
+            BillingAddress saved = billingAddressService.saveBillingAddress(addressToSave);
+            return ResponseEntity.ok(saved);
+
         } catch (Exception e) {
-            // Handle any errors (e.g., invalid token, user doesn't own the address, etc.)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error updating billing address: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("error", "Failed to update or create billing address"));
         }
     }
 }
