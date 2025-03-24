@@ -5,165 +5,138 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
 interface BillingAddress {
-    billingAddressID: number;
-    streetAddress: string;
-    city: string;
-    state: string;
-    zip: number;
+  streetAddress: string;
+  city: string;
+  state: string;
+  zip: number;
+  userID: { userID: number };
 }
 
-interface EditAddressProps {
-    billingAddressID: number;
-}
-
-const EditAddress: React.FC<EditAddressProps> = ({ billingAddressID }) => {
-  const [address, setAddress] = useState<BillingAddress>({
-    billingAddressID: 0,
+const EditAddress = () => {
+  const [formData, setFormData] = useState<BillingAddress>({
     streetAddress: '',
     city: '',
     state: '',
-    zip: 0
+    zip: 0,
+    userID: { userID: 0 }
   });
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [formData, setFormData] = useState<BillingAddress>({
-    billingAddressID: 0,
-    streetAddress: '',
-    city: '',
-    state: '',
-    zip: 0
-  });
+  const router = useRouter();
 
-    const router = useRouter();
+  let userIDString = '0';
 
-    let userID: string | null = null;
-    let authToken: string | null = null;
+  if (typeof window !== 'undefined') {
+    userIDString = sessionStorage.getItem('userID') || localStorage.getItem('userID') || '0';
+  }
+  
+  const userID = parseInt(userIDString, 10);
 
-    if (typeof window !== 'undefined') {
-        userID = sessionStorage.getItem('userID') || localStorage.getItem('userID');
-        authToken = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+  useEffect(() => {
+    if (!userID) {
+      setError('User not authenticated');
+      return;
     }
 
-    useEffect(() => {
-        if (!userID || !authToken) {
-            setError('User not authenticated');
-            return;
+    axios.get(`http://localhost:8080/billingaddress/user/${userID}`)
+      .then((response) => {
+        const data = response.data;
+        if (data.length > 0) {
+          setFormData({ ...data[0], userID: { userID } });
+        } else {
+          setFormData({
+            streetAddress: '',
+            city: '',
+            state: '',
+            zip: 0,
+            userID: { userID }
+          });
         }
-        axios.get(`http://localhost:8080/billingaddress/get/${userID}`, {
-            headers: {
-                Authorization: `Bearer ${authToken}`, 
-            }
-        })
-        .then((response) => {
-            const fetchedAddress = response.data;
-            setAddress(fetchedAddress);
-            setFormData(fetchedAddress);
-        })
-        .catch((error) => {
-            console.error("Error fetching address data: ", error);
-            setError('Failed to fetch address data');
-        })
-        .finally(() => {
-            setLoading(false);
-        });
-    }, [userID, authToken]);
+      })
+      .catch((error) => {
+        console.error("Error fetching address data: ", error);
+        setError('Failed to fetch address data');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [userID]);
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
-    };
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === "zip" ? Number(value) : value
+    }));
+  };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
 
-        // Send only filled blanks
-        const updatedData: Partial<BillingAddress> = {};
+    axios.put("http://localhost:8080/billingaddress/update", formData)
+      .then(() => {
+        router.push('/userProfilePayment');
+      })
+      .catch((error) => {
+        console.error("Error updating address:", error);
+        setError('Failed to update address');
+      });
+  };
 
-        if (formData.streetAddress != address?.streetAddress) {
-            updatedData.streetAddress = formData.streetAddress;
-        }
-        if (formData.city != address?.city) {
-            updatedData.city = formData.city;
-        }
-        if (formData.state != address?.state) {
-            updatedData.state = formData.state;
-        }
-        if (formData.zip != address?.zip) {
-            updatedData.zip = formData.zip;
-        }
+  if (loading) return <div>Loading address...</div>;
 
-        // Send the updated data to the server
-        axios.put(`http://localhost:8080/billingaddress/update/${address.billingAddressID}`, updatedData, {
-            headers: {
-                Authorization: `Bearer ${authToken}`,  
-            }
-        })
-        .then(() => {
-            // On success, navigate to the payment page
-            router.push('/userProfilePayment');
-        })
-        .catch((error) => {
-            console.error("Error updating address:", error);
-            setError('Failed to update address');
-        });
-    };
-
-    if (loading) return <div>Loading address...</div>;
-    if (!address) return <div>No address information available</div>;
-
-    return (
-        <div className={styles.formContainer}>
-            <h1>Edit Address</h1>
-            <form onSubmit={handleSubmit} className={styles.inputForm}>
-                <label>
-                    Street Address <span className={styles.editLabel}>(Edit)</span>
-                    <input 
-                        type="text" 
-                        name="streetAddress" 
-                        placeholder="Type here"
-                        value={formData.streetAddress} 
-                        onChange={handleChange} 
-                    />
-                </label>
-                <label>
-                    City <span className={styles.editLabel}>(Edit)</span>
-                    <input 
-                        type="text" 
-                        name="city" 
-                        placeholder="Type here"
-                        value={formData.city} 
-                        onChange={handleChange} 
-                    />
-                </label>
-                <label>
-                    State <span className={styles.editLabel}>(Edit)</span>
-                    <input 
-                        type="text" 
-                        name="state" 
-                        placeholder="Type here"
-                        value={formData.state} 
-                        onChange={handleChange} 
-                    />
-                </label>
-                <label>
-                    Zip Code <span className={styles.editLabel}>(Edit)</span>
-                    <input 
-                        type="number" 
-                        name="zip" 
-                        placeholder="Type here"
-                        value={formData.zip} 
-                        onChange={handleChange} 
-                    />
-                </label>
-                <div className={styles.buttonContainer}>
-                    <input type="submit" value="Update" className={styles.submitButton}/>
-                </div>
-            </form>
+  return (
+    <div className={styles.formContainer}>
+      <h1>Edit Address</h1>
+      <form onSubmit={handleSubmit} className={styles.inputForm}>
+        <label>
+          Street Address <span className={styles.editLabel}>(Edit)</span>
+          <input
+            type="text"
+            name="streetAddress"
+            placeholder="Type here"
+            value={formData.streetAddress}
+            onChange={handleChange}
+          />
+        </label>
+        <label>
+          City <span className={styles.editLabel}>(Edit)</span>
+          <input
+            type="text"
+            name="city"
+            placeholder="Type here"
+            value={formData.city}
+            onChange={handleChange}
+          />
+        </label>
+        <label>
+          State <span className={styles.editLabel}>(Edit)</span>
+          <input
+            type="text"
+            name="state"
+            placeholder="Type here"
+            value={formData.state}
+            onChange={handleChange}
+          />
+        </label>
+        <label>
+          Zip Code <span className={styles.editLabel}>(Edit)</span>
+          <input
+            type="number"
+            name="zip"
+            placeholder="Type here"
+            value={formData.zip}
+            onChange={handleChange}
+          />
+        </label>
+        <div className={styles.buttonContainer}>
+          <input type="submit" value="Update" className={styles.submitButton} />
         </div>
-    );
-}
+        {error && <p className={styles.error}>{error}</p>}
+      </form>
+    </div>
+  );
+};
+
 export default EditAddress;
