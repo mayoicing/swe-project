@@ -90,14 +90,14 @@ export default function LoginForm() {
                         required
                     />
                 </label>
-                <label>
+                <label className={styles.rememberMe}>
                     <input
-                        type="checkbox" 
-                        checked={rememberMe} 
-                        onChange={(e) => setRememberMe(e.target.checked)} 
+                        type="checkbox"
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)}
                     />
-                    Remember me?
-                </label>
+                    Remember me
+                    </label>
                 <div className={styles.buttonContainer}>
                     <input type="submit" value="Log In" className={styles.submitButton} />
                 </div>

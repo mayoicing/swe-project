@@ -3,35 +3,48 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
-import React from 'react';
 import Image from 'next/image'; 
 import styles from './MoviesList.module.css';
+import GenreButtons from './GenreButtons'; // adjust path if needed
 
 interface Movie {
   movieID: number;
   title: string;
   poster: string;
-  trailer: string; // Embedded YouTube URL
+  trailer: string;
 }
+
+const CURRENTLY_RUNNING = ['Mean Girls', 'Interstellar', 'Gladiator II', 'The Wild Robot', 'Avatar: The Way of Water', 'La La Land'];
+const COMING_SOON = ['Kung Fu Panda 2', 'Wicked', 'Wonka', 'Dune: Part Two', 'Elvis', 'Flow', 'Puss In Boots: The Last Wish', 'The Hunger Games: The Ballad of Songbirds and Snakes', 'Luca'];
 
 export default function MoviesList() {
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [activeGenre, setActiveGenre] = useState<'current' | 'comingSoon' | null>(null);
   const [selectedTrailer, setSelectedTrailer] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/movieinfo/getAll")
-      .then((response) => {
-        const decodedMovies = response.data.map((movie: any) => {
-          return {
-            ...movie,
-            poster: decodeURIComponent(movie.poster.trimEnd()),
-          };
-        });
+    axios.get('http://localhost:8080/movieinfo/getAll')
+      .then((res) => {
+        const decodedMovies = res.data.map((movie: any) => ({
+          ...movie,
+          poster: decodeURIComponent(movie.poster.trimEnd()),
+        }));
         setMovies(decodedMovies);
-      });
+      })
+      .catch(err => console.error("Failed to fetch movies:", err));
   }, []);
+
+  const getFilteredMovies = () => {
+    if (activeGenre === 'current') {
+      return movies.filter(m => CURRENTLY_RUNNING.includes(m.title));
+    } else if (activeGenre === 'comingSoon') {
+      return movies.filter(m => COMING_SOON.includes(m.title));
+    }
+    return movies;
+  };
+
+  const filteredMovies = getFilteredMovies();
 
   const openTrailer = (trailerUrl: string) => {
     setSelectedTrailer(trailerUrl);
@@ -45,8 +58,12 @@ export default function MoviesList() {
 
   return (
     <section className={styles.container}>
+      {/* Genre Filter Buttons */}
+      <GenreButtons onGenreSelect={setActiveGenre} />
+
+      {/* Movie Grid */}
       <div className={styles.movieGrid}>
-        {movies.map((movie, index) => (
+        {filteredMovies.map((movie, index) => (
           <div key={movie.movieID ?? `movie-${index}`} className={styles.movieCard}>  
             <Link href={`/movieDetails`} style={{ textDecoration: 'none', color: 'inherit' }}>
               <div className={styles.posterContainer}>
@@ -65,7 +82,6 @@ export default function MoviesList() {
             </Link>
             <p className={styles.movieTitle}>{movie.title}</p> 
 
-            {/* Play Trailer Button */}
             <button className={styles.trailerButton} onClick={() => openTrailer(movie.trailer)}>
               ▶ Play Trailer
             </button>

@@ -74,3 +74,15 @@
     background-color: #5a2bd6;
   }
   
+  .screenBox {
+    width: 40%;
+    height: 30px;
+    background-color: #ccc;
+    color: black;
+    text-align: center;
+    margin: 20px auto;
+    font-weight: bold;
+    border-radius: 10px;
+    padding: 5px;
+  }
+  

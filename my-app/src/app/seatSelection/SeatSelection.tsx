@@ -41,7 +41,7 @@ const SeatSelection: React.FC = () => {
 
   return (
     <div className={styles.seatContainer}>
-      <h2 className={styles.screenLabel}>SCREEN</h2>
+      <div className={styles.screenBox}>SCREEN</div>
       <p className={styles.instructions}>Select up to {maxSeats} seats</p>
 
       <div className={styles.seatingGrid}>
@@ -51,16 +51,19 @@ const SeatSelection: React.FC = () => {
               const seatId = `${rowIndex}-${colIndex}`;
               const isSelected = selectedSeats.includes(seatId);
               const isWheelchair = wheelchairSeats.has(seatId);
+              const rowLetter = String.fromCharCode(65 + rowIndex); // A, B, C, ...
+              const seatLabel = `${rowLetter}${colIndex + 1}`;
               return (
                 <div
                   key={seatId}
                   className={`${styles.seat} ${isSelected ? styles.selected : ""} ${isWheelchair ? styles.wheelchair : ""}`}
                   onClick={() => handleSeatClick(rowIndex, colIndex)}
                 >
-                  {isWheelchair ? "♿" : ""}
+                  {isWheelchair ? "♿" : seatLabel}
                 </div>
               );
             })}
+
           </div>
         ))}
       </div>
