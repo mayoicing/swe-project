@@ -1,26 +1,33 @@
 "use client";
-import styles from './PaymentCard.module.css';
-import Image from 'next/image';
-import Link from 'next/link';
-import visaLogo from '../images/visa-logo.png';
 
-export default function PaymentCard() {
-    return (
-        <div className={styles.card}>
-            <Link href='/editCard'>
-                <div className={styles.logoContainer}>
-                    <Image
-                        src={visaLogo}
-                        alt="Visa logo"
-                        width={80}
-                        height={40} 
-                        className={styles.logo}
-                    />
-                </div>
-                <p>Jane Doe</p>
-                <p>**** **** **** 1234</p>
-                <p>02/2028</p>
-            </Link>
-        </div>
-    );
+import styles from './PaymentCard.module.css';
+import Link from 'next/link';
+
+interface PaymentCardProps {
+    cardID: number; // ✅ Add this line
+    cardholderName: string;
+    cardNumber: string;
+    expDate: string;
+    cardType: string;
+  }
+
+export default function PaymentCard({
+  cardholderName,
+  cardNumber,
+  expDate,
+  cardType
+}: PaymentCardProps) {
+  return (
+    <div className={styles.card}>
+      <div className={styles.cardContent}>
+        <h4>{cardholderName}</h4>
+        <p>**** **** **** {cardNumber.slice(-4)}</p>
+        <p>{expDate}</p>
+        <p>{cardType}</p>
+      </div>
+      <Link href="/editCard" className={styles.editButton}>
+        Edit
+      </Link>
+    </div>
+  );
 }

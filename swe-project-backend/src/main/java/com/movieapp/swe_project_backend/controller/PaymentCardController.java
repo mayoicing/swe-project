@@ -1,6 +1,5 @@
 package com.movieapp.swe_project_backend.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,45 +34,28 @@ public class PaymentCardController {
     // ✅ Add Payment Card
     @PostMapping("/add")
     public ResponseEntity<Map<String, Object>> addPaymentCard(@RequestBody PaymentCard paymentCard) {
-         try {
-            // Check if user exists using the userID from the paymentCard object
-            System.out.println("Received PaymentCard: " + paymentCard);
-            System.out.println("User: " + paymentCard.getUser()); 
-
+        try {
             if (paymentCard.getUser() == null) {
-                Map<String, Object> errorResponse = new HashMap<>();
-                errorResponse.put("error", "User is missing in the request");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-            }   
-            
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("error", "User is missing in the request"));
+            }
+
             Optional<UserInfo> userOptional = userInfoService.getUserById(paymentCard.getUser().getUserID());
 
-            // If user doesn't exist, return a bad request response
             if (userOptional.isEmpty()) {
-                Map<String, Object> errorResponse = new HashMap<>();
-                errorResponse.put("error", "User not found");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("error", "User not found"));
             }
-            
-            // Set the user from the database to ensure it's valid
+
             UserInfo user = userOptional.get();
-            paymentCard.setUser(user);  // Ensure the paymentCard is linked to the user
+            paymentCard.setUser(user);
 
-            System.out.println("Payment Card will be saved for User: " + user.getUserID());
-
-            // Save the payment card
             PaymentCard savedCard = paymentCardService.savePaymentCard(paymentCard);
-            
-            // Prepare the response with the cardID
-            Map<String, Object> response = new HashMap<>();
-            response.put("cardID", savedCard.getCardID());  // Return cardID to the client
 
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(Map.of("cardID", savedCard.getCardID()));
         } catch (Exception e) {
-            // Handle unexpected errors
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Error saving payment card");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Error saving payment card"));
         }
     }
 
@@ -93,5 +76,28 @@ public class PaymentCardController {
     public String deletePaymentCard(@PathVariable int paymentCardID) {
         paymentCardService.deletePaymentCard(paymentCardID);
         return "Payment Card deleted successfully!";
+    }
+
+    // ✅ Update Payment Card
+    @PutMapping("/update")
+    public ResponseEntity<String> updatePaymentCard(@RequestBody PaymentCard updatedCard) {
+        try {
+            Optional<PaymentCard> cardOpt = paymentCardService.getPaymentCardById(updatedCard.getCardID());
+            if (cardOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Card not found");
+            }
+
+            PaymentCard card = cardOpt.get();
+            card.setCardholderName(updatedCard.getCardholderName());
+            card.setCardNumber(updatedCard.getCardNumber());
+            card.setExpDate(updatedCard.getExpDate());
+            card.setCardType(updatedCard.getCardType());
+
+            paymentCardService.savePaymentCard(card);
+            return ResponseEntity.ok("Card updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to update card: " + e.getMessage());
+        }
     }
 }
