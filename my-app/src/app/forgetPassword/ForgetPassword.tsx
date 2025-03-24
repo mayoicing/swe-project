@@ -12,9 +12,9 @@ export default function ForgetPassword() {
         e.preventDefault();
         try {
             const response = await axios.post('http://localhost:8080/userinfo/forgot-password', { email });
-            setMessage("📩 Email sent! Check your inbox.");
+            setMessage("Email sent! Check your inbox.");
         } catch (err) {
-            setMessage("❌ Error sending email. Please try again.");
+            setMessage("Error sending email. Please try again.");
             console.error(err);
         }
     };

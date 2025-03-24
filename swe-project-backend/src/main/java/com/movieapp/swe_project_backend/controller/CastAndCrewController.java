@@ -23,33 +23,33 @@ public class CastAndCrewController {
     @Autowired
     private CastAndCrewService castAndCrewService;
 
-    // ✅ Add Cast or Crew Member
+    // Add Cast or Crew Member
     @PostMapping("/add")
     public ResponseEntity<String> addCastAndCrew(@RequestBody CastAndCrew castAndCrew) {
         castAndCrewService.saveCastAndCrew(castAndCrew);
         return ResponseEntity.ok("Cast/Crew member added successfully!");
     }
 
-    // ✅ Get All Cast and Crew Members
+    // Get All Cast and Crew Members
     @GetMapping("/getAll")
     public List<CastAndCrew> getAllCastAndCrew() {
         return castAndCrewService.getAllCastAndCrew();
     }
 
-    // ✅ Get Cast and Crew by Movie ID
+    // Get Cast and Crew by Movie ID
     @GetMapping("/get/movie/{movieID}")
     public List<CastAndCrew> getCastAndCrewByMovieID(@PathVariable int movieID) {
         return castAndCrewService.getCastAndCrewByMovieID(movieID);
     }
 
-    // ✅ Get Cast or Crew Member by ID
+    // Get Cast or Crew Member by ID
     @GetMapping("/get/{id}")
     public ResponseEntity<CastAndCrew> getCastAndCrewById(@PathVariable int id) {
         Optional<CastAndCrew> castAndCrew = castAndCrewService.getCastAndCrewById(id);
         return castAndCrew.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // ✅ Delete Cast or Crew Member
+    // Delete Cast or Crew Member
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteCastAndCrew(@PathVariable int id) {
         castAndCrewService.deleteCastAndCrew(id);

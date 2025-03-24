@@ -29,8 +29,16 @@ interface Card {
 export default function UserProfilePayment() {
   const [address, setAddress] = useState<Address | null>(null);
   const [cards, setCards] = useState<Card[]>([]);
-  const userIDString = localStorage.getItem("userID") || sessionStorage.getItem("userID") || "0";
-  const userID = parseInt(userIDString, 10);
+  const [userID, setUserID] = useState<number | null>(null);
+
+  useEffect(() => {
+    const idString =
+      typeof window !== 'undefined'
+        ? localStorage.getItem("userID") || sessionStorage.getItem("userID")
+        : null;
+    const id = idString ? parseInt(idString, 10) : null;
+    if (id) setUserID(id);
+  }, []);
 
   useEffect(() => {
     if (!userID) return;
@@ -54,6 +62,27 @@ export default function UserProfilePayment() {
       .catch((error) => console.error('Error fetching payment cards: ', error));
   }, [userID]);
 
+  const renderCards = () => {
+    const cardElements = cards.slice(0, 3).map((card) => (
+    <PaymentCard
+      key={card.cardID}
+      cardID={card.cardID}
+      cardholderName={card.cardholderName}
+      cardNumber={card.cardNumber}
+      expDate={card.expDate}
+      cardType={card.cardType}
+    />
+    ));
+  
+    if (cards.length < 3) {
+      // Only render ONE add button slot
+      cardElements.push(
+      <NoCard key="add-new-card" showAddButton />
+      );
+    }
+    return cardElements;
+  };
+
   return (
     <>
       <Navbar />
@@ -65,23 +94,7 @@ export default function UserProfilePayment() {
 
           <div className={styles.rightSection}>
             <h1 className={styles.payment}>Payment Information</h1>
-            <div className={styles.cards}>
-              {cards.slice(0, 3).map((card) => (
-                <div key={card.cardID} className={styles.card}>
-                    <PaymentCard
-                    key={card.cardID}
-                    cardID={card.cardID}
-                    cardholderName={card.cardholderName}
-                    cardNumber={card.cardNumber}
-                    expDate={card.expDate}
-                    cardType={card.cardType}
-                    />
-                </div>
-              ))}
-              {[...Array(3 - cards.length)].map((_, index) => (
-                <div key={`empty-${index}`} className={styles.card}><NoCard /></div>
-              ))}
-            </div>
+            <div className={styles.cards}>{renderCards()}</div>
 
             <hr className={styles.horizontal} />
 
@@ -96,19 +109,23 @@ export default function UserProfilePayment() {
               <div className={styles.grid}>
                 <div className={styles.category}>Street Address</div>
                 <div>{address.streetAddress}</div>
-                <div></div><div></div>
+                <div></div>
+                <div></div>
 
                 <div className={styles.category}>City</div>
                 <div>{address.city}</div>
-                <div></div><div></div>
+                <div></div>
+                <div></div>
 
                 <div className={styles.category}>State</div>
                 <div>{address.state}</div>
-                <div></div><div></div>
+                <div></div>
+                <div></div>
 
                 <div className={styles.category}>Zip Code</div>
                 <div>{address.zip}</div>
-                <div></div><div></div>
+                <div></div>
+                <div></div>
               </div>
             ) : (
               <p style={{ marginTop: '10px' }}>No billing address saved.</p>

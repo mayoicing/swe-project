@@ -83,7 +83,6 @@
     opacity: 0.8;
 }
 
-/* Optional: Adding a specific hover effect for better visibility */
 .logout:focus {
     outline: none;
 }

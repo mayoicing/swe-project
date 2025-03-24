@@ -22,16 +22,16 @@ public class PromoCode {
     @Column(name = "discount", nullable = false)
     private int discount;
 
-    // ✅ Default Constructor
+    // Default Constructor
     public PromoCode() {}
 
-    // ✅ Constructor
+    // Constructor
     public PromoCode(String code, int discount) {
         this.code = code;
         this.discount = discount;
     }
 
-    // ✅ Getters and Setters
+    // Getters and Setters
     public int getPromoID() { return promoID; }
     public void setPromoID(int promoID) { this.promoID = promoID; }
 

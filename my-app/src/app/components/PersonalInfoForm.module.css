@@ -115,7 +115,7 @@
 .roleButton {
     flex: 1;
     padding: 10px;
-    border: 2px solid #2c2c2c;
+    border: 2px solid #7E22CE;
     background-color: white;
     color: #2c2c2c;
     border-radius: 8px;
@@ -124,7 +124,7 @@
 }
 
 .roleButton.active {
-    background-color: #1C2337;
+    background-color: #7E22CE;
     color: white;
 }
 

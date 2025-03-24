@@ -31,7 +31,7 @@ public class PaymentCardController {
     @Autowired
     private UserInfoService userInfoService;
 
-    // ✅ Add Payment Card
+    // Add Payment Card
     @PostMapping("/add")
     public ResponseEntity<Map<String, Object>> addPaymentCard(@RequestBody PaymentCard paymentCard) {
         try {
@@ -59,26 +59,26 @@ public class PaymentCardController {
         }
     }
 
-    // ✅ Get Payment Cards by User ID
+    // Get Payment Cards by User ID
     @GetMapping("/user/{userID}")
     public List<PaymentCard> getPaymentCardsByUserId(@PathVariable int userID) {
         return paymentCardService.getPaymentCardsByUserId(userID);
     }
 
-    // ✅ Get Payment Card by paymentCardID
+    // Get Payment Card by paymentCardID
     @GetMapping("/{paymentCardID}")
     public Optional<PaymentCard> getPaymentCardById(@PathVariable int paymentCardID) {
         return paymentCardService.getPaymentCardById(paymentCardID);
     }
 
-    // ✅ Delete Payment Card by paymentCardID
+    // Delete Payment Card by paymentCardID
     @DeleteMapping("/delete/{paymentCardID}")
     public String deletePaymentCard(@PathVariable int paymentCardID) {
         paymentCardService.deletePaymentCard(paymentCardID);
         return "Payment Card deleted successfully!";
     }
 
-    // ✅ Update Payment Card
+    // Update Payment Card
     @PutMapping("/update")
     public ResponseEntity<String> updatePaymentCard(@RequestBody PaymentCard updatedCard) {
         try {

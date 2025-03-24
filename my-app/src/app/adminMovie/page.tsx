@@ -1,12 +1,8 @@
 /* Page - Home */
-import Navbar from '../components/AdminNavbar'
-import AdminMoviesList from '../components/AdminMoviesList';
+import AdminMovie from "./AdminMovie";
 
 export default function AdminMoviePage() {
   return (
-    <>
-      <Navbar/>
-      <AdminMoviesList/>
-    </>
+    <AdminMovie/>
   );
 }

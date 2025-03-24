@@ -14,9 +14,9 @@ export default function PersonalInfoForm() {
         email: "",
         password: "",
         confirmPassword: "",
-        status: "Active", // Default value
-        enroll_for_promotions: false, // Default value
-        user_type: 'Customer', // Default is Customer
+        status: "Active",
+        enroll_for_promotions: false,
+        user_type: 'Customer',
     });
 
     // Handles change for all input fields and checkboxes

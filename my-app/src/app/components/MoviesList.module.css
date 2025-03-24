@@ -3,7 +3,7 @@
 /* Grid container for movies */
 .movieGrid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr); /* 3 columns */
+  grid-template-columns: repeat(5, 1fr);
   gap: 20px;
   justify-content: center;
   padding: 20px;
@@ -12,7 +12,7 @@
 /* Individual movie card */
 .movieCard {
   display: flex;
-  flex-direction: column; /* Stack poster and trailer vertically */
+  flex-direction: column;
   position: relative;
   height: 500px;
   padding: 20px;
@@ -29,8 +29,8 @@
 }
 
 .posterWrapper {
-  width: 225px;   /* Fixed width */
-  height: 325px;  /* Fixed height */
+  width: 225px; 
+  height: 325px; 
   position: relative;
   overflow: hidden;
   border-radius: 10px;
@@ -42,7 +42,7 @@
 .poster {
   width: 100%;
   height: 100%;
-  object-fit: fill;  /* Ensures images fill the box without distortion */
+  object-fit: fill;  /* images fill the box without distortion */
 }
 
 .posterOverlay {
@@ -91,10 +91,10 @@
 }
 
 .movieTitle {
-  font-size: 20px;      /* Make title smaller */
+  font-size: 20px;
   font-weight: bold;
   align-items: flex-start; 
-  margin-top: 8px;      /* Add space between poster and title */
+  margin-top: 8px;
   color: white;
   text-shadow: 0px 3px 14px rgba(0, 0, 0, 0.7);
   }
