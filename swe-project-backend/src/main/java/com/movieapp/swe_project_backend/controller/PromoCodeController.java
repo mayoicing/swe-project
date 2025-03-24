@@ -23,20 +23,20 @@ public class PromoCodeController {
     @Autowired
     private PromoCodeService promoCodeService;
 
-    // ✅ Add a Promo Code
+    // Add a Promo Code
     @PostMapping("/add")
     public ResponseEntity<String> addPromoCode(@RequestBody PromoCode promoCode) {
         promoCodeService.savePromoCode(promoCode);
         return ResponseEntity.ok("Promo Code added successfully!");
     }
 
-    // ✅ Get All Promo Codes
+    // Get All Promo Codes
     @GetMapping("/getAll")
     public List<PromoCode> getAllPromoCodes() {
         return promoCodeService.getAllPromoCodes();
     }
 
-    // ✅ Get Promo Code by ID
+    // Get Promo Code by ID
     @GetMapping("/get/{id}")
     public ResponseEntity<?> getPromoCodeById(@PathVariable int id) {
         Optional<PromoCode> promoCode = promoCodeService.getPromoCodeById(id);
@@ -44,7 +44,7 @@ public class PromoCodeController {
                         .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // ✅ Get Promo Code by Code
+    // Get Promo Code by Code
     @GetMapping("/getByCode/{code}")
     public ResponseEntity<?> getPromoCodeByCode(@PathVariable String code) {
         Optional<PromoCode> promoCode = promoCodeService.getPromoCodeByCode(code);
@@ -52,7 +52,7 @@ public class PromoCodeController {
                         .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // ✅ Delete a Promo Code
+    // Delete a Promo Code
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deletePromoCode(@PathVariable int id) {
         promoCodeService.deletePromoCode(id);

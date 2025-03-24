@@ -9,10 +9,10 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class EncryptionUtil {
 
-    private static final String ALGORITHM = "AES/CBC/PKCS5Padding"; // ✅ Ensures correct padding
+    private static final String ALGORITHM = "AES/CBC/PKCS5Padding"; // Ensures correct padding
     private static final String KEY_ALGORITHM = "AES";
     
-    // 🛑 Hardcoded values for now (replace with secure method later)
+    // Hardcoded values for now (replace with secure method later)
     private static final String SECRET_KEY = "1234567890123456";  // 16-byte key
     private static final String IV = "abcdefghijklmnop";  // 16-byte IV for CBC mode
 

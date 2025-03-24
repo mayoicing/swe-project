@@ -23,15 +23,15 @@ public class PaymentCardImp implements PaymentCardService {
     public PaymentCard savePaymentCard(PaymentCard paymentCard) {
         try {
             // 🔍 Debug Log: Check received data
-            System.out.println("🟢 Received Card Data (Before Encryption): " + paymentCard.getCardNumber());
+            System.out.println("Received Card Data (Before Encryption): " + paymentCard.getCardNumber());
 
-            // ✅ Ensure the card is not already encrypted before encrypting
+            // Ensure the card is not already encrypted before encrypting
             if (!paymentCard.getCardNumber().contains("=")) { // Base64 encrypted strings contain '='
                 String encryptedCardNumber = EncryptionUtil.encrypt(paymentCard.getCardNumber());
                 paymentCard.setCardNumber(encryptedCardNumber);
-                System.out.println("🔐 Saving Encrypted Card Number: " + encryptedCardNumber);
+                System.out.println("Saving Encrypted Card Number: " + encryptedCardNumber);
             } else {
-                System.out.println("⚠️ Data already encrypted, skipping encryption.");
+                System.out.println("Data already encrypted, skipping encryption.");
             }
 
         } catch (Exception e) {
@@ -49,7 +49,7 @@ public class PaymentCardImp implements PaymentCardService {
                 String decryptedCardNumber = EncryptionUtil.decrypt(card.getCardNumber());
                 System.out.println("🔓 Decrypted card number: " + decryptedCardNumber);
 
-                // ✅ Create a separate response object
+                // Create a separate response object
                 PaymentCard responseCard = new PaymentCard(
                     decryptedCardNumber,
                     card.getUser(),
@@ -72,9 +72,9 @@ public class PaymentCardImp implements PaymentCardService {
         return paymentCardRepository.findById(paymentCardID).map(card -> {
             try {
                 String decryptedCardNumber = EncryptionUtil.decrypt(card.getCardNumber());
-                System.out.println("🔓 Decrypted single card number: " + decryptedCardNumber);
+                System.out.println("Decrypted single card number: " + decryptedCardNumber);
 
-                // ✅ Create a separate response object
+                // Create a separate response object
                 PaymentCard responseCard = new PaymentCard(
                     decryptedCardNumber,
                     card.getUser(),

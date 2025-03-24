@@ -2,35 +2,31 @@
 
 /* Grid container for movies */
 .movieGrid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columns */
-    gap: 20px;
-    justify-content: center;
-    padding: 20px;
-  }
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 3 columns */
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
   
-  /* Individual movie card */
-  .movieCard {
-    display: flex;
-    flex-direction: column; /* Stack poster and trailer vertically */
-    justify-content: space-between; /* Space between poster and trailer */
-    align-items: center;
-    position: relative;
-    height: 700px;
-    padding: 20px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-  }
+/* Individual movie card */
+.movieCard {
+  display: flex;
+  flex-direction: column; /* Stack poster and trailer vertically */
+  position: relative;
+  height: 500px;
+  padding: 20px;
+  border-radius: 8px;
+}
   
-  .posterContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex-grow: 1;
-    margin-bottom: 10px;
-    padding-top: 30px;
-  }
+.posterContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  margin-bottom: 10px;
+}
   
   .moviePoster {
     border-radius: 8px;
@@ -69,4 +65,100 @@
     padding: 5px;
     font-weight: bolder;
     text-align: center;
+  }
+
+  .poster {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;  /* Ensures images fill the box without distortion */
+  }
+  
+  .posterOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0);
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  .posterWrapper:hover .posterOverlay {
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  .posterWrapper:hover .bookButton {
+    display: block;
+    opacity: 1;
+  }
+  
+  .movieTrailer {
+    display: block;
+    margin: 20px auto 0;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 350px;
+  }
+  
+  .movieTitle {
+    font-size: 20px;      /* Make title smaller */
+    font-weight: bold;
+    align-items: flex-start; 
+    margin-top: 8px;      /* Add space between poster and title */
+    color: white;
+    text-shadow: 0px 3px 14px rgba(0, 0, 0, 0.7);
+  }
+
+  .trailerButton {
+    width: 125px;
+    margin-top: 10px;
+    padding: 8px 12px;
+    background-color: #7E22CE;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 550;
+    font-size: 15px;  
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.6);
+    transition: box-shadow 0.3s ease-in-out; /* Smooth transition */
+  }
+  
+  .trailerButton:hover {
+    background-color: #4a1579;
+  }
+
+  .modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  
+  .modalContent {
+    position: relative;
+    background: #000;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  }
+  
+  .closeButton {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #fff;
+    color: #000;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
   }

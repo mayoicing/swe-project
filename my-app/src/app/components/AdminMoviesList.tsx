@@ -14,8 +14,10 @@ interface Movie {
   trailer: string; // Embedded YouTube URL
 }
 
-export default function MoviesList() {
+export default function AdminMoviesList() {
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [selectedTrailer, setSelectedTrailer] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
   
   useEffect(() => {
     axios
@@ -33,38 +35,62 @@ export default function MoviesList() {
       });
   }, []);
 
+  const openTrailer = (trailerUrl: string) => {
+    setSelectedTrailer(trailerUrl);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedTrailer(null);
+  };
+
   return (
     <section className={styles.container}>
-      <h2 className={styles.h2}>Movies</h2>
       <div className={styles.movieGrid}>
         {movies.map((movie, index) => (
           <div key={movie.movieID ?? `movie-${index}`} className={styles.movieCard}>
-            {/* Movie Banner */}
-            <Link href={`/adminMovieDetails`} className={styles.posterContainer}>
-              <p className={styles.movieTitle}>{movie.title}</p>
-                <Image
-                  src={movie.poster}
-                  alt={movie.title}
-                  width={225}
-                  height={325}
-                  className={styles.poster}
-                />
+            <Link href='/adminMovieDetails' style={{ textDecoration: 'none', color: 'inherit' }}>
+              <div className={styles.posterContainer}>
+                <div className={styles.posterWrapper}>
+                  <Image
+                    src={movie.poster}
+                    alt={movie.title}
+                    width={225}
+                    height={325}
+                    className={styles.poster}
+                  />
+                  <div className={styles.posterOverlay}></div>
+                </div>
+              </div>
             </Link>
+            <p className={styles.movieTitle}>{movie.title}</p>
 
-            {/* Embedded Movie Trailer */}
-            <iframe 
-              width="350" 
-              height="225" 
-              src={movie.trailer} 
-              title={`${movie.title} Trailer`} 
-              frameBorder="0" 
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-              allowFullScreen
-              className={styles.trailer} 
-            ></iframe>
+            {/* Play Trailer Button */}
+            <button className={styles.trailerButton} onClick={() => openTrailer(movie.trailer)}>
+              ▶ Play Trailer
+            </button>
           </div>
         ))}
       </div>
+
+      {/* Trailer Modal */}
+      {showModal && selectedTrailer && (
+        <div className={styles.modalOverlay} onClick={closeModal}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <iframe
+              width="800"
+              height="450"
+              src={selectedTrailer + '?autoplay=1'}
+              title="Movie Trailer"
+              frameBorder="0"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+            ></iframe>
+            <button className={styles.closeButton} onClick={closeModal}>✖</button>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
