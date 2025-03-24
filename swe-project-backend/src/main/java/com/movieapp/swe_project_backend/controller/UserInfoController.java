@@ -33,13 +33,13 @@ public class UserInfoController {
     private UserInfoService userInfoService;
 
     @Autowired
-    private EmailService emailService; // ✅ Inject EmailService
+    private EmailService emailService; // Inject EmailService
 
     @Autowired
-    private JwtService jwtService; // ✅ Inject JwtService
+    private JwtService jwtService; // Inject JwtService
 
     @Autowired
-    private UserInfoImp userInfoImp; // ✅ Inject UserInfoImp
+    private UserInfoImp userInfoImp; // Inject UserInfoImp
 
     @GetMapping("/getAll")
     public List<UserInfo> getAllUsers() {
@@ -80,7 +80,7 @@ public class UserInfoController {
             // Save User
             UserInfo savedUser = userInfoService.saveUserInfo(userInfo);
 
-            // ✅ Send Confirmation Email
+            // Send Confirmation Email
             emailService.sendConfirmationEmail(savedUser.getEmail(), savedUser.getFirstName());
 
             System.out.println("📩 Confirmation email sent to: " + savedUser.getEmail());
@@ -226,7 +226,7 @@ public class UserInfoController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", "Please use the admin login!"));
         }
            
-        // ✅ Generate JWT Token
+        // Generate JWT Token
         String token = jwtService.generateToken(user);
 
         Map<String, Object> response = new HashMap<>();
@@ -260,7 +260,7 @@ public class UserInfoController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", "Please use the user login!"));
         }
 
-        // ✅ Generate JWT Token
+        // Generate JWT Token
         String token = jwtService.generateToken(user);
 
         Map<String, Object> response = new HashMap<>();
@@ -271,7 +271,7 @@ public class UserInfoController {
         return ResponseEntity.ok(response);
     }
 
-        // 🔐 Step 1: Request password reset (sends reset code via email)
+        // Step 1: Request password reset (sends reset code via email)
     @PostMapping("/forgot-password")
     public ResponseEntity<Map<String, String>> handleForgotPassword(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
@@ -285,7 +285,7 @@ public class UserInfoController {
         }
     }
 
-    // 🔒 Step 2: Verify reset code + change password
+    // Step 2: Verify reset code + change password
     @PostMapping("/reset-password")
     public ResponseEntity<Map<String, String>> resetPassword(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");

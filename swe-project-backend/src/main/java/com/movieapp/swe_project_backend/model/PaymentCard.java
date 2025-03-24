@@ -31,7 +31,7 @@ public class PaymentCard {
 
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false) 
-    @JsonBackReference // 🔴 Prevents infinite loop when serializing PaymentCard
+    @JsonBackReference // Prevents infinite loop when serializing PaymentCard
     private UserInfo user;
 
     @Column(name = "cardholderName", length = 100, nullable = false) 
@@ -55,10 +55,10 @@ public class PaymentCard {
         Credit, Debit
     }
 
-    // ✅ Default Constructor
+    // Default Constructor
     public PaymentCard() {}
 
-    // ✅ Constructor
+    // Constructor
     public PaymentCard(String cardNumber, UserInfo user, String cardholderName, CardType cardType, LocalDate expDate, int cvv) {
         this.cardNumber = cardNumber;
         this.user = user;
@@ -68,7 +68,7 @@ public class PaymentCard {
         this.cvv = cvv;
     }
 
-    // ✅ Getters and Setters
+    // Getters and Setters
     public int getCardID() { return CardID; }
     public void setCardID(int CardID) { this.CardID = CardID; }
 

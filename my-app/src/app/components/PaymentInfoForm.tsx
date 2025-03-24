@@ -85,7 +85,7 @@ export default function PaymentInfoForm() {
                 );
             }
 
-            alert("🎉 Registration Complete!");
+            alert("Registration Complete! 🎉");
             localStorage.removeItem('userID');
             router.push('/registerConfirm');
         } catch (error) {

@@ -75,19 +75,19 @@ public class BillingAddressController {
         }
     }
 
-    // ✅ Get All Billing Addresses
+    // Get All Billing Addresses
     @GetMapping("/getAll")
     public List<BillingAddress> getAllBillingAddresses() {
         return billingAddressService.getAllBillingAddresses();
     }
 
-    // ✅ Get Billing Address by ID
+    // Get Billing Address by ID
     @GetMapping("/get/{id}")
     public Optional<BillingAddress> getBillingAddressById(@PathVariable int id) {
         return billingAddressService.getBillingAddressById(id);
     }
 
-    // ✅ Delete Billing Address by ID
+    // Delete Billing Address by ID
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteBillingAddress(@PathVariable int id) {
         billingAddressService.deleteBillingAddressById(id);
@@ -107,7 +107,7 @@ public class BillingAddressController {
         }
     }
 
-    // ✅ Create or Update Billing Address for a User
+    // Create or Update Billing Address for a User
     @PutMapping("/update")
     public ResponseEntity<?> createOrUpdateBillingAddress(@RequestBody BillingAddress newAddress) {
         try {
