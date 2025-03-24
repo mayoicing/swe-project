@@ -6,17 +6,15 @@ interface NoCardProps {
   showAddButton?: boolean;
 }
 
-export default function NoCard() {
-    const [isActive, setIsActive] = useState(false);
-
-    const toggleActive = () => {
-        setIsActive(!isActive);
-    };
-
-    return(
-        <div className={styles.noCard}>
-            No Card
-            <button className={styles.button}>Add New Card</button>
-        </div>
-    );
+export default function NoCard({ showAddButton = false }: NoCardProps) {
+  return (
+    <div className={styles.noCard}>
+      No Card
+      {showAddButton && (
+        <Link href="/addCard">
+          <button className={styles.button}>Add New Card</button>
+        </Link>
+      )}
+    </div>
+  );
 }
