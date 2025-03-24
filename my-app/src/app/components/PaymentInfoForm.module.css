@@ -110,7 +110,6 @@
     display: none;
 }
 
-/* ✅ Turn the selected button green */
 .radioButtons input[type="radio"]:checked + label {
     background-color: #72f176;
     color: rgb(0, 0, 0);

@@ -41,7 +41,7 @@ export default function LoginForm() {
             if (response.status === 200) {
                 const { userID, token } = response.data;
  
-            // ✅ Save to localStorage or sessionStorage
+            // Save to localStorage or sessionStorage
             if (rememberMe) {
                 localStorage.setItem("authToken", token);
                 localStorage.setItem("userID", userID.toString());

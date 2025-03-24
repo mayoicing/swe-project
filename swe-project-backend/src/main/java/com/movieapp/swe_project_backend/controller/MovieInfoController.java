@@ -55,7 +55,7 @@ public class MovieInfoController {
         return movieInfoService.getAllMovieInfo();
     }
 
-   // ✅ Get Movie by ID
+   // Get Movie by ID
     @GetMapping("/get/{movieID}")
     public ResponseEntity<MovieInfoDTO> getMovieById(@PathVariable int movieID) {
         Optional<MovieInfo> movie = movieInfoService.getMovieInfoById(movieID);
@@ -81,7 +81,7 @@ public class MovieInfoController {
         }
     }
 
-    // ✅ Get Movie by Title
+    // Get Movie by Title
     @GetMapping("/get/title/{title}")
     public ResponseEntity<MovieInfoDTO> getMovieByTitle(@PathVariable String title) {
         Optional<MovieInfo> movie = movieInfoService.getMovieInfoByTitle(title);
@@ -107,7 +107,7 @@ public class MovieInfoController {
         }
     }
 
-    // ✅ Get only the Title
+    // Get only the Title
     @GetMapping("/get/{movieID}/title")
     public ResponseEntity<String> getMovieTitle(@PathVariable int movieID) {
         return movieInfoService.getMovieTitleById(movieID)
@@ -115,7 +115,7 @@ public class MovieInfoController {
             .orElseGet(() -> ResponseEntity.notFound().build());
 }
 
-    // ✅ Get only the Poster
+    // Get only the Poster
     @GetMapping("/get/{movieID}/poster")
     public ResponseEntity<String> getMoviePoster(@PathVariable int movieID) {
         return movieInfoService.getMoviePosterById(movieID)
@@ -123,7 +123,7 @@ public class MovieInfoController {
             .orElseGet(() -> ResponseEntity.notFound().build());
 }
 
-    // ✅ Get only the Description
+    // Get only the Description
     @GetMapping("/get/{movieID}/description")
     public ResponseEntity<String> getMovieDescription(@PathVariable int movieID) {
         return movieInfoService.getMovieDescriptionById(movieID)

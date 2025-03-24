@@ -45,20 +45,20 @@ public class UserInfo implements Serializable {
     @Column(name = "password", nullable = false, length = 200)
     private String password;
 
-    @Column(name = "phone_number", length = 30) // ✅ Maps to 'phone_number'
+    @Column(name = "phone_number", length = 30) // Maps to 'phone_number'
     @JsonProperty("phone_number")
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false) // ✅ Maps to 'status'
+    @Column(name = "status", nullable = false) // Maps to 'status'
     private Status status;
 
-    @Column(name = "enroll_for_promotions", nullable = false) // ✅ Maps to 'enroll_for_promotions'
+    @Column(name = "enroll_for_promotions", nullable = false) // Maps to 'enroll_for_promotions'
     @JsonProperty("enroll_for_promotions")
     private boolean enrollForPromotions;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "user_type", nullable = false) // ✅ Maps to 'user_type'
+    @Column(name = "user_type", nullable = false) // Maps to 'user_type'
     @JsonProperty("user_type")
     private UserType userType;
 
@@ -77,13 +77,13 @@ public class UserInfo implements Serializable {
         Admin, Customer
     }
 
-    // ✅ Default Constructor (Auto-sets default values)
+    // Default Constructor (Auto-sets default values)
     public UserInfo() {
         this.status = Status.Active;
         this.enrollForPromotions = false;
     }
 
-    // ✅ Auto-set default values before saving to database
+    // Auto-set default values before saving to database
     @PrePersist
     protected void onCreate() {
         if (this.status == null) {
@@ -94,7 +94,7 @@ public class UserInfo implements Serializable {
         }
     }
 
-    // ✅ Full Constructor
+    // Full Constructor
     public UserInfo(int userID, String firstName, String lastName, String email, String password, 
                     String phoneNumber, Status status, boolean enrollForPromotions, UserType userType) {
         this.userID = userID;
@@ -108,7 +108,7 @@ public class UserInfo implements Serializable {
         this.userType = userType;
     }
 
-    // ✅ Getters and Setters
+    // Getters and Setters
     
     public List<PaymentCard> getPaymentCards() {
         return paymentCards;
