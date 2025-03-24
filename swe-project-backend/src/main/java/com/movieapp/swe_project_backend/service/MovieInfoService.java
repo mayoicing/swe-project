@@ -12,8 +12,8 @@ public interface MovieInfoService {
     Optional<String> getMovieTitleById(int movieID); 
     Optional<String> getMovieDescriptionById(int movieID);
 
-    Optional<MovieInfo> getMovieInfoById(int movieID); // ✅ Get by ID
-    Optional<MovieInfo> getMovieInfoByTitle(String title); // ✅ Get by Title
+    Optional<MovieInfo> getMovieInfoById(int movieID); // Get by ID
+    Optional<MovieInfo> getMovieInfoByTitle(String title); // Get by Title
     
     Optional<String> getMoviePosterById(int movieID);
 

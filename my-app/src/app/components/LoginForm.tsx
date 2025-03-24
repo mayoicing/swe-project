@@ -13,7 +13,7 @@ export default function LoginForm() {
     const [error, setError] = useState('');
     const router = useRouter();
 
-    // 🔁 Auto-login if token exists
+    // Auto-login if token exists
     useEffect(() => {
         const token = localStorage.getItem('authToken');
         if (token) {
