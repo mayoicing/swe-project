@@ -5,7 +5,6 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/app/components/Navbar";
 import Image from "next/image";
-import image2 from "@/app/images/movie1_banner.jpg";
 
 interface CastAndCrew {
   castAndCrewID: number;
@@ -98,7 +97,18 @@ export default function MovieDetails() {
               width={300}
               height={450}
             />
-            <Image src={image2} alt="Movie Secondary Image" width={700} height={450} />
+            {movie.trailerUrl ? (
+              <iframe
+                width="700"
+                height="450"
+                src={movie.trailerUrl}
+                title="Movie Trailer"
+                allowFullScreen
+                className="rounded-lg"
+              ></iframe>
+            ) : (
+              <p className="text-gray-400">Trailer not available.</p>
+            )}
           </div>
         </div>
 
