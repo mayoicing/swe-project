@@ -8,6 +8,7 @@ import React from 'react';
 import Image from 'next/image';
 import { error } from 'console';
 import { useRouter } from 'next/navigation';
+//import GenreButtons from './GenreButtons';  // Reusing the GenreButtons component
 
 interface Movie {
     movieID: number,
@@ -29,6 +30,9 @@ export default function SearchResults() {
     const [selectedTrailer, setSelectedTrailer] = useState<string | null>(null);
     const [showModal, setShowModal] = useState(false);
     const router = useRouter();
+    //const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]);
+    //const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
+
 
 
     useEffect(()=>{

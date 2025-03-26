@@ -83,7 +83,7 @@ export default function MoviesList() {
               </div>
             </Link>
             <p className={styles.movieTitle}>{movie.title}</p> 
-
+            <p className={styles.filmCode}>{movie.filmCode}</p> 
             <button className={styles.trailerButton} onClick={() => openTrailer(movie.trailer)}>
               ▶ Play Trailer
             </button>
