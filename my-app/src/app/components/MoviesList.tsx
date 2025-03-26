@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
 import Image from 'next/image'; 
@@ -23,9 +23,6 @@ export default function MoviesList() {
   const [activeGenre, setActiveGenre] = useState<'current' | 'comingSoon' | null>(null);
   const [selectedTrailer, setSelectedTrailer] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [isOverflowing, setIsOverflowing] = useState(false);
-  const titleRef = useRef<HTMLParagraphElement | null>(null);
-
 
   useEffect(() => {
     axios.get('http://localhost:8080/movieinfo/getAll')
@@ -37,14 +34,6 @@ export default function MoviesList() {
         setMovies(decodedMovies);
       })
       .catch(err => console.error("Failed to fetch movies:", err));
-  }, []);
-
-  useEffect(() => {
-    // Check if the title is overflowing
-    if (titleRef.current) {
-      const isOverflowing = titleRef.current.scrollWidth > titleRef.current.clientWidth;
-      setIsOverflowing(isOverflowing);
-    }
   }, []);
 
   const getFilteredMovies = () => {
