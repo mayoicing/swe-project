@@ -20,6 +20,12 @@ interface MovieShow {
   available_seats: number;
 }
 
+interface Auditorium {
+  auditoriumID: number;
+  auditorium_name: string;
+  noOfSeats: number;
+}
+
 export default function MovieDetails() {
   const { movieID } = useParams() as { movieID: string };
   const router = useRouter();
@@ -27,6 +33,7 @@ export default function MovieDetails() {
   const [movie, setMovie] = useState<any>(null);
   const [cast, setCast] = useState<CastAndCrew[]>([]);
   const [shows, setShows] = useState<MovieShow[]>([]);
+  const [auditoriums, setAuditoriums] = useState<Auditorium[]>([]);
   const [selectedShowID, setSelectedShowID] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -35,22 +42,25 @@ export default function MovieDetails() {
 
     const fetchAll = async () => {
       try {
-        const [movieRes, castRes, showRes] = await Promise.all([
+        const [movieRes, castRes, showRes, audRes] = await Promise.all([
           fetch(`http://localhost:8080/movieinfo/get/${movieID}`),
           fetch(`http://localhost:8080/castandcrew/get/movie/${movieID}`),
           fetch(`http://localhost:8080/movieshow/movie/${movieID}`),
+          fetch("http://localhost:8080/auditorium/getAll"),
         ]);
 
-        if (!movieRes.ok || !castRes.ok || !showRes.ok)
+        if (!movieRes.ok || !castRes.ok || !showRes.ok || !audRes.ok)
           throw new Error("Failed to fetch data");
 
         const movieData = await movieRes.json();
         const castData = await castRes.json();
         const showData = await showRes.json();
+        const auditoriumData = await audRes.json();
 
         setMovie(movieData);
         setCast(castData);
         setShows(showData);
+        setAuditoriums(auditoriumData);
       } catch (err) {
         console.error("Error fetching data:", err);
       } finally {
@@ -65,6 +75,11 @@ export default function MovieDetails() {
     if (selectedShowID) {
       router.push(`/selectNumTickets?movieShowID=${selectedShowID}`);
     }
+  };
+
+  const getAuditoriumName = (id: number) => {
+    const match = auditoriums.find((a) => a.auditoriumID === id);
+    return match?.auditorium_name || `Auditorium #${id}`;
   };
 
   if (loading) return <div className="text-white p-6">Loading...</div>;
@@ -126,7 +141,7 @@ export default function MovieDetails() {
                       : "border-gray-500 hover:border-purple-500"
                   }`}
                 >
-                  {new Date(show.showStartTime).toLocaleString()}
+                  {new Date(show.showStartTime).toLocaleString()} — {getAuditoriumName(show.auditoriumID)}
                 </button>
               ))}
             </div>

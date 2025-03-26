@@ -10,9 +10,10 @@ export default function AddShowtimePage() {
   const [movie, setMovie] = useState<any>(null);
   const [showtimes, setShowtimes] = useState<any[]>([]);
   const [auditoriumSearch, setAuditoriumSearch] = useState("");
-  const [auditoriumResults, setAuditoriumResults] = useState<any[]>([]);
+  const [auditoriumMatches, setAuditoriumMatches] = useState<any[]>([]);
   const [auditorium, setAuditorium] = useState<any>(null);
   const [startTime, setStartTime] = useState("");
+  const [auditoriumMap, setAuditoriumMap] = useState<{ [key: number]: any }>({});
 
   const searchMovie = async () => {
     try {
@@ -34,20 +35,28 @@ export default function AddShowtimePage() {
 
   const fetchShowtimes = async (movieId: number) => {
     try {
-      const res = await axios.get(`http://localhost:8080/movieshow/movie/${movieId}`);
-      setShowtimes(res.data);
+      const [showRes, audRes] = await Promise.all([
+        axios.get(`http://localhost:8080/movieshow/movie/${movieId}`),
+        axios.get("http://localhost:8080/auditorium/getAll"),
+      ]);
+      const audMap: { [key: number]: any } = {};
+      audRes.data.forEach((a: any) => {
+        audMap[a.auditoriumID] = a;
+      });
+      setAuditoriumMap(audMap);
+      setShowtimes(showRes.data);
     } catch (err) {
-      console.error("Failed to fetch showtimes", err);
+      console.error("Failed to fetch showtimes or auditoriums", err);
     }
   };
 
   const searchAuditorium = async () => {
     try {
       const res = await axios.get("http://localhost:8080/auditorium/getAll");
-      const filtered = res.data.filter((a: any) =>
+      const matches = res.data.filter((a: any) =>
         a?.auditorium_name?.toLowerCase().includes(auditoriumSearch.toLowerCase())
       );
-      setAuditoriumResults(filtered);
+      setAuditoriumMatches(matches);
     } catch (err) {
       console.error("Auditorium fetch failed", err);
       alert("Auditorium search failed");
@@ -56,18 +65,22 @@ export default function AddShowtimePage() {
 
   const selectAuditorium = (a: any) => {
     setAuditorium(a);
-    setAuditoriumResults([]);
+    setAuditoriumMatches([]);
   };
 
   const addShowtime = async () => {
     if (!movie || !auditorium || !startTime) return alert("All fields required");
 
-    const existing = showtimes.find(
-      (s) => s.auditoriumID === auditorium.auditoriumID && s.showStartTime === startTime
+    const startTimeISO = new Date(startTime).toISOString();
+
+    const showConflict = showtimes.some(
+      (s) =>
+        s.auditoriumID === auditorium.auditoriumID &&
+        new Date(s.showStartTime).toISOString() === startTimeISO
     );
 
-    if (existing) {
-      return alert("Showtime already exists in this auditorium at the selected time.");
+    if (showConflict) {
+      return alert("Time clash: This auditorium already has a show at the selected time.");
     }
 
     await axios.post("http://localhost:8080/movieshow/add", {
@@ -136,7 +149,7 @@ export default function AddShowtimePage() {
                   className="flex justify-between items-center border-b pb-1"
                 >
                   <span>
-                    {s.showStartTime} — Auditorium #{s.auditoriumID} — Seats: {s.availableSeats}
+                    {s.showStartTime} — {auditoriumMap[s.auditoriumID]?.auditorium_name || "Auditorium #" + s.auditoriumID} — Seats: {auditoriumMap[s.auditoriumID]?.noOfSeats ?? "N/A"}
                   </span>
                   <button
                     onClick={() => deleteShowtime(s.movieShowID)}
@@ -168,9 +181,9 @@ export default function AddShowtimePage() {
               </button>
             </div>
 
-            {auditoriumResults.length > 0 && (
+            {auditoriumMatches.length > 0 && (
               <ul className="mb-4 border rounded divide-y divide-gray-700">
-                {auditoriumResults.map((a) => (
+                {auditoriumMatches.map((a) => (
                   <li
                     key={a.auditoriumID}
                     onClick={() => selectAuditorium(a)}
