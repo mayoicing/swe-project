@@ -59,7 +59,9 @@ public class SecurityConfig {
                     "/paymentcard/update",
                     "/paymentcard/add",
                     "/usertype/**",
-                    "/promocode/**"
+                    "/promocode/**",
+                    "/movieshow/**",
+                    "/movieDetails/**"
                 ).permitAll()
                 .anyRequest().authenticated() // Any other requests require authentication
             )

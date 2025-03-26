@@ -5,7 +5,7 @@ import axios from 'axios';
 import Link from 'next/link';
 import Image from 'next/image'; 
 import styles from './MoviesList.module.css';
-import GenreButtons from './GenreButtons'; // adjust path if needed
+import GenreButtons from './GenreButtons';
 
 interface Movie {
   movieID: number;
@@ -28,8 +28,11 @@ export default function MoviesList() {
     axios.get('http://localhost:8080/movieinfo/getAll')
       .then((res) => {
         const decodedMovies = res.data.map((movie: any) => ({
-          ...movie,
-          poster: decodeURIComponent(movie.poster.trimEnd()),
+          movieID: movie.movieId, // ✅ fix casing from backend
+          title: movie.title,
+          poster: decodeURIComponent((movie.poster || "").trim()),
+          trailer: movie.trailer,
+          filmCode: movie.filmCode,
         }));
         setMovies(decodedMovies);
       })
@@ -59,14 +62,12 @@ export default function MoviesList() {
 
   return (
     <section className={styles.container}>
-      {/* Genre Filter Buttons */}
       <GenreButtons onGenreSelect={setActiveGenre} />
 
-      {/* Movie Grid */}
       <div className={styles.movieGrid}>
         {filteredMovies.map((movie, index) => (
           <div key={movie.movieID ?? `movie-${index}`} className={styles.movieCard}>  
-            <Link href={`/movieDetails`} style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Link href={`/movieDetails/${movie.movieID}`} style={{ textDecoration: 'none', color: 'inherit' }}>
               <div className={styles.posterContainer}>
                 <div className={styles.posterWrapper}> 
                   <Image
@@ -90,7 +91,6 @@ export default function MoviesList() {
         ))}
       </div>
 
-      {/* Trailer Modal */}
       {showModal && selectedTrailer && (
         <div className={styles.modalOverlay} onClick={closeModal}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
