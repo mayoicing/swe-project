@@ -7,6 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import Image from 'next/image';
 import { error } from 'console';
+import { useRouter } from 'next/navigation';
 
 interface Movie {
     movieID: number,
@@ -15,7 +16,7 @@ interface Movie {
     description: string,
     genre: string,
     filmCode: string,
-    trailer: string
+    trailerUrl: string
 }
 
 
@@ -27,6 +28,7 @@ export default function SearchResults() {
     const [movieResult, setMovieResult] = useState<Movie | null>(null);
     const [selectedTrailer, setSelectedTrailer] = useState<string | null>(null);
     const [showModal, setShowModal] = useState(false);
+    const router = useRouter();
 
 
     useEffect(()=>{
@@ -40,6 +42,10 @@ export default function SearchResults() {
             console.error("Error fetching movie data: ", error);    
         });
     },[query]);
+
+    const handleBookTicket = () => {
+        router.push('/movieDetails');
+    };
 
     const openTrailer = (trailerUrl: string) => {
         setSelectedTrailer(trailerUrl);
@@ -68,12 +74,12 @@ export default function SearchResults() {
                             className={styles.poster}
                         />
                         <div className={styles.posterOverlay}></div>
-                        <button className={styles.bookButton}>Book Ticket</button>
+                        <button className={styles.bookButton} onClick={handleBookTicket}>Book Ticket</button>
                     </div>
                 </div>
                 <p className={styles.movieTitle}>{movieResult.title}</p>
                 <p className={styles.filmCode}>{movieResult.filmCode}</p>
-                <button className={styles.trailerButton} onClick={() => openTrailer(movieResult.trailer)}>
+                <button className={styles.trailerButton} onClick={() => openTrailer(movieResult.trailerUrl)}>
                     ▶ Play Trailer
                 </button>
             </div>
