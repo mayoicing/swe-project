@@ -2,7 +2,9 @@ package com.movieapp.swe_project_backend.controller;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,13 +44,26 @@ public class MovieInfoController {
         movieInfo.setDuration(movieInfoDTO.getMovieDuration());
         return movieInfo;
     }
-
+/*
     @PostMapping("/add")
     public String add(@RequestBody MovieInfoDTO movieInfoDTO) { // Fixed parameter name
         MovieInfo movieInfo = convertToEntity(movieInfoDTO); // Convert DTO to Entity
         movieInfoService.saveMovieInfo(movieInfo); // Use the service to save
         return "Movie info is added";
     }
+    */
+    @PostMapping("/add")
+    public ResponseEntity<Map<String, Object>> add(@RequestBody MovieInfoDTO movieInfoDTO) { // Fixed parameter name
+        MovieInfo movieInfo = convertToEntity(movieInfoDTO); // Convert DTO to Entity
+        movieInfo = movieInfoService.saveMovieInfo(movieInfo); // Use the service to save
+        
+         Map<String, Object> response = new HashMap<>();
+        response.put("message", "Movie info is added");
+        response.put("movieID", movieInfo.getMovieId()); // Retrieve the generated movieID
+
+        return ResponseEntity.ok(response);
+    }   
+
 
     @GetMapping("/getAll")
     public List<MovieInfo> getAllMovieInfo(){

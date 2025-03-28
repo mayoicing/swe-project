@@ -29,7 +29,7 @@
   
   /* Save Button */
   .saveButton {
-    background-color: grey;
+    background-color: rgb(112, 112, 112);
     color: white;
     border: none;
     padding: 10px;
@@ -39,6 +39,10 @@
     cursor: pointer;
   }
   
+  .saveButton:hover {
+    background-color: rgb(99, 99, 99);
+  }
+
   .deleteButton:hover {
     background-color: darkred;
   }
@@ -52,6 +56,15 @@
     margin-top: 15px;
   }
   
+  /* Cast and Crew Properties */
+  .castAndCrew {
+    display: block;
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: 15px;
+  }
+
   /* Inputs */
   .input, .textarea {
     width: 100%;
@@ -102,7 +115,8 @@
   }
   
   .addButton {
-    padding: 8px 16px;
+    padding: 4px 10px;
+    font-size: 13px;
     background-color: #4CAF50;
     color: white;
     border: none;
@@ -204,5 +218,22 @@
     font-weight: bold;
     margin-top: 15px;
   }
-  
-  
+
+  .modalBackdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modalContent {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+}   
