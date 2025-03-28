@@ -8,7 +8,6 @@ import React from 'react';
 import Image from 'next/image';
 import { error } from 'console';
 import { useRouter } from 'next/navigation';
-//import GenreButtons from './GenreButtons';  // Reusing the GenreButtons component
 
 interface Movie {
     movieID: number,
@@ -29,10 +28,8 @@ export default function SearchResults() {
     const [movieResult, setMovieResult] = useState<Movie | null>(null);
     const [selectedTrailer, setSelectedTrailer] = useState<string | null>(null);
     const [showModal, setShowModal] = useState(false);
+    const [movieid, setMovieId] = useState<number | null>(null);
     const router = useRouter();
-    //const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]);
-    //const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
-
 
 
     useEffect(()=>{
@@ -41,6 +38,7 @@ export default function SearchResults() {
             .then((response)=>{
             const decodedPosterURL = decodeURIComponent(response.data.moviePosterUrl.trimEnd());
             setMovieResult({...response.data, moviePosterUrl: decodedPosterURL});
+            setMovieId(response.data.movieID);
         })
         .catch((error)=> {
             console.error("Error fetching movie data: ", error);    
@@ -48,7 +46,9 @@ export default function SearchResults() {
     },[query]);
 
     const handleBookTicket = () => {
-        router.push('/movieDetails');
+        if (movieid) {
+            router.push(`/movieDetails/${movieid}`);
+        }
     };
 
     const openTrailer = (trailerUrl: string) => {

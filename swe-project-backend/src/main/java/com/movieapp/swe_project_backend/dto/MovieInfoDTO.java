@@ -1,6 +1,7 @@
 package com.movieapp.swe_project_backend.dto;
 
 public class MovieInfoDTO {
+    private int movieID;
     private String title;
     private String description;
     private String genre;
@@ -11,7 +12,8 @@ public class MovieInfoDTO {
     private int movieDuration;
 
     // Constructor
-    public MovieInfoDTO(String title, String description, String genre, String filmCode, String trailerUrl, String moviePosterUrl, double movieRating, int movieDuration) {
+    public MovieInfoDTO(int movieID, String title, String description, String genre, String filmCode, String trailerUrl, String moviePosterUrl, double movieRating, int movieDuration) {
+        this.movieID = movieID;
         this.title = title;
         this.description = description;
         this.genre = genre;
@@ -23,6 +25,14 @@ public class MovieInfoDTO {
     }
 
     // Getters and Setters
+    public int getMovieID() {
+        return movieID;
+    }
+
+    public void setMovieID(int movieID) {
+        this.movieID = movieID;
+    }
+
     public String getTitle() {
         return title;
     }

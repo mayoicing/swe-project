@@ -18,7 +18,6 @@ interface AddCastCrewProps {
 export default function AddCastCrew({ setShowModal, castCrew, setCastCrew }: AddCastCrewProps) {
     const [newName, setNewName] = useState("");
     const [newRole, setNewRole] = useState("Actor");
-    //const [castCrew, setCastCrew] = useState<CastCrewMember[]>([]);
     
 
     const handleAddCastCrew = () => {

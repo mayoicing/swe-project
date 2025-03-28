@@ -15,8 +15,6 @@ interface Actor {
 export default function AddMovieDetails() {
   const [category, setCategory] = useState<string>("");
   const [actors, setActors] = useState<Actor[]>([]);
-  //const [newActor, setNewActor] = useState<string>("");
-  //const [newRole, setNewRole] = useState<string>("");
   const [moviePosterUrl, setMoviePosterUrl] = useState<string>("");
   const [genre, setGenre] = useState<string>("");
   const [filmCode, setFilmCode] = useState<string>("");
@@ -27,20 +25,6 @@ export default function AddMovieDetails() {
   const [description, setDescription] = useState("");
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
-
-  /*
-  const removeActor = (actorToRemove: string) => {
-    setActors((prevActors) => prevActors.filter((actor) => actor.name !== actorToRemove));
-  };
-  
-  const handleAddActor = () => {
-    if (newActor.trim()) {
-      setActors([...actors, { name: newActor, role: newRole.trim() || "No role specified" }]);
-      setNewActor("");
-      setNewRole("");
-    }
-  };
-  */
 
   const handleSaveChanges = async () => {
     const movieData = {
@@ -102,7 +86,7 @@ export default function AddMovieDetails() {
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         ></textarea>
-
+      
       {/* Categories Section */}
       <label className={styles.label}>Category</label>
       <div className={styles.categoryOptions}>
@@ -216,49 +200,11 @@ export default function AddMovieDetails() {
         </div>
       )}
 
-
-
-
-
-
-      {/* 
-        <label className={styles.label}>Actors</label>
-      <input
-        type="text"
-        placeholder="Add actor..."
-        className={styles.input}
-        value={newActor}
-        onChange={(e) => setNewActor(e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Add role (optional)..."
-        className={styles.input}
-        value={newRole}
-        onChange={(e) => setNewRole(e.target.value)}
-      />
-      <button className={styles.addButton} onClick={handleAddActor}>
-        Add Actor
-      </button>
-      <div className={styles.tagContainer}>
-        {actors.map((actor, index) => (
-          <div key={index} className={styles.actorTag}>
-            <span>{actor.name}</span>
-            {actor.role && <span className={styles.actorRole}>({actor.role})</span>}
-            <button className={styles.removeButton} onClick={() => removeActor(actor.name)}>
-              ✖
-            </button>
-          </div>
-        ))}
-      </div>
-      */}  
-
       {/* Buttons at the Bottom */}
       <div className={styles.buttonContainer}>
         <button className={styles.saveButton} onClick={handleSaveChanges}>
           Add Movie
         </button>
-       {/* <button className={styles.deleteButton}>Delete Movie</button> */}
       </div>
     </div>
   );
