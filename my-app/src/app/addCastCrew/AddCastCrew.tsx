@@ -10,25 +10,25 @@ interface CastCrewMember {
 }
 
 interface AddCastCrewProps {
-    setShowModal: (show: boolean) => void;
+    setShowModalAction: (show: boolean) => void;
     castCrew: CastCrewMember[];
-    setCastCrew: (crew: CastCrewMember[]) => void;
+    setCastCrewAction: (crew: CastCrewMember[]) => void;
 }
 
-export default function AddCastCrew({ setShowModal, castCrew, setCastCrew }: AddCastCrewProps) {
+export default function AddCastCrew({ setShowModalAction, castCrew, setCastCrewAction }: AddCastCrewProps) {
     const [newName, setNewName] = useState("");
     const [newRole, setNewRole] = useState("Actor");
     
     const handleAddCastCrew = () => {
         if (newName.trim()) {
-            setCastCrew([...castCrew, { name: newName, role: newRole }]);
+            setCastCrewAction([...castCrew, { name: newName, role: newRole }]);
             setNewName("");
             setNewRole("Actor");
         }
     };
 
     const handleDeleteCastCrew = (name: string) => {
-        setCastCrew(castCrew.filter((member) => member.name !== name));
+        setCastCrewAction(castCrew.filter((member) => member.name !== name));
     };
 
     return (
@@ -69,7 +69,7 @@ export default function AddCastCrew({ setShowModal, castCrew, setCastCrew }: Add
                 ))}
             </ul>
 
-            <button onClick={() => setShowModal(false)}>Done</button>
+            <button onClick={() => setShowModalAction(false)}>Done</button>
         </div>
     );
 }
