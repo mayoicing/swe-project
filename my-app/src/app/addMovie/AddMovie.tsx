@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./AddMovie.module.css";
 import axios from "axios";
+import Link from "next/link";
 
 interface Actor {
   name: string;
@@ -35,10 +36,11 @@ export default function AddMovieDetails() {
   const [description, setDescription] = useState("");
   const router = useRouter();
 
+  /*
   const removeActor = (actorToRemove: string) => {
     setActors((prevActors) => prevActors.filter((actor) => actor.name !== actorToRemove));
   };
-
+  
   const handleAddActor = () => {
     if (newActor.trim()) {
       setActors([...actors, { name: newActor, role: newRole.trim() || "No role specified" }]);
@@ -46,8 +48,6 @@ export default function AddMovieDetails() {
       setNewRole("");
     }
   };
-
-  /*
   const handleAddSchedule = () => {
     if (newDate && newTime) {
       setSchedule([...schedule, { date: newDate, time: newTime }]);
@@ -59,7 +59,7 @@ export default function AddMovieDetails() {
   const removeSchedule = (index: number) => {
     setSchedule(schedule.filter((_, i) => i !== index));
   };
-*/
+  */
 
   const handleSaveChanges = async () => {
     const movieData = {
@@ -202,7 +202,12 @@ export default function AddMovieDetails() {
         />
 
       {/* Actors Section */}
-      <label className={styles.label}>Actors</label>
+      <div className={styles.addButton}>
+        <Link href='/addCastCrew'>Add Cast/Crew Member</Link>
+      </div>
+
+      {/* 
+        <label className={styles.label}>Actors</label>
       <input
         type="text"
         placeholder="Add actor..."
@@ -231,6 +236,7 @@ export default function AddMovieDetails() {
           </div>
         ))}
       </div>
+      */}  
 
       {/* Scheduled Times Section */}
      {/* <label className={styles.label}>Scheduled Times</label>
