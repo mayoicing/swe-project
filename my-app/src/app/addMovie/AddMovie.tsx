@@ -195,7 +195,7 @@ export default function AddMovieDetails() {
        {showModal && (
         <div className={styles.modalBackdrop}>
           <div className={styles.modalContent}>
-            <AddCastCrew setShowModal={setShowModal} castCrew={actors} setCastCrew={setActors} />
+            <AddCastCrew setShowModalAction={setShowModal} castCrew={actors} setCastCrewAction={setActors} />
           </div>
         </div>
       )}
