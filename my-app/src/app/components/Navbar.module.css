@@ -1,88 +1,51 @@
-/* Style - Navbar component */
+/* Style - Navbar */
 
+/* Entire user navbar */
 .navbar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 10px 40px;
-    color: #ffffff;
-    background-color: #1C2337;
-    opacity: 95%;
-    height: 75px;
+    justify-content: space-between;
     position: sticky;
-    top: 0; 
-    z-index: 1000; 
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    background: #1C2337;
+    opacity: 95%;
 }
 
+/* Left section of user navbar */
 .leftSection {
     display: flex;
-    justify-content: space-around;
     align-items: center;
-    gap: 10px;
-    width: 55%;
+    gap: 1em;
+    padding-left: 2.5em;
 }
 
-.slaytix {
-    font-size: 35px;
+/* SlayTix logo */
+.leftSection a {
+    font-size: 30px;
     font-weight: bold;
-}
-
-.links {
-    display: flex;
-    gap: 35px;
-    font-size: 20px;
-    font-weight: bold;
-    height: 100%;
-    align-items: center;
-}
-
-.links li {
-    display: flex;
-    align-items: center;
-    position: relative;
-    padding: 10px;
-    transition: all 0.3s ease;
-    z-index: 1;
-    height: 100%;
-}
-
-.links li {
-    list-style: none;
-}
-
-.links li a {
     color: white;
     text-decoration: none;
-    transition: all 0.3s ease;
 }
 
-.links li:hover::before {
-    opacity: 1;
-}
-
-.links li:hover a {
-    text-decoration: underline;
-}
-
-/* Style for the Logout button */
-.logout {
-    background-color: transparent;
-    color: white;
-    border: none;
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    padding: 10px;
-    transition: all 0.3s ease;
+/* Right section of user navbar */
+.rightSection {
     display: flex;
     align-items: center;
 }
 
-.logout:hover {
-    text-decoration: underline;
-    opacity: 0.8;
+/* All buttons in right section */
+.rightSection button {
+    background-color: transparent;
+    border: none;
+    padding: 1em 2em;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.logout:focus {
-    outline: none;
-}
+/* Change BG color of buttons on hover */
+.rightSection button:hover { background-color: #7E22CE; }
