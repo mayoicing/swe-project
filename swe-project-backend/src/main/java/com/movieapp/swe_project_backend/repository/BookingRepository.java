@@ -9,5 +9,5 @@ import com.movieapp.swe_project_backend.model.Booking;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
-    List<Booking> findByUserID(int userID);
+    List<Booking> findByUserUserID(int userID);
 }

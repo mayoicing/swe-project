@@ -19,7 +19,7 @@ public class Booking{
 
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false)
-    private UserInfo userID;
+    private UserInfo user;
 
     @ManyToOne
     @JoinColumn(name = "movieShowID", nullable = false)
@@ -43,8 +43,8 @@ public class Booking{
     public Booking() {}
 
     // Constructor
-    public Booking(UserInfo userID, MovieShow movieShow, PaymentCard paymentCard, int noOfTickets, float totalPrice, PromoCode promoCode) {
-        this.userID = userID;
+    public Booking(UserInfo user, MovieShow movieShow, PaymentCard paymentCard, int noOfTickets, float totalPrice, PromoCode promoCode) {
+        this.user = user;
         this.movieShow = movieShow;
         this.paymentCard = paymentCard;
         this.noOfTickets = noOfTickets;
@@ -56,8 +56,8 @@ public class Booking{
     public int getBookingID() { return bookingID; }
     public void setBookingID(int bookingID) { this.bookingID = bookingID; }
 
-    public UserInfo getUserID() { return userID; }
-    public void setUserID(UserInfo userID) { this.userID = userID; }
+    public UserInfo getUser() { return user; }
+    public void setUser(UserInfo user) { this.user = user; }
 
     public MovieShow getMovieShow() { return movieShow; }
     public void setMovieShow(MovieShow movieShow) { this.movieShow = movieShow; }

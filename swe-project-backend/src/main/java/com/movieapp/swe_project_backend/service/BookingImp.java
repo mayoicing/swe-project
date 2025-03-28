@@ -22,7 +22,7 @@ public class BookingImp implements BookingService {
 
     @Override
     public List<Booking> getBookingByUserId(int userID) {
-        return bookingRepository.findByUserID(userID);
+        return bookingRepository.findByUserUserID(userID);
     }
 
     @Override
