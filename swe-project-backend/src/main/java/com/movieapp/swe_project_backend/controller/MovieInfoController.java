@@ -34,6 +34,7 @@ public class MovieInfoController {
     // Convert DTO to Entity (MovieInfo)
     private MovieInfo convertToEntity(MovieInfoDTO movieInfoDTO) {
         MovieInfo movieInfo = new MovieInfo();
+        movieInfo.setMovieId(movieInfoDTO.getMovieID());
         movieInfo.setTitle(movieInfoDTO.getTitle());
         movieInfo.setDescription(movieInfoDTO.getDescription());
         movieInfo.setGenre(movieInfoDTO.getGenre());
@@ -44,14 +45,7 @@ public class MovieInfoController {
         movieInfo.setDuration(movieInfoDTO.getMovieDuration());
         return movieInfo;
     }
-/*
-    @PostMapping("/add")
-    public String add(@RequestBody MovieInfoDTO movieInfoDTO) { // Fixed parameter name
-        MovieInfo movieInfo = convertToEntity(movieInfoDTO); // Convert DTO to Entity
-        movieInfoService.saveMovieInfo(movieInfo); // Use the service to save
-        return "Movie info is added";
-    }
-    */
+
     @PostMapping("/add")
     public ResponseEntity<Map<String, Object>> add(@RequestBody MovieInfoDTO movieInfoDTO) { // Fixed parameter name
         MovieInfo movieInfo = convertToEntity(movieInfoDTO); // Convert DTO to Entity
@@ -81,6 +75,7 @@ public class MovieInfoController {
 
             // Convert MovieInfo to MovieInfoDTO
             MovieInfoDTO movieInfoDTO = new MovieInfoDTO(
+                movieInfo.getMovieId(),
                 movieInfo.getTitle(),
                 movieInfo.getDescription(),
                 movieInfo.getGenre(),
@@ -107,6 +102,7 @@ public class MovieInfoController {
 
             // Convert MovieInfo to MovieInfoDTO
             MovieInfoDTO movieInfoDTO = new MovieInfoDTO(
+                movieInfo.getMovieId(),
                 movieInfo.getTitle(),
                 movieInfo.getDescription(),
                 movieInfo.getGenre(),
