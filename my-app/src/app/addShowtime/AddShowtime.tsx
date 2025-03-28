@@ -82,17 +82,25 @@ export default function AddShowtimePage() {
     if (showConflict) {
       return alert("Time clash: This auditorium already has a show at the selected time.");
     }
-
-    await axios.post("http://localhost:8080/movieshow/add", {
-      movieID: movie.movieId,
-      auditoriumID: auditorium.auditoriumID,
-      showStartTime: startTime,
-      availableSeats: auditorium.noOfSeats,
+    try {
+      const response = await axios.post("http://localhost:8080/movieshow/add", {
+        movieID: movie.movieId,
+        auditoriumID: auditorium.auditoriumID,
+        showStartTime: startTime,
+        availableSeats: auditorium.noOfSeats,
     });
+
+    if (response.data) {
+      console.log("New Showtime ID:", response.data.movieShowID);
+    }
 
     fetchShowtimes(movie.movieId);
     alert("Showtime added!");
-  };
+  } catch (err) {
+    console.error("Error adding showtime", err);
+    alert("Failed to add showtime.");
+  }
+};
 
   const deleteShowtime = async (id: number) => {
     await axios.delete(`http://localhost:8080/movieshow/delete/${id}`);

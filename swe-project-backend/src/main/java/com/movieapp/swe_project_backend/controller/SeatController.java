@@ -1,5 +1,7 @@
 package com.movieapp.swe_project_backend.controller;
 
+import com.movieapp.swe_project_backend.dto.SeatSelectionDTO;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -49,5 +51,17 @@ public class SeatController {
     public ResponseEntity<String> deleteSeat(@PathVariable int id) {
         seatService.deleteSeat(id);
         return ResponseEntity.ok("Seat deleted successfully!");
+    }
+
+    @PostMapping("/updateSeatStatus")
+    public ResponseEntity<String> updateSeatStatus(@RequestBody SeatSelectionDTO request) {
+        // Extract auditoriumID and selectedSeats from the request
+        int auditoriumID = request.getAuditoriumID();
+        List<String> selectedSeats = request.getSelectedSeats();
+
+        // Update the seat status (mark selected seats as unavailable)
+        seatService.updateSeatStatus(auditoriumID, selectedSeats);
+
+        return ResponseEntity.ok("Seat status updated successfully!");
     }
 }

@@ -11,4 +11,5 @@ public interface SeatService {
     List<Seat> getSeatsByAuditorium(int auditoriumID);
    Optional<Seat> getSeatById(int seatID);
     void deleteSeat(int seatID);
+    void updateSeatStatus(int auditoriumID, List<String> selectedSeats);
 }

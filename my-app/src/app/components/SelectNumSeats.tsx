@@ -1,12 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./SelectNumSeats.module.css";
 
 export default function SelectNumSeats() {
   const router = useRouter();
-  const [seats, setSeats] = useState({
+  const searchParams = useSearchParams();
+  const movieShowID = searchParams.get("movieShowID");
+
+  const [seats, setSeats] = useState<{ children: number; adults: number; seniors: number }>({
     children: 0,
     adults: 0,
     seniors: 0,
@@ -15,9 +18,13 @@ export default function SelectNumSeats() {
   const totalSeats = seats.children + seats.adults + seats.seniors;
 
   useEffect(() => {
+    console.log("Selected movieShowID:", movieShowID);
+  }, [movieShowID]);
+
+  useEffect(() => {
     // Save to localStorage whenever seats update
     localStorage.setItem("ticketCount", totalSeats.toString());
-  }, [totalSeats]);
+  }, [seats, totalSeats]);
 
   const handleIncrease = (category: keyof typeof seats) => {
     if (totalSeats < 9) {
@@ -33,9 +40,15 @@ export default function SelectNumSeats() {
 
   const handleNext = () => {
     if (totalSeats > 0) {
-      router.push("./seatSelection");
+      const params = new URLSearchParams();
+      params.append("movieShowID", movieShowID || "");
+      params.append("children", seats.children.toString());
+      params.append("adults", seats.adults.toString());
+      params.append("seniors", seats.seniors.toString());
+
+      router.push(`./seatSelection?${params.toString()}`);
     } else {
-      alert("Please select at least one ticket.");
+      window.alert("Please select at least one ticket.");
     }
   };
 
@@ -46,9 +59,9 @@ export default function SelectNumSeats() {
 
       <div className={styles.seatSelection}>
         {[
-          { label: "Children", subLabel: "under 13", price: 10, key: "children" },
-          { label: "Adults", subLabel: "", price: 15, key: "adults" },
-          { label: "Seniors", subLabel: "65+", price: 10, key: "seniors" },
+          { label: "Children", subLabel: "under 13", price: 5, key: "children" },
+          { label: "Adults", subLabel: "", price: 10, key: "adults" },
+          { label: "Seniors", subLabel: "65+", price: 7, key: "seniors" },
         ].map(({ label, subLabel, price, key }) => (
           <div className={styles.seatRow} key={key}>
             <div className={styles.seatInfo}>

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams} from "next/navigation";
 import styles from "./OrderSummaryForm.module.css";
 
 interface Ticket {
@@ -12,11 +12,20 @@ interface Ticket {
 
 export default function CheckoutSummary() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const movieShowID = searchParams.get("movieShowID");
   const [ticketDetails, setTicketDetails] = useState<Ticket[]>([
     { category: "Children under 13", quantity: 1, price: 10 },
     { category: "Adults", quantity: 1, price: 15 },
     { category: "Seniors 65+", quantity: 1, price: 10 },
   ]);
+
+  useEffect(() => {
+    if (movieShowID) {
+      // Handle logic related to movieShowID if necessary
+      console.log("Movie Show ID:", movieShowID);
+    }
+  }, [movieShowID]);
 
   // Calculate total price
   const totalPrice = ticketDetails.reduce(
@@ -39,7 +48,12 @@ export default function CheckoutSummary() {
   };
 
   const handleConfirmOrder = () => {
-    router.push("/checkoutSummary");
+    const orderData = {
+      movieShowID,
+      tickets: ticketDetails,
+    };
+    console.log("Confirmed order:", orderData);
+    router.push(`/checkoutSummary?movieShowID=${movieShowID}`);
   };
 
   return (
