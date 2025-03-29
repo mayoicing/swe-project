@@ -1,5 +1,13 @@
 /* Style - AddCastCrew */
 
+.modalContainer {
+    /* Style modal here */
+}
+
 .addActor {
     display: flex;
+}
+
+.buttonContainer {
+    /* Style button here */
 }

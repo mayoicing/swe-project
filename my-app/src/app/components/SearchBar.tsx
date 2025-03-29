@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import magnifyingGlass from '../images/magnifyingGlass.png';
+import sortdown from '../images/sort-down-icon.png';
 
 export default function SearchBar() {
     const [input, setInput] = useState<string>('');
@@ -18,19 +19,35 @@ export default function SearchBar() {
         router.push(`/searchResults?q=${encodeURIComponent(input)}`);
     };
 
-    return(
-        <div className={styles.search}>
-            <form onSubmit={handleSubmit}>
-                <input 
-                    type="text" 
-                    placeholder="Search..."
-                    value={input}
-                    onChange={handleInputChange}
-                />
-                <button type="submit">
-                    <Image className={styles.searchButton} src={magnifyingGlass} alt="Magnifying glass"/>
-                </button>
-            </form>
+    return (
+        <div className={styles.container}>
+
+            {/* Dropdown menu */}
+           
+            <div className={styles.dropdown}>
+                <button className={styles.dropbtn}>Filter By</button>
+                <form className={styles.dropContent}>
+                    <label>Title<input type="button" name="title"/></label>
+                    <label>Category<input type="button" name="category"/></label>
+                </form>
+            </div>
+
+            {/* Search bar */}
+            <div className={styles.searchbar}>
+                <form onSubmit={handleSubmit}>
+                    <input
+                        type="text"
+                        placeholder="Search for Movies..."
+                        value={input}
+                        onChange={handleInputChange}
+                    />
+                    <button>
+                        <Image className={styles.searchbtn} width={20} src={magnifyingGlass} alt="Q"></Image>
+                    </button>
+                </form>
+            </div>
+            
+
         </div>
     );
 }

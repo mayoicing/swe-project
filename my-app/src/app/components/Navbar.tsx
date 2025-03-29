@@ -1,10 +1,9 @@
 "use client";
-
 import styles from './Navbar.module.css';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import SearchBar from './SearchBar';
 import { useRouter } from 'next/navigation';
+import SearchBar from './SearchBar';
 
 export default function Navbar() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -50,29 +49,29 @@ export default function Navbar() {
 
     return (
         <nav className={styles.navbar}>
-
-            {/* Left section of navbar */}
+            
+            {/* Left section (SlayTix + search bar) */}
             <div className={styles.leftSection}>
-                <Link className={styles.slaytix} href='/'>SlayTix</Link>
+                <Link href='/'>SlayTix</Link>
                 <SearchBar/>
             </div>
 
-            {/* Links on right side of navbar */}
-            <ul className={styles.links}>
-                <li><Link href='/filterMovie'>Movies</Link></li>
-                <li><Link href='/'></Link>Promotions</li>
+            {/* Right section (Movies + Profile + Sign Up/Log Out) */}
+            <div className={styles.rightSection}>
+                <button><Link href='/'>Movies</Link></button>
                 {isLoggedIn ? (
                     <>
-                        <li><Link href='/userProfileAcc'>Profile</Link></li>
-                        <li><button onClick={logout} className={styles.logout}>Logout</button></li>
+                        <button><Link href='userProfileAcc'>Profile</Link></button>
+                        <button onClick={logout}>Log Out</button>
                     </>
                 ) : (
                     <>
-                        <li><Link href='/loginUser'>Log In</Link></li>
-                        <li><Link href='/registerPersonal'>Sign Up</Link></li>
+                        <button><Link href='/loginUser'>Log In</Link></button>
+                        <button><Link href='registerPersonal'>Sign Up</Link></button>
                     </>
                 )}
-            </ul>
-        </nav> 
+            </div>
+
+        </nav>
     );
 }

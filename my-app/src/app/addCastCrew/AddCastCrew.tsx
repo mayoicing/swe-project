@@ -1,8 +1,6 @@
 "use client";
 import styles from './AddCastCrew.module.css';
-import AdminNavbar from '../components/AdminNavbar';
 import { useState } from 'react';
-import Link from 'next/link';
 
 interface CastCrewMember {
     name: string;
