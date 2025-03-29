@@ -62,27 +62,14 @@ const SeatSelection: React.FC = () => {
         auditoriumID,
         selectedSeats,
         tickets: [
-          { type: "Child", quantity: children },
-          { type: "Adult", quantity: adults },
-          { type: "Senior", quantity: seniors },
+          { category: "Child", quantity: children, price: 5 },
+          { category: "Adult", quantity: adults, price: 10 },
+          { category: "Senior", quantity: seniors, price: 7 },
         ],
       };
 
       localStorage.setItem("bookingDetails", JSON.stringify(bookingDetails));
-      console.log("Seat Stuff:", auditoriumID);
-      console.log("Seat Stuff:", selectedSeats);
-
-      axios.post("http://localhost:8080/seat/updateSeatStatus", {
-        auditoriumID,
-        selectedSeats,
-      })
-      .then((response) => {
-        console.log("Seat status updated:", response.data);
-        router.push(`./orderSummary?movieShowID=${movieShowID}`);
-      })
-      .catch((error) => {
-        console.error("Error updating seat status:", error);
-      });
+      router.push(`./orderSummary?movieShowID=${movieShowID}`);
     } else {
       alert("Please select the correct number of seats.");
     }
