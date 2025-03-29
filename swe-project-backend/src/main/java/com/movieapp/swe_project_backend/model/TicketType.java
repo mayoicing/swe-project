@@ -1,7 +1,5 @@
 package com.movieapp.swe_project_backend.model;
 
-//import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -23,33 +21,18 @@ public class TicketType {
     @Column(name = "ticketType", nullable = false) 
     private TicketCategory ticketType;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "price", nullable = false) 
-    private Price price;
+    private int price;
 
     public enum TicketCategory {
         Adult, Senior, Child
-    }
-
-    public enum Price{
-         TEN("10"), SEVEN("7"), FIVE("5");
-
-        private final String value;
-
-        Price(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
     }
 
      // Default Constructor
     public TicketType() {}
 
     // Constructor
-    public TicketType(int ticketTypeID, TicketCategory ticketType, Price price) {
+    public TicketType(int ticketTypeID, TicketCategory ticketType, int price) {
         this.ticketTypeID = ticketTypeID;
         this.ticketType = ticketType;
         this.price = price;
@@ -62,6 +45,6 @@ public class TicketType {
     public TicketCategory getTicketType() { return ticketType; }
     public void setTicketType(TicketCategory ticketType) { this.ticketType = ticketType; }
 
-    public Price getPrice() { return price; }
-    public void setPrice(Price price) { this.price = price; }
+    public int getPrice() { return price; }
+    public void setPrice(int price) { this.price = price; }
 }
