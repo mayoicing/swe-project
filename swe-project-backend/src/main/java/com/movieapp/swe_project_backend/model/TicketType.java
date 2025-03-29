@@ -22,7 +22,7 @@ public class TicketType {
     private TicketCategory ticketType;
 
     @Column(name = "price", nullable = false) 
-    private int price;
+    private float price;
 
     public enum TicketCategory {
         Adult, Senior, Child
@@ -32,7 +32,7 @@ public class TicketType {
     public TicketType() {}
 
     // Constructor
-    public TicketType(int ticketTypeID, TicketCategory ticketType, int price) {
+    public TicketType(int ticketTypeID, TicketCategory ticketType, float price) {
         this.ticketTypeID = ticketTypeID;
         this.ticketType = ticketType;
         this.price = price;
@@ -45,6 +45,6 @@ public class TicketType {
     public TicketCategory getTicketType() { return ticketType; }
     public void setTicketType(TicketCategory ticketType) { this.ticketType = ticketType; }
 
-    public int getPrice() { return price; }
-    public void setPrice(int price) { this.price = price; }
+    public float getPrice() { return price; }
+    public void setPrice(float price) { this.price = price; }
 }

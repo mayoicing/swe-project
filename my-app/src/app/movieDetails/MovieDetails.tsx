@@ -116,7 +116,8 @@ export default function MovieDetails() {
         <div className="mt-6">
           <h1 className="text-3xl font-bold">{movie.title}</h1>
           <p className="text-gray-400 mt-2">{movie.genre}</p>
-          <p className="text-gray-400 mt-2">Rating: {movie.movieRating}</p>
+          <p className="text-gray-400 mt-2">Review: {movie.movieRating}</p>
+          <p className="text-gray-400 mt-2">Rating: {movie.filmCode}</p>
           <p className="text-gray-400 mt-2">Duration: {movie.movieDuration} min</p>
           <p className="mt-4">{movie.description}</p>
         </div>
