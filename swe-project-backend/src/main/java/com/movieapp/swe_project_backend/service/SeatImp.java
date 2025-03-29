@@ -57,4 +57,9 @@ public class SeatImp implements SeatService {
         // Save the updated seat statuses to the database
         seatRepository.saveAll(seats);
     }
+
+    @Override
+    public Optional<Seat> findSeatByAuditoriumAndRowAndNum(int auditoriumID, String seatRow, int seatNum) {
+        return seatRepository.findSeatByAuditorium_AuditoriumIDAndSeatRowAndSeatNum(auditoriumID, seatRow, seatNum);
+    }
 }

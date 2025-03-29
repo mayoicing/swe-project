@@ -45,6 +45,14 @@ export default function SelectNumSeats() {
       params.append("children", seats.children.toString());
       params.append("adults", seats.adults.toString());
       params.append("seniors", seats.seniors.toString());
+      params.append("totalSeats", totalSeats.toString());
+
+      console.log("Search Parameters:");
+      console.log("movieShowID:", movieShowID);
+      console.log("children:", seats.children);
+      console.log("adults:", seats.adults);
+      console.log("seniors:", seats.seniors);
+      console.log("totalSeats:", totalSeats);
 
       router.push(`./seatSelection?${params.toString()}`);
     } else {

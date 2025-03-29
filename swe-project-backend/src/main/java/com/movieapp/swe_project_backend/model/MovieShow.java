@@ -20,17 +20,17 @@ public class MovieShow {
     @Column(name = "movieShowID")
     private int movieShowID;
 
-    @Column(name = "movieID")
+    @Column(name = "movieID", nullable = false)
     private int movieID;
 
-    @Column(name = "auditoriumID")
+    @Column(name = "auditoriumID", nullable = false)
     private int auditoriumID;
 
     @Column(name = "showStartTime")
     private LocalDateTime showStartTime;
 
     @Column(name = "available_seats")
-    @JsonProperty("avaliable_seats")
+    @JsonProperty("available_seats")
     private int availableSeats;
 
     public MovieShow() {}

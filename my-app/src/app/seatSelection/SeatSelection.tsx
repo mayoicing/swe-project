@@ -1,5 +1,5 @@
 "use client";
-
+import axios from 'axios';
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./SeatSelection.module.css";
@@ -16,18 +16,15 @@ const SeatSelection: React.FC = () => {
   const children = parseInt(searchParams.get("children") || "0", 10);
   const adults = parseInt(searchParams.get("adults") || "0", 10);
   const seniors = parseInt(searchParams.get("seniors") || "0", 10);
-
-  const totalSeats = children + adults + seniors;
-
+  const totalSeats = parseInt(searchParams.get("totalSeats") || "0", 10);
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [maxSeats, setMaxSeats] = useState<number>(0);
   const [auditoriumID, setAuditoriumID] = useState<string | null>(null);
 
 
-  const wheelchairSeats = new Set(["1-2", "1-7", "2-3", "2-6"]);
+  const wheelchairSeats = new Set(["B-3", "C-4", "B-8", "C-7"]);
 
   useEffect(() => {
-    //const ticketCount = parseInt(localStorage.getItem("ticketCount") || "0", 10);
     if (totalSeats > 0) {
       setMaxSeats(totalSeats);
     } else {
@@ -37,19 +34,20 @@ const SeatSelection: React.FC = () => {
 
   useEffect(() => {
     // Fetch the movie show details, including the auditoriumID
-    if (movieShowID) {
-      fetch(`/movieshow/get/${movieShowID}`)
-        .then((response) => response.json())
-        .then((data) => {
-          // Assuming the response contains the auditoriumID
-          setAuditoriumID(data.auditoriumID);
-        })
-        .catch((error) => console.error("Error fetching movie show data:", error));
-    }
+      if (movieShowID) {
+        axios.get(`http://localhost:8080/movieshow/get/${movieShowID}`)
+          .then((response) => {
+            console.log("Movie show data fetched successfully:", response.data);
+            setAuditoriumID(response.data.auditoriumID);
+          })
+          .catch((error) => console.error("Error fetching movie show data:", error));
+      }  
   }, [movieShowID]);
 
   const handleSeatClick = (row: number, col: number) => {
-    const seatId = `${row}-${col}`;
+    const rowLetter = String.fromCharCode(65 + row); // Convert 0 -> A, 1 -> B, etc.
+    const seatId = `${rowLetter}-${col + 1}`; // Use lettered row format
+  
     if (selectedSeats.includes(seatId)) {
       setSelectedSeats(selectedSeats.filter((seat) => seat !== seatId));
     } else if (selectedSeats.length < maxSeats) {
@@ -58,7 +56,7 @@ const SeatSelection: React.FC = () => {
   };
 
   const handleConfirmSelection = () => {
-    if (selectedSeats.length === maxSeats && auditoriumID) {
+    if (selectedSeats.length === maxSeats) {
       const bookingDetails = {
         movieShowID,
         auditoriumID,
@@ -71,24 +69,20 @@ const SeatSelection: React.FC = () => {
       };
 
       localStorage.setItem("bookingDetails", JSON.stringify(bookingDetails));
+      console.log("Seat Stuff:", auditoriumID);
+      console.log("Seat Stuff:", selectedSeats);
 
-      // Make an API call to update seat availability
-      fetch("/seat/updateSeatStatus", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          auditoriumID,
-          selectedSeats,
-        }),
+      axios.post("http://localhost:8080/seat/updateSeatStatus", {
+        auditoriumID,
+        selectedSeats,
       })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Seat status updated:", data);
-          router.push(`./orderSummary?movieShowID=${movieShowID}`);
-        })
-        .catch((error) => console.error("Error updating seat status:", error));
+      .then((response) => {
+        console.log("Seat status updated:", response.data);
+        router.push(`./orderSummary?movieShowID=${movieShowID}`);
+      })
+      .catch((error) => {
+        console.error("Error updating seat status:", error);
+      });
     } else {
       alert("Please select the correct number of seats.");
     }
@@ -103,14 +97,14 @@ const SeatSelection: React.FC = () => {
         {Array.from({ length: ROWS }, (_, rowIndex) => (
           <div key={rowIndex} className={styles.seatRow}>
             {Array.from({ length: COLS }, (_, colIndex) => {
-              const seatId = `${rowIndex}-${colIndex}`;
-              const isSelected = selectedSeats.includes(seatId);
-              const isWheelchair = wheelchairSeats.has(seatId);
-              const rowLetter = String.fromCharCode(65 + rowIndex); // A, B, C, ...
-              const seatLabel = `${rowLetter}${colIndex + 1}`;
+              const rowLetter = String.fromCharCode(65 + rowIndex);
+              const formattedSeatId = `${rowLetter}-${colIndex + 1}`;
+              const isSelected = selectedSeats.includes(formattedSeatId);
+              const isWheelchair = wheelchairSeats.has(formattedSeatId);
+              const seatLabel = formattedSeatId;
               return (
                 <div
-                  key={seatId}
+                  key={formattedSeatId}
                   className={`${styles.seat} ${isSelected ? styles.selected : ""} ${isWheelchair ? styles.wheelchair : ""}`}
                   onClick={() => handleSeatClick(rowIndex, colIndex)}
                 >
@@ -118,7 +112,6 @@ const SeatSelection: React.FC = () => {
                 </div>
               );
             })}
-
           </div>
         ))}
       </div>
