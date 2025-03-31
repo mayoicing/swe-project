@@ -8,7 +8,12 @@ import sortdown from '../images/sort-down-icon.png';
 
 export default function SearchBar() {
     const [input, setInput] = useState<string>('');
+    const [isActive, setIsActive] = useState(false);
     const router = useRouter();
+
+    const toggleActive = () => {
+        setIsActive(!isActive);
+    };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInput(e.target.value);
@@ -23,10 +28,9 @@ export default function SearchBar() {
         <div className={styles.container}>
 
             {/* Dropdown menu */}
-           
             <div className={styles.dropdown}>
-                <button className={styles.dropbtn}>Filter By</button>
-                <form className={styles.dropContent}>
+                <button className={styles.dropbtn} onClick={toggleActive}>Filter By</button>
+                <form className={isActive ? styles.dropContent2 : styles.dropContent}>
                     <label>Title<input type="button" name="title"/></label>
                     <label>Category<input type="button" name="category"/></label>
                 </form>
