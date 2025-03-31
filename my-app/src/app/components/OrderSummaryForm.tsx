@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams} from "next/navigation";
 import styles from "./OrderSummaryForm.module.css";
 
 interface Ticket {
@@ -12,11 +12,37 @@ interface Ticket {
 
 export default function CheckoutSummary() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const movieShowID = searchParams.get("movieShowID");
+  const [seats, setSeats] = useState<string[]>([]);
+
   const [ticketDetails, setTicketDetails] = useState<Ticket[]>([
-    { category: "Children under 13", quantity: 1, price: 10 },
-    { category: "Adults", quantity: 1, price: 15 },
-    { category: "Seniors 65+", quantity: 1, price: 10 },
+    { category: "Children under 13", quantity: 1, price: 5 },
+    { category: "Adults", quantity: 1, price: 10 },
+    { category: "Seniors 65+", quantity: 1, price: 7 },
   ]);
+  const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (movieShowID) {
+      console.log("Movie Show ID:", movieShowID);
+    }
+
+  // Retrieve booking detailsfrom localStorage
+  const storedBookingDetails = localStorage.getItem("bookingDetails");
+  if (storedBookingDetails) {
+    const bookingData = JSON.parse(storedBookingDetails);
+    if (bookingData.selectedSeats) {
+      setSelectedSeats(bookingData.selectedSeats);
+    }
+    if (bookingData.tickets) {
+      setTicketDetails(bookingData.tickets);
+    }
+    if (bookingData.selectedSeats) {
+      setSeats(bookingData.selectedSeats);
+    }
+  }
+}, [movieShowID]);
 
   // Calculate total price
   const totalPrice = ticketDetails.reduce(
@@ -35,11 +61,19 @@ export default function CheckoutSummary() {
   };
 
   const handleUpdateTickets = () => {
-    router.push("/selectNumTickets");
+    router.push(`/selectNumTickets?movieShowID=${movieShowID}`);
   };
 
   const handleConfirmOrder = () => {
-    router.push("/checkoutSummary");
+    const orderData = {
+      movieShowID,
+      tickets: ticketDetails,
+      selectedSeats,
+    };
+    localStorage.setItem("orderData", JSON.stringify(orderData));
+
+    console.log("Confirmed order:", orderData);
+    router.push(`/checkoutSummary?movieShowID=${movieShowID}`);
   };
 
   return (
@@ -82,7 +116,15 @@ export default function CheckoutSummary() {
           <p>No tickets selected.</p>
         )}
       </div>
-
+        {/* Selected Seats */}
+      <div className={styles.selectedSeatsContainer}>
+        <h2>Selected Seats</h2>
+        {seats.length > 0 ? (
+         <p>{seats.join(", ")}</p> 
+        ) : (
+          <p>No seats selected.</p>
+        )}
+      </div>
       {/* Total Price */}
       <div className={styles.totalPriceContainer}>
         <h2>Total: ${totalPrice}</h2>

@@ -24,9 +24,13 @@ public class MovieShowController {
     private MovieShowService movieShowService;
 
     @PostMapping("/add")
-    public ResponseEntity<String> addMovieShow(@RequestBody MovieShow movieShow) {
-        movieShowService.saveMovieShow(movieShow);
-        return ResponseEntity.ok("Showtime added successfully!");
+    public ResponseEntity<?> addMovieShow(@RequestBody MovieShow movieShow) {
+       try {
+            MovieShow savedMovieShow = movieShowService.saveMovieShow(movieShow);
+            return ResponseEntity.ok(savedMovieShow); // Return the saved object
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error saving showtime: " + e.getMessage());
+        }
     }
 
     @GetMapping("/getAll")

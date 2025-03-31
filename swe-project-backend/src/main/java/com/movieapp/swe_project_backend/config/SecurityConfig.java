@@ -62,7 +62,12 @@ public class SecurityConfig {
                     "/promocode/**",
                     "/movieshow/**",
                     "/movieDetails/**",
-                    "/auditorium/**"
+                    "/auditorium/**",
+                    "/booking/**",
+                    "/ticket/**",
+                    "/ticketType/**",
+                    "/seat/**",
+                    "/castandcrew/**"
                 ).permitAll()
                 .anyRequest().authenticated() // Any other requests require authentication
             )

@@ -9,6 +9,8 @@ public interface SeatService {
     Seat saveSeat(Seat seat);
     List<Seat> getAllSeats();
     List<Seat> getSeatsByAuditorium(int auditoriumID);
-   Optional<Seat> getSeatById(int seatID);
+    Optional<Seat> getSeatById(int seatID);
     void deleteSeat(int seatID);
+    void updateSeatStatus(int auditoriumID, List<String> selectedSeats);
+    Optional<Seat> findSeatByAuditoriumAndRowAndNum(int auditoriumID, String seatRow, int seatNum);
 }
