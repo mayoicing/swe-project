@@ -20,11 +20,34 @@
 /* Each individual label (Title, Category) */
 .dropdown label {
     padding: 5px;
+    padding-left: 10px;
 }
 
-/* Filter By button */ 
+/* When you hover over each label (Title, Category) */
+.dropdown label:hover {
+    cursor: pointer;
+    padding-left: 18px;
+    transition: padding-left 0.3s ease;
+}
+
+/* Filter By button (unflipped) */ 
 .dropbtn {
-    width: 10em;
+    width: 8rem;
+    background-color:#7E22CE;
+    padding: 1em;
+    border-radius: 40px;
+    height: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: 550;
+    letter-spacing: 1px;
+}
+
+/* Filter By button (flipped) */
+.dropbtn2 {
+    width: 8rem;
     background-color:#7E22CE;
     padding: 1em;
     border-radius: 50px;
@@ -35,6 +58,17 @@
     color: white;
     font-weight: 550;
     letter-spacing: 1px;
+    rotate: 90deg;
+}
+
+/* When you hover over 'Filter' button */
+.dropbtn:hover {
+    background-color:#6925a5;
+}
+
+/* When you click on 'Filter' button */
+.dropbtn:active {
+    background-color:#7E22CE;
 }
 
 /* Form (collapsed) */
@@ -42,17 +76,17 @@
     display: flex;
     flex-direction: column;
     position: absolute;
-    width: 10em;
+    width: 7em;
     background-color: #FFFFFF;
     border: 2px solid #FFFFFF;
     border-radius: 10px;
     top: 110%;
     overflow: hidden;
-
+    /* Responsible for transition */
     max-height: 0;
     opacity: 0;
     visibility: hidden;
-    transition: max-height 0.5s ease-in-out, opacity 3s ease, visibility 0s linear 0.45s;
+    transition: max-height 0.2s ease-in-out, opacity 0.5s ease, visibility 0s linear 0.5s;
 }
 
 /* Form (expanded) */
@@ -60,17 +94,29 @@
     display: flex;
     flex-direction: column;
     position: absolute;
-    width: 10em;
+    width: 7em;
     background-color: #FFFFFF;
     border: 2px solid #FFFFFF;
     border-radius: 10px;
     top: 110%;
     overflow: hidden;
-
+    /* Responsible for transition */
     max-height: 200px;
     opacity: 1;
     visibility: visible;
-    transition: max-height 0.5s ease-in-out, opacity 0.5s ease, visibility 0s linear;
+    transition: max-height 0.3s ease-in-out, opacity 0.5s ease, visibility 0s linear;
+}
+
+/* Sortdown icon */
+.sortdown {
+    rotate: 0deg;
+    transition: rotate 0.3s ease;
+}
+
+/* Flipped sortdown icon */
+.sortdownFlipped {
+    rotate: -180deg;
+    transition: rotate 0.3s ease;
 }
 
 /* Actual search bar form */
