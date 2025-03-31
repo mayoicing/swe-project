@@ -17,6 +17,10 @@
     align-items: center;
 }
 
+/* Each individual label (Title, Category) */
+.dropdown label {
+    padding: 5px;
+}
 
 /* Filter By button */ 
 .dropbtn {
@@ -33,18 +37,40 @@
     letter-spacing: 1px;
 }
 
-/* Title + Category (hidden by default) */
+/* Form (collapsed) */
 .dropContent {
     display: flex;
     flex-direction: column;
-    align-items: center;
     position: absolute;
     width: 10em;
     background-color: #FFFFFF;
     border: 2px solid #FFFFFF;
     border-radius: 10px;
-    padding: 10px;
     top: 110%;
+    overflow: hidden;
+
+    max-height: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: max-height 0.5s ease-in-out, opacity 3s ease, visibility 0s linear 0.45s;
+}
+
+/* Form (expanded) */
+.dropContent2 {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    width: 10em;
+    background-color: #FFFFFF;
+    border: 2px solid #FFFFFF;
+    border-radius: 10px;
+    top: 110%;
+    overflow: hidden;
+
+    max-height: 200px;
+    opacity: 1;
+    visibility: visible;
+    transition: max-height 0.5s ease-in-out, opacity 0.5s ease, visibility 0s linear;
 }
 
 /* Actual search bar form */
