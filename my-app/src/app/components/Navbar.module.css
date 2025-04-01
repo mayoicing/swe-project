@@ -9,8 +9,8 @@
     top: 0;
     width: 100%;
     z-index: 100;
-    background: #1C2337;
-    opacity: 95%;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.747), #5f1a9bbc);
+    opacity: 85%;
 }
 
 /* Left section of user navbar */
