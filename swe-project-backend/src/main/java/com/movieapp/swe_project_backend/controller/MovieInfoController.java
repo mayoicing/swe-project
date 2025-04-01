@@ -124,7 +124,7 @@ public class MovieInfoController {
         return movieInfoService.getMovieTitleById(movieID)
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.notFound().build());
-}
+    }
 
     // Get only the Poster
     @GetMapping("/get/{movieID}/poster")
@@ -132,7 +132,7 @@ public class MovieInfoController {
         return movieInfoService.getMoviePosterById(movieID)
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.notFound().build());
-}
+    }
 
     // Get only the Description
     @GetMapping("/get/{movieID}/description")
@@ -140,7 +140,32 @@ public class MovieInfoController {
         return movieInfoService.getMovieDescriptionById(movieID)
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.notFound().build());
-}
+    }
 
+    // Get Movies by Genre
+    @GetMapping("/get/genre/{genre}")
+    public ResponseEntity<List<MovieInfoDTO>> getMoviesByGenre(@PathVariable String genre) {
+        List<MovieInfo> movies = movieInfoService.getMoviesByGenre(genre);
 
+        if (movies.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<MovieInfoDTO> movieDTOs = movies.stream().map(movieInfo -> {
+            movieInfo.setPoster(encodeUrl(movieInfo.getPoster()));
+            return new MovieInfoDTO(
+                movieInfo.getMovieId(),
+                movieInfo.getTitle(),
+                movieInfo.getDescription(),
+                movieInfo.getGenre(),
+                movieInfo.getFilmCode(),
+                movieInfo.getTrailer(),
+                movieInfo.getPoster(),
+                movieInfo.getRating(),
+                movieInfo.getDuration()
+            );
+        }).toList();
+
+        return ResponseEntity.ok(movieDTOs);
+    }
 }

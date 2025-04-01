@@ -6,7 +6,6 @@ import Navbar from '../components/Navbar';
 import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import Image from 'next/image';
-import { error } from 'console';
 import { useRouter } from 'next/navigation';
 
 interface Movie {
@@ -24,8 +23,9 @@ export default function SearchResults() {
 
     const searchParams = useSearchParams();
     const query = searchParams.get("q") || "";
+    const type = searchParams.get("type") || "title";
 
-    const [movieResult, setMovieResult] = useState<Movie | null>(null);
+    const [movieResult, setMovieResult] = useState<Movie[]>([]);
     const [selectedTrailer, setSelectedTrailer] = useState<string | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [movieid, setMovieId] = useState<number | null>(null);
@@ -33,22 +33,34 @@ export default function SearchResults() {
 
 
     useEffect(()=>{
-        axios
-            .get(`http://localhost:8080/movieinfo/get/title/${query}`)
-            .then((response)=>{
-            const decodedPosterURL = decodeURIComponent(response.data.moviePosterUrl.trimEnd());
-            setMovieResult({...response.data, moviePosterUrl: decodedPosterURL});
-            setMovieId(response.data.movieID);
-        })
-        .catch((error)=> {
-            console.error("Error fetching movie data: ", error);    
-        });
-    },[query]);
+        if (!query) return;
 
-    const handleBookTicket = () => {
-        if (movieid) {
-            router.push(`/movieDetails/${movieid}`);
-        }
+        const endpoint =
+            type === "title"
+                ? `http://localhost:8080/movieinfo/get/title/${query}`
+                : `http://localhost:8080/movieinfo/get/genre/${query}`;
+
+        axios.get(endpoint)
+            .then((response) => {
+                let data = response.data;
+                if (type === "title") {
+                    data = [data]; //convert single movie object to an array
+                }
+                const formattedMovies = data.map((movie: Movie) => ({
+                    ...movie,
+                    moviePosterUrl: decodeURIComponent(movie.moviePosterUrl.trimEnd())
+                }));
+                setMovieResult(formattedMovies);
+                setMovieId(response.data.movieID);
+            })
+            .catch((error)=> {
+                console.error("Error fetching movie data: ", error);    
+                setMovieResult([]); // clear results on error
+            });
+    },[query, type]);
+
+    const handleBookTicket = (movieID: number) => {
+            router.push(`/movieDetails/${movieID}`);
     };
 
     const openTrailer = (trailerUrl: string) => {
@@ -64,29 +76,33 @@ export default function SearchResults() {
     return (
         <div className={styles.container}>
             <Navbar/>
-            <h1>Search Results for "{query}"</h1>
+            <h1>Search Results for "{query}" ({type})</h1>
             <div className={styles.grid} >
-                {movieResult ? (
-                    <div className={styles.movieCard}>
-                        <div className={styles.posterContainer}>
-                            <div className={styles.posterWrapper}>
-                        <Image
-                            src={movieResult.moviePosterUrl}
-                            alt={movieResult.title}
-                            width={225}
-                            height={325}
-                            className={styles.poster}
-                        />
-                        <div className={styles.posterOverlay}></div>
-                        <button className={styles.bookButton} onClick={handleBookTicket}>Book Ticket</button>
-                    </div>
-                </div>
-                <p className={styles.movieTitle}>{movieResult.title}</p>
-                <p className={styles.filmCode}>{movieResult.filmCode}</p>
-                <button className={styles.trailerButton} onClick={() => openTrailer(movieResult.trailerUrl)}>
-                    ▶ Play Trailer
-                </button>
-            </div>
+                {movieResult.length > 0 ? (
+                    movieResult.map((movie) => (
+                        <div key={movie.movieID} className={styles.movieCard}>
+                            <div className={styles.posterContainer}>
+                                <div className={styles.posterWrapper}>
+                                    <Image
+                                        src={movie.moviePosterUrl}
+                                        alt={movie.title}
+                                        width={225}
+                                        height={325}
+                                        className={styles.poster}
+                                    />
+                                    <div className={styles.posterOverlay}></div>
+                                    <button className={styles.bookButton} onClick={() => handleBookTicket(movie.movieID)}>
+                                    Book Ticket
+                                    </button>
+                                </div>
+                            </div>
+                            <p className={styles.movieTitle}>{movie.title}</p>
+                            <p className={styles.filmCode}>{movie.filmCode}</p>
+                            <button className={styles.trailerButton} onClick={() => openTrailer(movie.trailerUrl)}>
+                                ▶ Play Trailer
+                            </button>
+                        </div>
+                    ))
                 ) : (
                     <p>No movie found for "{query}"</p>
                 )} 

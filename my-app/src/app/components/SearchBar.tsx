@@ -1,7 +1,7 @@
 "use client";
 import styles from './SearchBar.module.css';
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import magnifyingGlass from '../images/magnifyingGlass.png';
 import sortdown from '../images/sort-down-icon.png';
@@ -10,7 +10,17 @@ export default function SearchBar() {
     const [input, setInput] = useState<string>('');
     const [isActive, setIsActive] = useState(false);
     const [isFlipped, setIsFlipped] = useState(false);
+    const [searchType, setSearchType] = useState<'title' | 'category'>('title'); // Track search type
     const router = useRouter();
+    const searchParams = useSearchParams();
+
+    const typeFromURL = searchParams.get('type') as 'title' | 'category';
+
+    useEffect(() => {
+        if (typeFromURL) {
+            setSearchType(typeFromURL);
+        }
+    }, [typeFromURL]);
 
     const toggleActive = () => {
         setIsActive(!isActive);
@@ -24,9 +34,15 @@ export default function SearchBar() {
         setInput(e.target.value);
     };
 
+    const handleSearchTypeChange = (type: 'title' | 'category') => {
+        setSearchType(type);
+        setIsActive(false); // Close dropdown after selection
+        setIsFlipped(false);
+    };
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        router.push(`/searchResults?q=${encodeURIComponent(input)}`);
+        router.push(`/searchResults?q=${encodeURIComponent(input)}&type=${searchType}`);
     };
 
     return (
@@ -35,12 +51,13 @@ export default function SearchBar() {
             {/* Dropdown menu */}
             <div className={styles.dropdown}>
                 <button className={styles.dropbtn} onClick={ (event) => { toggleActive(); toggleFlipped(); } }>Filter By
+                    {/*Filter By: {searchType === 'title' ? 'Title' : 'Category'}*/}
                     <Image src={sortdown} alt="sortdown icon" className={isFlipped ? styles.sortdownFlipped : styles.sortdown}></Image>
                 </button>
-                <form className={isActive ? styles.dropContent2 : styles.dropContent}>
-                    <label>Title<input type="button" name="title"/></label>
-                    <label>Category<input type="button" name="category"/></label>
-                </form>
+                <div className={isActive ? styles.dropContent2 : styles.dropContent}>
+                    <button onClick={() => handleSearchTypeChange('title')}>Title</button>
+                    <button onClick={() => handleSearchTypeChange('category')}>Category</button>
+                </div>
             </div>
 
             {/* Search bar */}
@@ -48,7 +65,7 @@ export default function SearchBar() {
                 <form onSubmit={handleSubmit}>
                     <input
                         type="text"
-                        placeholder="Search for Movies..."
+                        placeholder={`Search for ${searchType === 'title' ? 'Movies' : 'Genres'}...`}
                         value={input}
                         onChange={handleInputChange}
                     />
@@ -57,10 +74,6 @@ export default function SearchBar() {
                     </button>
                 </form>
             </div>
-            
-
         </div>
     );
 }
-
-
