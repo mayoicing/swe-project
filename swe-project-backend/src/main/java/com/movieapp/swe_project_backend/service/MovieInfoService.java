@@ -17,5 +17,5 @@ public interface MovieInfoService {
     
     Optional<String> getMoviePosterById(int movieID);
 
-    
+    public List<MovieInfo> getMoviesByGenre(String genre);
 }

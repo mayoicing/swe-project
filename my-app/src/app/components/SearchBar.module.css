@@ -1,34 +1,147 @@
 /* Style - SearchBar */
 
-.search {
-    flex-grow: 1;
+/* Container for entire search bar (including dropdown) */
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #E8F1FD;
+    border-radius: 50px;
+    padding: 1px 5px;
+}
+
+/* Container for dropdown menu */
+.dropdown {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Each individual label (Title, Category) */
+.dropdown label {
+    padding: 5px;
+    padding-left: 10px;
+}
+
+/* When you hover over each label (Title, Category) */
+.dropdown label:hover {
+    cursor: pointer;
+    padding-left: 18px;
+    transition: padding-left 0.3s ease;
+}
+
+/* Filter By button (unflipped) */ 
+.dropbtn {
+    width: 8rem;
+    background-color:#7E22CE;
+    padding: 1em;
+    border-radius: 40px;
+    height: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: 550;
+    letter-spacing: 1px;
+}
+
+/* Filter By button (flipped) */
+.dropbtn2 {
+    width: 8rem;
+    background-color:#7E22CE;
+    padding: 1em;
+    border-radius: 50px;
+    height: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: 550;
+    letter-spacing: 1px;
+    rotate: 90deg;
+}
+
+/* When you hover over 'Filter' button */
+.dropbtn:hover {
+    background-color:#6925a5;
+}
+
+/* When you click on 'Filter' button */
+.dropbtn:active {
+    background-color:#7E22CE;
+}
+
+/* Form (collapsed) */
+.dropContent {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    width: 7em;
+    background-color: #FFFFFF;
+    border: 2px solid #FFFFFF;
+    border-radius: 10px;
+    top: 110%;
+    overflow: hidden;
+    /* Responsible for transition */
+    max-height: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: max-height 0.2s ease-in-out, opacity 0.5s ease, visibility 0s linear 0.5s;
+}
+
+/* Form (expanded) */
+.dropContent2 {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    width: 7em;
+    background-color: #FFFFFF;
+    border: 2px solid #FFFFFF;
+    border-radius: 10px;
+    top: 110%;
+    overflow: hidden;
+    /* Responsible for transition */
+    max-height: 200px;
+    opacity: 1;
+    visibility: visible;
+    transition: max-height 0.3s ease-in-out, opacity 0.5s ease, visibility 0s linear;
+}
+
+/* Sortdown icon */
+.sortdown {
+    rotate: 0deg;
+    transition: rotate 0.3s ease;
+}
+
+/* Flipped sortdown icon */
+.sortdownFlipped {
+    rotate: -180deg;
+    transition: rotate 0.3s ease;
+}
+
+/* Actual search bar form */
+.searchbar {
     display: flex;
     align-items: center;
     position: relative;
+    width: 100%;
 }
 
-.search input {
-    flex-grow: 1;
-    padding: 5px;
-    padding-left: 25px;
-    padding-right: 450px;
-    font-size: 15px;
-    border: 2px solid #222c41;
-    border-radius: 50px;
+/* Input typed into search bar */
+.searchbar input {
+    padding: 1vh;
+    padding-left: 2vh;
+    padding-right: 50vh;
     background-color: #E8F1FD;
     color: #1C2337;
 }
 
-.search input:focus {
+/* When you click on search bar */
+.searchbar input:focus {
     outline: none;
 }
 
-.searchButton {
-    position: absolute;
-    right: 10px;
-    top: 7px;
-    width: 20px;
-    height: auto;
-    background: transparent;
-    border: none;
+/* Submit button for form */
+.searchbtn {
+
 }

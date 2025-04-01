@@ -50,4 +50,9 @@ public class MovieInfoImp implements MovieInfoService{
     public Optional<String> getMoviePosterById(int movieID) {
         return movieInfoRepository.findById(movieID).map(MovieInfo::getPoster);
     }   
+
+    @Override
+    public List<MovieInfo> getMoviesByGenre(String genre) {
+        return movieInfoRepository.findByGenreContainingIgnoreCase(genre);
+    }
 }

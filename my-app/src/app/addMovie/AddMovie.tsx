@@ -4,27 +4,17 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./AddMovie.module.css";
 import axios from "axios";
+import Link from "next/link";
+import AddCastCrew from "../addCastCrew/AddCastCrew";
 
 interface Actor {
   name: string;
   role: string;
 }
 
-/*
-interface Schedule {
-  date: string;
-  time: string;
-}
-*/
-
 export default function AddMovieDetails() {
   const [category, setCategory] = useState<string>("");
   const [actors, setActors] = useState<Actor[]>([]);
-  const [newActor, setNewActor] = useState<string>("");
-  const [newRole, setNewRole] = useState<string>("");
-  //const [schedule, setSchedule] = useState<Schedule[]>([]);
-  //const [newDate, setNewDate] = useState<string>("");
-  //const [newTime, setNewTime] = useState<string>("");
   const [moviePosterUrl, setMoviePosterUrl] = useState<string>("");
   const [genre, setGenre] = useState<string>("");
   const [filmCode, setFilmCode] = useState<string>("");
@@ -33,33 +23,8 @@ export default function AddMovieDetails() {
   const [movieDuration, setMovieDuration] = useState<number>(0);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [showModal, setShowModal] = useState(false);
   const router = useRouter();
-
-  const removeActor = (actorToRemove: string) => {
-    setActors((prevActors) => prevActors.filter((actor) => actor.name !== actorToRemove));
-  };
-
-  const handleAddActor = () => {
-    if (newActor.trim()) {
-      setActors([...actors, { name: newActor, role: newRole.trim() || "No role specified" }]);
-      setNewActor("");
-      setNewRole("");
-    }
-  };
-
-  /*
-  const handleAddSchedule = () => {
-    if (newDate && newTime) {
-      setSchedule([...schedule, { date: newDate, time: newTime }]);
-      setNewDate("");
-      setNewTime("");
-    }
-  };
-
-  const removeSchedule = (index: number) => {
-    setSchedule(schedule.filter((_, i) => i !== index));
-  };
-*/
 
   const handleSaveChanges = async () => {
     const movieData = {
@@ -78,7 +43,21 @@ export default function AddMovieDetails() {
     try {
       const response = await axios.post("http://localhost:8080/movieinfo/add", movieData); 
       if (response.status === 200) {
-        console.log("Movie added successfully");
+        const movieID = response.data.movieID
+
+        await Promise.all(
+          actors.map(async (actor) => {
+            const castCrewData = {
+            movieID,
+            name: actor.name,
+            role: actor.role,
+          };
+
+          console.log("Final Payload:", JSON.stringify(castCrewData));
+          await axios.post("http://localhost:8080/castandcrew/add", castCrewData);
+          })
+        );
+        alert("Movie added successfully!");
         router.push("/adminMovie");
       } else {
         alert("Failed to add movie");
@@ -108,13 +87,6 @@ export default function AddMovieDetails() {
         onChange={(e) => setDescription(e.target.value)}
         ></textarea>
       
-
-      {/* Release Date */}
-      {/*<label className={styles.label}>Release Date</label>
-      <div className={styles.dateWrapper}>
-        <input type="date" className={styles.input} />
-      </div>*/}
-
       {/* Categories Section */}
       <label className={styles.label}>Category</label>
       <div className={styles.categoryOptions}>
@@ -200,74 +172,39 @@ export default function AddMovieDetails() {
           value={movieDuration}
           onChange={(e) => setMovieDuration(parseInt(e.target.value, 10))}
         />
+      {/* Display Added Actors */}
+      <div className={styles.label}>
+        <h3>Cast & Crew</h3>
+        {actors.length > 0 ? (
+          actors.map((actor, index) => (
+            <div key={index} className={styles.castAndCrew}>
+              <span>{actor.name} - {actor.role}</span>
+            </div>
+          ))
+        ) : (
+          <p>No cast/crew members added yet.</p>
+        )}
+      </div>
 
       {/* Actors Section */}
-      <label className={styles.label}>Actors</label>
-      <input
-        type="text"
-        placeholder="Add actor..."
-        className={styles.input}
-        value={newActor}
-        onChange={(e) => setNewActor(e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Add role (optional)..."
-        className={styles.input}
-        value={newRole}
-        onChange={(e) => setNewRole(e.target.value)}
-      />
-      <button className={styles.addButton} onClick={handleAddActor}>
-        Add Actor
-      </button>
-      <div className={styles.tagContainer}>
-        {actors.map((actor, index) => (
-          <div key={index} className={styles.actorTag}>
-            <span>{actor.name}</span>
-            {actor.role && <span className={styles.actorRole}>({actor.role})</span>}
-            <button className={styles.removeButton} onClick={() => removeActor(actor.name)}>
-              ✖
-            </button>
-          </div>
-        ))}
-      </div>
+      <button className={styles.addButton} onClick={() => setShowModal(true)}>
+        Add Cast & Crew
+      </button> 
 
-      {/* Scheduled Times Section */}
-     {/* <label className={styles.label}>Scheduled Times</label>
-      <div className={styles.scheduleInputContainer}>
-        <input
-          type="date"
-          className={styles.input}
-          value={newDate}
-          onChange={(e) => setNewDate(e.target.value)}
-        />
-        <input
-          type="time"
-          className={styles.input}
-          value={newTime}
-          onChange={(e) => setNewTime(e.target.value)}
-        />
-        <button className={styles.addButton} onClick={handleAddSchedule}>
-          Add Schedule
-        </button>
-      </div>
-      <div className={styles.tagContainer}>
-        {schedule.map((entry, index) => (
-          <div key={index} className={styles.scheduleTag}>
-            <span>{entry.date} - {entry.time}</span>
-            <button className={styles.removeButton} onClick={() => removeSchedule(index)}>
-              ✖
-            </button>
+       {/* Modal Component */}
+       {showModal && (
+        <div className={styles.modalBackdrop}>
+          <div className={styles.modalContent}>
+            <AddCastCrew setShowModalAction={setShowModal} castCrew={actors} setCastCrewAction={setActors} />
           </div>
-        ))}
-      </div> */}
+        </div>
+      )}
 
       {/* Buttons at the Bottom */}
       <div className={styles.buttonContainer}>
         <button className={styles.saveButton} onClick={handleSaveChanges}>
           Add Movie
         </button>
-        <button className={styles.deleteButton}>Delete Movie</button>
       </div>
     </div>
   );

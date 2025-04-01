@@ -59,7 +59,15 @@ public class SecurityConfig {
                     "/paymentcard/update",
                     "/paymentcard/add",
                     "/usertype/**",
-                    "/promocode/**"
+                    "/promocode/**",
+                    "/movieshow/**",
+                    "/movieDetails/**",
+                    "/auditorium/**",
+                    "/booking/**",
+                    "/ticket/**",
+                    "/ticketType/**",
+                    "/seat/**",
+                    "/castandcrew/**"
                 ).permitAll()
                 .anyRequest().authenticated() // Any other requests require authentication
             )

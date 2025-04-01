@@ -6,7 +6,7 @@ import Navbar from '../components/Navbar';
 import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import Image from 'next/image';
-import { error } from 'console';
+import { useRouter } from 'next/navigation';
 
 interface Movie {
     movieID: number,
@@ -15,7 +15,7 @@ interface Movie {
     description: string,
     genre: string,
     filmCode: string,
-    trailer: string
+    trailerUrl: string
 }
 
 
@@ -23,44 +23,105 @@ export default function SearchResults() {
 
     const searchParams = useSearchParams();
     const query = searchParams.get("q") || "";
+    const type = searchParams.get("type") || "title";
 
-    const [movieResult, setMovieResult] = useState<Movie | null>(null);
+    const [movieResult, setMovieResult] = useState<Movie[]>([]);
+    const [selectedTrailer, setSelectedTrailer] = useState<string | null>(null);
+    const [showModal, setShowModal] = useState(false);
+    const [movieid, setMovieId] = useState<number | null>(null);
+    const router = useRouter();
 
 
     useEffect(()=>{
-        axios
-            .get(`http://localhost:8080/movieinfo/get/title/${query}`)
-            .then((response)=>{
-            const decodedPosterURL = decodeURIComponent(response.data.moviePosterUrl.trimEnd());
-            //const decodedPosterURL = response.data.moviePosterUrl ? decodeURIComponent(response.data.moviePosterUrl.trimEnd()) : '';
-            console.log("Decoded Poster URL:", decodedPosterURL);
-            setMovieResult({...response.data, moviePosterUrl: decodedPosterURL});
-        })
-        .catch((error)=> {
-            console.error("Error fetching movie data: ", error);    
-        });
-    },[query]);
+        if (!query) return;
+
+        const endpoint =
+            type === "title"
+                ? `http://localhost:8080/movieinfo/get/title/${query}`
+                : `http://localhost:8080/movieinfo/get/genre/${query}`;
+
+        axios.get(endpoint)
+            .then((response) => {
+                let data = response.data;
+                if (type === "title") {
+                    data = [data]; //convert single movie object to an array
+                }
+                const formattedMovies = data.map((movie: Movie) => ({
+                    ...movie,
+                    moviePosterUrl: decodeURIComponent(movie.moviePosterUrl.trimEnd())
+                }));
+                setMovieResult(formattedMovies);
+                setMovieId(response.data.movieID);
+            })
+            .catch((error)=> {
+                console.error("Error fetching movie data: ", error);    
+                setMovieResult([]); // clear results on error
+            });
+    },[query, type]);
+
+    const handleBookTicket = (movieID: number) => {
+            router.push(`/movieDetails/${movieID}`);
+    };
+
+    const openTrailer = (trailerUrl: string) => {
+        setSelectedTrailer(trailerUrl);
+        setShowModal(true);
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
+        setSelectedTrailer(null);
+    };
 
     return (
         <div className={styles.container}>
             <Navbar/>
-            <h1>Search Results for "{query}"</h1>
+            <h1>Search Results for "{query}" ({type})</h1>
             <div className={styles.grid} >
-                {movieResult ? (
-                    <div className={styles.movieCard}>
-                        <Image
-                            src={movieResult.moviePosterUrl}
-                            alt={movieResult.title}
-                            width={175}
-                            height={250}
-                        />
-                        <h2>{movieResult.title}</h2>
-                        <p>{movieResult.description}</p>
-                    </div>
+                {movieResult.length > 0 ? (
+                    movieResult.map((movie) => (
+                        <div key={movie.movieID} className={styles.movieCard}>
+                            <div className={styles.posterContainer}>
+                                <div className={styles.posterWrapper}>
+                                    <Image
+                                        src={movie.moviePosterUrl}
+                                        alt={movie.title}
+                                        width={225}
+                                        height={325}
+                                        className={styles.poster}
+                                    />
+                                    <div className={styles.posterOverlay}></div>
+                                    <button className={styles.bookButton} onClick={() => handleBookTicket(movie.movieID)}>
+                                    Book Ticket
+                                    </button>
+                                </div>
+                            </div>
+                            <p className={styles.movieTitle}>{movie.title}</p>
+                            <p className={styles.filmCode}>{movie.filmCode}</p>
+                            <button className={styles.trailerButton} onClick={() => openTrailer(movie.trailerUrl)}>
+                                ▶ Play Trailer
+                            </button>
+                        </div>
+                    ))
                 ) : (
                     <p>No movie found for "{query}"</p>
                 )} 
             </div>
+            {showModal && selectedTrailer && (
+                 <div className={styles.modalOverlay} onClick={closeModal}>
+                    <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+                        <iframe
+                            width="800"
+                            height="450"
+                            src={selectedTrailer + '?autoplay=1'}
+                            title="Movie Trailer"
+                            allow="autoplay; encrypted-media"
+                            allowFullScreen
+                        ></iframe>
+                        <button className={styles.closeButton} onClick={closeModal}>✖</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -2,7 +2,9 @@ package com.movieapp.swe_project_backend.controller;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ public class MovieInfoController {
     // Convert DTO to Entity (MovieInfo)
     private MovieInfo convertToEntity(MovieInfoDTO movieInfoDTO) {
         MovieInfo movieInfo = new MovieInfo();
+        movieInfo.setMovieId(movieInfoDTO.getMovieID());
         movieInfo.setTitle(movieInfoDTO.getTitle());
         movieInfo.setDescription(movieInfoDTO.getDescription());
         movieInfo.setGenre(movieInfoDTO.getGenre());
@@ -44,11 +47,17 @@ public class MovieInfoController {
     }
 
     @PostMapping("/add")
-    public String add(@RequestBody MovieInfoDTO movieInfoDTO) { // Fixed parameter name
+    public ResponseEntity<Map<String, Object>> add(@RequestBody MovieInfoDTO movieInfoDTO) { // Fixed parameter name
         MovieInfo movieInfo = convertToEntity(movieInfoDTO); // Convert DTO to Entity
-        movieInfoService.saveMovieInfo(movieInfo); // Use the service to save
-        return "Movie info is added";
-    }
+        movieInfo = movieInfoService.saveMovieInfo(movieInfo); // Use the service to save
+        
+         Map<String, Object> response = new HashMap<>();
+        response.put("message", "Movie info is added");
+        response.put("movieID", movieInfo.getMovieId()); // Retrieve the generated movieID
+
+        return ResponseEntity.ok(response);
+    }   
+
 
     @GetMapping("/getAll")
     public List<MovieInfo> getAllMovieInfo(){
@@ -66,6 +75,7 @@ public class MovieInfoController {
 
             // Convert MovieInfo to MovieInfoDTO
             MovieInfoDTO movieInfoDTO = new MovieInfoDTO(
+                movieInfo.getMovieId(),
                 movieInfo.getTitle(),
                 movieInfo.getDescription(),
                 movieInfo.getGenre(),
@@ -92,6 +102,7 @@ public class MovieInfoController {
 
             // Convert MovieInfo to MovieInfoDTO
             MovieInfoDTO movieInfoDTO = new MovieInfoDTO(
+                movieInfo.getMovieId(),
                 movieInfo.getTitle(),
                 movieInfo.getDescription(),
                 movieInfo.getGenre(),
@@ -113,7 +124,7 @@ public class MovieInfoController {
         return movieInfoService.getMovieTitleById(movieID)
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.notFound().build());
-}
+    }
 
     // Get only the Poster
     @GetMapping("/get/{movieID}/poster")
@@ -121,7 +132,7 @@ public class MovieInfoController {
         return movieInfoService.getMoviePosterById(movieID)
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.notFound().build());
-}
+    }
 
     // Get only the Description
     @GetMapping("/get/{movieID}/description")
@@ -129,7 +140,32 @@ public class MovieInfoController {
         return movieInfoService.getMovieDescriptionById(movieID)
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.notFound().build());
-}
+    }
 
+    // Get Movies by Genre
+    @GetMapping("/get/genre/{genre}")
+    public ResponseEntity<List<MovieInfoDTO>> getMoviesByGenre(@PathVariable String genre) {
+        List<MovieInfo> movies = movieInfoService.getMoviesByGenre(genre);
 
+        if (movies.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<MovieInfoDTO> movieDTOs = movies.stream().map(movieInfo -> {
+            movieInfo.setPoster(encodeUrl(movieInfo.getPoster()));
+            return new MovieInfoDTO(
+                movieInfo.getMovieId(),
+                movieInfo.getTitle(),
+                movieInfo.getDescription(),
+                movieInfo.getGenre(),
+                movieInfo.getFilmCode(),
+                movieInfo.getTrailer(),
+                movieInfo.getPoster(),
+                movieInfo.getRating(),
+                movieInfo.getDuration()
+            );
+        }).toList();
+
+        return ResponseEntity.ok(movieDTOs);
+    }
 }

@@ -27,7 +27,7 @@ public class MovieInfo {
     // Constructor
     public MovieInfo(int movieID, String poster, String title, String description, String genre, String filmCode, String trailer, double rating, int duration) {
         this.movieID = movieID;
-        this.movieID = movieID;
+        //this.movieID = movieID;
         this.poster = poster;
         this.title = title;
         this.description = description;

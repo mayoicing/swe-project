@@ -22,7 +22,7 @@ public class BillingAddress {
 
     @OneToOne
     @JoinColumn(name = "paymentCard", nullable = false)
-    @JsonProperty("paymentCard")
+    
     private PaymentCard paymentCard;
 
     @Column(name = "streetAddress", nullable = false)
