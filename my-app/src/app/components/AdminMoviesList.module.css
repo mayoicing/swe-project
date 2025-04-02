@@ -3,7 +3,7 @@
 /* Grid container for movies */
 .movieGrid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr); /* 3 columns */
+  grid-template-columns: repeat(5, 1fr); /* 5 columns */
   gap: 20px;
   justify-content: center;
   padding: 20px;
@@ -70,7 +70,7 @@
   .poster {
     width: 100%;
     height: 100%;
-    object-fit: fill;  /* Ensures images fill the box without distortion */
+    object-fit: fill;
   }
   
   .posterOverlay {
@@ -101,10 +101,10 @@
   }
   
   .movieTitle {
-    font-size: 20px;      /* Make title smaller */
+    font-size: 20px; 
     font-weight: bold;
     align-items: flex-start; 
-    margin-top: 8px;      /* Add space between poster and title */
+    margin-top: 8px;   
     color: white;
     text-shadow: 0px 3px 14px rgba(0, 0, 0, 0.7);
   }

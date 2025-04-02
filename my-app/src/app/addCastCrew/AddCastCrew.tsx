@@ -58,14 +58,14 @@ export default function AddCastCrew({ setShowModalAction, castCrew, setCastCrewA
             </div>
 
             {/* List of Cast/Crew Members */}
-            <ul>
+            <ul className={styles.castCrewList}>
                 {castCrew.map((member, index) => (
-                    <li key={index}>
-                        {member.name} - {member.role}
-                        <button onClick={() => handleDeleteCastCrew(member.name)}>❌</button>
+                    <li key={index} className={styles.castCrewItem}>
+                    {member.name} - {member.role}
+                    <button onClick={() => handleDeleteCastCrew(member.name)}>x</button>
                     </li>
                 ))}
-            </ul>
+                </ul>
 
             <button onClick={() => setShowModalAction(false)}>Done</button>
         </div>

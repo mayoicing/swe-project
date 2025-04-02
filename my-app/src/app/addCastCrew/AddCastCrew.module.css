@@ -1,13 +1,72 @@
 /* Style - AddCastCrew */
 
 .modalContainer {
-    /* Style modal here */
-}
-
-.addActor {
+    padding: 16px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.08);
+  }
+  
+  .addActor {
     display: flex;
-}
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .addActor input,
+  .addActor select {
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #dfe3eb;
+  }
+  
+  .buttonContainer {
+    margin-top: 8px;
+  }
+  
+  .buttonContainer button,
+  .modalContainer > button:last-child {
+    background-color: #0070f3;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .buttonContainer button:hover,
+  .modalContainer > button:last-child:hover {
+    background-color: #005bb5;
+  }
 
-.buttonContainer {
-    /* Style button here */
-}
+  .castCrewList {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0;
+  }
+  
+  .castCrewItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #e7ecf3;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+  }
+  
+  .castCrewItem button {
+    background: transparent;
+    border: none;
+    font-size: 1.1rem;
+    color: #cc0000;
+    cursor: pointer;
+  }
+  
+  .castCrewItem button:hover {
+    color: #ff0000;
+  }
+  
