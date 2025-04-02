@@ -1,6 +1,7 @@
 package com.movieapp.swe_project_backend.service;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,26 +27,34 @@ public class MovieShowSeatImp implements MovieShowSeatService {
     @Autowired
     private SeatRepository seatRepository;
 
+    @Autowired
+    private AuditoriumService auditoriumService;
+
     @Override
-    public List<MovieShowSeat> getSeatsByMovieShow(int movieShowID) {
-        return movieShowSeatRepository.findByMovieShowMovieShowID(movieShowID);
+    public List<MovieShowSeat> getUnavailableSeatsByMovieShow(int movieShowID) {
+        return movieShowSeatRepository.findByMovieShowMovieShowIDAndSeatStatus(movieShowID, MovieShowSeat.SeatStatus.Unavailable);
     }
 
     @Override
-    public void initializeSeatsForMovieShow(int movieShowID, int auditoriumID) {
-        MovieShow movieShow = movieShowRepository.findById(movieShowID).orElseThrow(
-                () -> new RuntimeException("MovieShow not found")
-        );
+    public List<MovieShowSeat> initializeSeatsForMovieShow(int movieShowID, int auditoriumID) {
+       List<MovieShowSeat> seats = new ArrayList<>();
 
-        List<Seat> seats = seatRepository.findByAuditoriumAuditoriumID(auditoriumID);
-        
-        for (Seat seat : seats) {
+        // Fetch the movie show
+        MovieShow movieShow = movieShowRepository.findById(movieShowID)
+            .orElseThrow(() -> new RuntimeException("MovieShow not found"));
+
+        // Fetch the seats for the specific auditorium
+        List<Seat> auditoriumSeats = seatRepository.findByAuditoriumAuditoriumID(auditoriumID);
+
+        // Create MovieShowSeat for each seat in the auditorium
+        for (Seat seat : auditoriumSeats) {
             MovieShowSeat movieShowSeat = new MovieShowSeat();
-            movieShowSeat.setMovieShow(movieShow);
             movieShowSeat.setSeat(seat);
-            movieShowSeat.setSeatStatus(SeatStatus.Available);
-            movieShowSeatRepository.save(movieShowSeat);
+            movieShowSeat.setMovieShow(movieShow);
+            movieShowSeat.setSeatStatus(MovieShowSeat.SeatStatus.Available);
+            seats.add(movieShowSeatRepository.save(movieShowSeat));
         }
+        return seats;
     }
 
     @Override

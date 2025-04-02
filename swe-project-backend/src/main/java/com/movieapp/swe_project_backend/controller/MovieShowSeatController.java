@@ -22,14 +22,19 @@ public class MovieShowSeatController {
     @Autowired
     private MovieShowSeatService movieShowSeatService;
 
-    @GetMapping("/{movieShowID}")
-    public List<MovieShowSeat> getSeatsByMovieShow(@PathVariable int movieShowID) {
-        return movieShowSeatService.getSeatsByMovieShow(movieShowID);
+    @GetMapping("/unavailable/{movieShowID}")
+    public List<MovieShowSeat> getUnavailableSeats(@PathVariable int movieShowID) {
+        return movieShowSeatService.getUnavailableSeatsByMovieShow(movieShowID);
     }
 
     @PostMapping("/initialize/{movieShowID}/{auditoriumID}")
-    public void initializeSeats(@PathVariable int movieShowID, @PathVariable int auditoriumID) {
-        movieShowSeatService.initializeSeatsForMovieShow(movieShowID, auditoriumID);
+    public ResponseEntity<?> initializeSeats(@PathVariable int movieShowID, @PathVariable int auditoriumID) {
+        try {
+            List<MovieShowSeat> seats = movieShowSeatService.initializeSeatsForMovieShow(movieShowID, auditoriumID);
+            return ResponseEntity.ok(seats); // Return the list of created seats
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error initializing seats: " + e.getMessage());
+        }
     }
 
     @PutMapping("/update/{movieShowSeatID}")

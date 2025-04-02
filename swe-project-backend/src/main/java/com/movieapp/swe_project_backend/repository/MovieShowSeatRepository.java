@@ -13,7 +13,7 @@ import com.movieapp.swe_project_backend.model.MovieShowSeat;
 
 @Repository
 public interface MovieShowSeatRepository extends JpaRepository<MovieShowSeat, Integer> {
-    List<MovieShowSeat> findByMovieShowMovieShowID(int movieShowID);
+    List<MovieShowSeat> findByMovieShowMovieShowIDAndSeatStatus(int movieShowID, MovieShowSeat.SeatStatus seatStatus);
 
     @Modifying
     @Transactional

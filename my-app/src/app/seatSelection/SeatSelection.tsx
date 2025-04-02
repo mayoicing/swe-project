@@ -4,6 +4,13 @@ import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./SeatSelection.module.css";
 
+interface MovieShowSeat {
+  movieShowSeatID: number;
+  movieShowID: number;
+  seatID: number;
+  seatStatus: "Available" | "Unavailable";
+}
+
 const ROWS = 6;
 const COLS = 10;
 
@@ -17,9 +24,11 @@ const SeatSelection: React.FC = () => {
   const adults = parseInt(searchParams.get("adults") || "0", 10);
   const seniors = parseInt(searchParams.get("seniors") || "0", 10);
   const totalSeats = parseInt(searchParams.get("totalSeats") || "0", 10);
+
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [maxSeats, setMaxSeats] = useState<number>(0);
   const [auditoriumID, setAuditoriumID] = useState<string | null>(null);
+  const [unavailableSeats, setUnavailableSeats] = useState<Set<string>>(new Set()); // Store unavailable seats
 
 
   const wheelchairSeats = new Set(["B-3", "C-4", "B-8", "C-7"]);
@@ -41,13 +50,28 @@ const SeatSelection: React.FC = () => {
             setAuditoriumID(response.data.auditoriumID);
           })
           .catch((error) => console.error("Error fetching movie show data:", error));
+
+          // Fetch unavailable seats for this show
+          axios.get(`http://localhost:8080/movieshowseat/unavailable/${movieShowID}`)
+            .then((response) => {
+              console.log("Unavailable seats fetched:", response.data);
+              
+              // Convert seat row and seat number to match frontend format (e.g., "A-7")
+              const formattedUnavailableSeats = response.data.map((seat: any) => 
+                `${seat.seat.seat_row}-${seat.seat.seat_num}`
+              );
+              setUnavailableSeats(new Set(formattedUnavailableSeats)); // Store in a Set for quick lookup
+            })
+            .catch((error) => console.error("Error fetching unavailable seats:", error));
       }  
   }, [movieShowID]);
 
   const handleSeatClick = (row: number, col: number) => {
     const rowLetter = String.fromCharCode(65 + row); // Convert 0 -> A, 1 -> B, etc.
     const seatId = `${rowLetter}-${col + 1}`; // Use lettered row format
-  
+    
+    if (unavailableSeats.has(seatId)) return; // Don't allow selection of unavailable seats
+
     if (selectedSeats.includes(seatId)) {
       setSelectedSeats(selectedSeats.filter((seat) => seat !== seatId));
     } else if (selectedSeats.length < maxSeats) {
@@ -88,11 +112,15 @@ const SeatSelection: React.FC = () => {
               const formattedSeatId = `${rowLetter}-${colIndex + 1}`;
               const isSelected = selectedSeats.includes(formattedSeatId);
               const isWheelchair = wheelchairSeats.has(formattedSeatId);
+              const isUnavailable = unavailableSeats.has(formattedSeatId);
               const seatLabel = formattedSeatId;
               return (
                 <div
                   key={formattedSeatId}
-                  className={`${styles.seat} ${isSelected ? styles.selected : ""} ${isWheelchair ? styles.wheelchair : ""}`}
+                  className={`${styles.seat} 
+                              ${isSelected ? styles.selected : ""} 
+                              ${isWheelchair ? styles.wheelchair : ""}
+                              ${isUnavailable ? styles.unavailable : ""}`}
                   onClick={() => handleSeatClick(rowIndex, colIndex)}
                 >
                   {isWheelchair ? "♿" : seatLabel}
