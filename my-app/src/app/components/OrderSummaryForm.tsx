@@ -6,8 +6,9 @@ import styles from "./OrderSummaryForm.module.css";
 
 interface Ticket {
   category: string;
-  quantity: number;
+  seats: string[];
   price: number;
+  quantity: number;
 }
 
 export default function CheckoutSummary() {
@@ -15,13 +16,13 @@ export default function CheckoutSummary() {
   const searchParams = useSearchParams();
   const movieShowID = searchParams.get("movieShowID");
   const [seats, setSeats] = useState<string[]>([]);
+  const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
 
   const [ticketDetails, setTicketDetails] = useState<Ticket[]>([
-    { category: "Children under 13", quantity: 1, price: 5 },
-    { category: "Adults", quantity: 1, price: 10 },
-    { category: "Seniors 65+", quantity: 1, price: 7 },
+    { category: "Children under 13", seats: [], price: 5, quantity: 0 },
+    { category: "Adults", seats: [], price: 10, quantity: 0 },
+    { category: "Seniors 65+", seats: [], price: 7, quantity: 0 },
   ]);
-  const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
 
   useEffect(() => {
     if (movieShowID) {
@@ -34,30 +35,43 @@ export default function CheckoutSummary() {
     const bookingData = JSON.parse(storedBookingDetails);
     if (bookingData.selectedSeats) {
       setSelectedSeats(bookingData.selectedSeats);
+      setSeats(bookingData.selectedSeats);
+      console.log("Selected seats:", bookingData.selectedSeats);
     }
     if (bookingData.tickets) {
-      setTicketDetails(bookingData.tickets);
-    }
-    if (bookingData.selectedSeats) {
-      setSeats(bookingData.selectedSeats);
+      // Distribute selected seats among ticket categories
+      let seatIndex = 0;
+      const updatedTickets = bookingData.tickets.map((ticket: any) => {
+        const assignedSeats = bookingData.selectedSeats.slice(seatIndex, seatIndex + ticket.quantity);
+        seatIndex += ticket.quantity; // Move index forward
+        return { ...ticket, seats: assignedSeats };
+      });
+      setTicketDetails(updatedTickets);
     }
   }
 }, [movieShowID]);
 
   // Calculate total price
   const totalPrice = ticketDetails.reduce(
-    (sum, ticket) => sum + ticket.quantity * ticket.price,
+    (sum, ticket) => sum + ticket.seats.length * ticket.price,
     0
   );
 
-  const handleDecreaseTicket = (index: number) => {
-    setTicketDetails((prevTickets) =>
-      prevTickets.map((ticket, i) =>
-        i === index && ticket.quantity > 0
-          ? { ...ticket, quantity: ticket.quantity - 1 }
+  const handleDecreaseTicket = (index: number, seatIndex: number) => {
+    setTicketDetails((prevTickets) => {
+      const updatedTickets = prevTickets.map((ticket, i) =>
+        i === index
+          ? {
+              ...ticket,
+              seats: ticket.seats.filter((_, idx) => idx !== seatIndex), // Remove the seat from the list
+            }
           : ticket
       )
-    );
+      // After updating ticketDetails, update the selectedSeats (seats)
+      const updatedSelectedSeats = updatedTickets.flatMap((ticket) => ticket.seats);
+      setSeats(updatedSelectedSeats); // Update the seats state to reflect the changes
+      return updatedTickets;
+    });
   };
 
   const handleUpdateTickets = () => {
@@ -88,27 +102,29 @@ export default function CheckoutSummary() {
             <thead>
               <tr>
                 <th>Category</th>
-                <th>Quantity</th>
+                <th>Seat</th>
                 <th>Price</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
               {ticketDetails.map((ticket, index) => (
-                <tr key={index}>
-                  <td>{ticket.category}</td>
-                  <td>{ticket.quantity}</td>
-                  <td>${ticket.price * ticket.quantity}</td>
-                  <td>
-                    <button
-                      className={styles.deleteButton}
-                      onClick={() => handleDecreaseTicket(index)}
-                      disabled={ticket.quantity === 0} // Disable button if quantity is 0
-                    >
-                      -
-                    </button>
-                  </td>
-                </tr>
+                ticket.seats.map((seat, seatIndex) => (
+                  <tr key={`${index}-${seatIndex}`}>
+                    <td>{ticket.category}</td>
+                    <td>{seat}</td>
+                    <td>${ticket.price}</td>
+                    <td>
+                      <button
+                        className={styles.deleteButton}
+                        onClick={() => handleDecreaseTicket(index, seatIndex)}
+                        disabled={ticket.seats.length === 0} // Disable button if quantity is 0
+                      >
+                        -
+                      </button>
+                    </td>
+                  </tr>
+                ))
               ))}
             </tbody>
           </table>
@@ -138,7 +154,7 @@ export default function CheckoutSummary() {
         <button
           className={styles.confirmButton}
           onClick={handleConfirmOrder}
-          disabled={ticketDetails.every((ticket) => ticket.quantity === 0)} // Prevent checkout if no tickets
+          disabled={ticketDetails.every((ticket) => ticket.seats.length === 0)} // Prevent checkout if no tickets
         >
           Confirm & Continue to Checkout
         </button>
