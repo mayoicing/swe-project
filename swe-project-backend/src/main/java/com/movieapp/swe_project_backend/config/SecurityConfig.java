@@ -67,27 +67,14 @@ public class SecurityConfig {
                     "/ticket/**",
                     "/ticketType/**",
                     "/seat/**",
-                    "/castandcrew/**"
+                    "/castandcrew/**",
+                    "/movieshowseat/**",
+                    "/movieshow/delete/**"
                 ).permitAll()
                 .anyRequest().authenticated() // Any other requests require authentication
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No sessions
             .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class); // JWT filter
-
-            /*
-            .formLogin(formLogin -> formLogin
-                .loginPage("/login") // Customize login page URL if needed
-                .permitAll() // Allow access to login page without authentication
-            )
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Apply CORS configuration
-            .exceptionHandling(exceptionHandling -> exceptionHandling
-                .authenticationEntryPoint(new Http403ForbiddenEntryPoint()) // Customize error handling
-            )
-            .rememberMe(rememberMe -> rememberMe
-                .key("uniqueAndSecretKey") // Set a unique key for token generation
-                .tokenValiditySeconds(86400) // Set token validity (e.g., 1 day)
-            );
-            */
 
         return http.build();
     }

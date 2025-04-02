@@ -82,7 +82,9 @@ export default function AddShowtimePage() {
     if (showConflict) {
       return alert("Time clash: This auditorium already has a show at the selected time.");
     }
+
     try {
+      // Add the Showtime
       const response = await axios.post("http://localhost:8080/movieshow/add", {
         movieID: movie.movieId,
         auditoriumID: auditorium.auditoriumID,
@@ -91,11 +93,16 @@ export default function AddShowtimePage() {
     });
 
     if (response.data) {
-      console.log("New Showtime ID:", response.data.movieShowID);
-    }
+      console.log("New Showtime ID:", response.data.movieShowID); 
 
-    fetchShowtimes(movie.movieId);
-    alert("Showtime added!");
+      // Initialize seats for the showtime
+      await axios.post(`http://localhost:8080/movieshowseat/initialize/${response.data.movieShowID}/${auditorium.auditoriumID}`);
+
+      alert("Showtime and seats added successfully!");
+
+      // Refresh the showtimes list
+      fetchShowtimes(movie.movieId);
+    }
   } catch (err) {
     console.error("Error adding showtime", err);
     alert("Failed to add showtime.");
@@ -103,8 +110,20 @@ export default function AddShowtimePage() {
 };
 
   const deleteShowtime = async (id: number) => {
-    await axios.delete(`http://localhost:8080/movieshow/delete/${id}`);
-    if (movie) fetchShowtimes(movie.movieId);
+    try {
+      // Delete seats for the specific movie show
+      await axios.delete(`http://localhost:8080/movieshowseat/delete/byMovieShow/${id}`);
+
+      // Delete movie showtime
+      await axios.delete(`http://localhost:8080/movieshow/delete/${id}`);
+
+      if (movie) fetchShowtimes(movie.movieId);
+
+      console.log("Showtime deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting showtime:", error);
+      alert("Error deleting showtime!");
+    }
   };
 
   return (
