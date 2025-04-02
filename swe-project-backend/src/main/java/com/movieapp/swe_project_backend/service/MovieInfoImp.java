@@ -53,6 +53,6 @@ public class MovieInfoImp implements MovieInfoService{
 
     @Override
     public List<MovieInfo> getMoviesByGenre(String genre) {
-        return movieInfoRepository.findByGenreContainingIgnoreCase(genre);
+        return movieInfoRepository.findByGenre(genre);
     }
 }

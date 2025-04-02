@@ -29,6 +29,7 @@ export default function SearchResults() {
     const [selectedTrailer, setSelectedTrailer] = useState<string | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [movieid, setMovieId] = useState<number | null>(null);
+    const [error, setError] = useState('');
     const router = useRouter();
 
 
@@ -52,10 +53,15 @@ export default function SearchResults() {
                 }));
                 setMovieResult(formattedMovies);
                 setMovieId(response.data.movieID);
+                setError('');
             })
-            .catch((error)=> {
-                console.error("Error fetching movie data: ", error);    
-                setMovieResult([]); // clear results on error
+            .catch((err: any) => {
+                if (err.response?.status === 404) {
+                    setError("Movie not found.");
+                    setMovieResult([]); // clear results on error
+                } else {
+                    setError("Error Fetching Movie");
+                }
             });
     },[query, type]);
 
