@@ -19,7 +19,7 @@ export default function AdminNavbar() {
                 <div className={styles.dropdown}>
                     <button className={styles.dropbtn}>Manage Movies</button>
                     <div className={styles.dropContent}>
-                        <Link href='/adminMovie'>Schedule Movie</Link>
+                        <Link href='/addShowtime'>Schedule Movie</Link>
                         <Link href='/addMovie'>Add Movie</Link>
                     </div>
                 </div>
