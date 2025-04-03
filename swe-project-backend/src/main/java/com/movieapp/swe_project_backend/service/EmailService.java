@@ -16,7 +16,7 @@ public class EmailService {
         String body = "Hi " + userName + ",\n\n"
                 + "Thank you for signing up for our movie app! We're excited to have you onboard.\n"
                 + "Enjoy exploring our platform and watching your favorite movies!\n\n"
-                + "Best,\nMovieApp Team";
+                + "Best,\nThe SlayTix Team";
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(toEmail);
@@ -36,7 +36,7 @@ public class EmailService {
             + "To reset your password, go to:\n"
             + "http://localhost:3000/changePassword\n\n"
             + "If you did not request this, you can ignore this email.\n\n"
-            + "Best regards,\nThe MovieApp Team";
+            + "Best regards,\nThe SlayTix Team";
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(toEmail);
@@ -52,7 +52,7 @@ public void sendPromoNotificationEmail(String toEmail, String promoCode, int dis
         + "We're excited to offer you a new promo code: " + promoCode + "\n"
         + "Use it to get " + discount + "% off your next purchase!\n\n"
         + "Hurry — don’t miss out!\n\n"
-        + "Your MovieApp Team 🎬";
+        + "The SlayTix Team 🎬";
 
     SimpleMailMessage message = new SimpleMailMessage();
     message.setTo(toEmail);
