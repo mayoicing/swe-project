@@ -20,14 +20,21 @@ export default function AdminPromo() {
       alert("Please enter a valid promo code and discount.");
       return;
     }
-
+  
+    const confirm = window.confirm(
+      `⚠️ Are you sure you want to add promo code "${newCode}" for ${newDiscount}% off?\n\n` +
+      `This will immediately email all users who are enrolled for promotions.`
+    );
+  
+    if (!confirm) return;
+  
     try {
       const res = await fetch(`${backendUrl}/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: newCode, discount: newDiscount }),
       });
-
+  
       if (res.ok) {
         setNewCode("");
         setNewDiscount(0);
