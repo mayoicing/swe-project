@@ -45,4 +45,22 @@ public class EmailService {
 
         mailSender.send(message);
 }
+
+public void sendPromoNotificationEmail(String toEmail, String promoCode, int discount) {
+    String subject = "🔥 New Promo Code Just for You!";
+    String body = "Hi there!\n\n"
+        + "We're excited to offer you a new promo code: " + promoCode + "\n"
+        + "Use it to get " + discount + "% off your next purchase!\n\n"
+        + "Hurry — don’t miss out!\n\n"
+        + "Your MovieApp Team 🎬";
+
+    SimpleMailMessage message = new SimpleMailMessage();
+    message.setTo(toEmail);
+    message.setSubject(subject);
+    message.setText(body);
+
+    mailSender.send(message);
+    System.out.println("📩 Promo email sent to: " + toEmail);
+}
+
 }

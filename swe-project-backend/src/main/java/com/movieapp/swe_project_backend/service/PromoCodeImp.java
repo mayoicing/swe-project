@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.movieapp.swe_project_backend.model.PromoCode;
+import com.movieapp.swe_project_backend.model.UserInfo;
 import com.movieapp.swe_project_backend.repository.PromoCodeRepository;
+import com.movieapp.swe_project_backend.repository.UserInfoRepository;
 
 @Service
 public class PromoCodeImp implements PromoCodeService {
@@ -15,9 +17,22 @@ public class PromoCodeImp implements PromoCodeService {
     @Autowired
     private PromoCodeRepository promoCodeRepository;
 
+    @Autowired
+    private UserInfoRepository userInfoRepository;
+
+    @Autowired
+    private EmailService emailService;
+
     @Override
     public PromoCode savePromoCode(PromoCode promoCode) {
-        return promoCodeRepository.save(promoCode);
+        PromoCode saved = promoCodeRepository.save(promoCode);
+
+        List<UserInfo> subscribedUsers = userInfoRepository.findByEnrollForPromotions(true);
+        for (UserInfo user : subscribedUsers) {
+            emailService.sendPromoNotificationEmail(user.getEmail(), saved.getCode(), saved.getDiscount());
+        }
+
+        return saved;
     }
 
     @Override
