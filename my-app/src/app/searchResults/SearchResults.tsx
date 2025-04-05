@@ -83,7 +83,7 @@ export default function SearchResults() {
         <div className={styles.container}>
             <Navbar/>
             <h1>Search Results for "{query}" ({type})</h1>
-            <div className={styles.grid} >
+            <div className={styles.movieGrid} >
                 {movieResult.length > 0 ? (
                     movieResult.map((movie) => (
                         <div key={movie.movieID} className={styles.movieCard}>
