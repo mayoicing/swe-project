@@ -47,7 +47,7 @@ export default function AdminPromo() {
       alert("Error: " + err);
     }
   };
-
+/*
   const handleRemovePromo = async (code: string) => {
     try {
       const res = await fetch(`${backendUrl}/getByCode/${code}`);
@@ -65,7 +65,7 @@ export default function AdminPromo() {
       alert("Error deleting promo: " + err);
     }
   };
-
+*/
   useEffect(() => {
     fetchPromoCodes();
   }, []);
@@ -105,7 +105,7 @@ export default function AdminPromo() {
               <tr>
                 <th>Promo Code</th>
                 <th>Discount</th>
-                <th>Action</th>
+                {/*<th>Action</th>*/}
               </tr>
             </thead>
             <tbody>
@@ -113,14 +113,14 @@ export default function AdminPromo() {
                 <tr key={index}>
                   <td>{promo.code}</td>
                   <td>{promo.discount}%</td>
-                  <td>
+                 {/* <td>
                     <button
                       onClick={() => handleRemovePromo(promo.code)}
                       className={styles.removeButton}
                     >
                       Remove
                     </button>
-                  </td>
+                  </td>*/}
                 </tr>
               ))}
             </tbody>
