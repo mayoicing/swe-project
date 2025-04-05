@@ -84,12 +84,13 @@ export default function AddShowtimePage() {
     }
 
     try {
+      console.log("AVAILABLE SEATS:", auditorium.noOfSeats); 
       // Add the Showtime
       const response = await axios.post("http://localhost:8080/movieshow/add", {
         movieID: movie.movieId,
         auditoriumID: auditorium.auditoriumID,
         showStartTime: startTime,
-        availableSeats: auditorium.noOfSeats,
+        available_seats: auditorium.noOfSeats,
     });
 
     if (response.data) {
