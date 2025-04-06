@@ -10,8 +10,8 @@ import styles from './MoviesList.module.css';
 interface Movie {
   movieID: number;
   title: string;
-  poster: string
-  trailer: string; // Embedded YouTube URL
+  poster: string;
+  trailer: string;
 }
 
 export default function AdminMoviesList() {
@@ -21,14 +21,15 @@ export default function AdminMoviesList() {
   
   useEffect(() => {
     axios
-      .get("http://localhost:8080/movieinfo/getAll") // Fetch all movies
+      .get("http://localhost:8080/movieinfo/getAll")
       .then((response) => {
-        const decodedMovies = response.data.map((movie: Movie) => ({
-          ...movie,
-          poster: decodeURIComponent(movie.poster.trimEnd()), // Decode poster URL
+        const decodedMovies = response.data.map((movie: any) => ({
+          movieID: movie.movieID ?? movie.movieId ?? movie.id, // Ensures ID is mapped
+          title: movie.title,
+          poster: decodeURIComponent(movie.poster?.trimEnd() || ""),
+          trailer: movie.trailer,
         }));
-        
-        setMovies(decodedMovies); // Store movies in state
+        setMovies(decodedMovies);
       })
       .catch((error) => {
         console.error("Error fetching movie data: ", error);
@@ -50,23 +51,24 @@ export default function AdminMoviesList() {
       <div className={styles.movieGrid}>
         {movies.map((movie, index) => (
           <div key={movie.movieID ?? `movie-${index}`} className={styles.movieCard}>
-            <Link href='/adminMovieDetails' style={{ textDecoration: 'none', color: 'inherit' }}>
-              <div className={styles.posterContainer}>
-                <div className={styles.posterWrapper}>
-                  <Image
-                    src={movie.poster}
-                    alt={movie.title}
-                    width={225}
-                    height={325}
-                    className={styles.poster}
-                  />
-                  <div className={styles.posterOverlay}></div>
+            {movie.movieID && (
+              <Link href={`/adminMovieDetails/${movie.movieID}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div className={styles.posterContainer}>
+                  <div className={styles.posterWrapper}>
+                    <Image
+                      src={movie.poster}
+                      alt={movie.title}
+                      width={225}
+                      height={325}
+                      className={styles.poster}
+                    />
+                    <div className={styles.posterOverlay}></div>
+                  </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+            )}
             <p className={styles.movieTitle}>{movie.title}</p>
 
-            {/* Play Trailer Button */}
             <button className={styles.trailerButton} onClick={() => openTrailer(movie.trailer)}>
               ▶ Play Trailer
             </button>
@@ -74,7 +76,6 @@ export default function AdminMoviesList() {
         ))}
       </div>
 
-      {/* Trailer Modal */}
       {showModal && selectedTrailer && (
         <div className={styles.modalOverlay} onClick={closeModal}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
