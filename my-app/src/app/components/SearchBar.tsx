@@ -10,11 +10,11 @@ export default function SearchBar() {
     const [input, setInput] = useState<string>('');
     const [isActive, setIsActive] = useState(false);
     const [isFlipped, setIsFlipped] = useState(false);
-    const [searchType, setSearchType] = useState<'title' | 'category'>('title'); // Track search type
+    const [searchType, setSearchType] = useState<'Title' | 'Genre'>('Title'); // Track search type
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    const typeFromURL = searchParams.get('type') as 'title' | 'category';
+    const typeFromURL = searchParams.get('type') as 'Title' | 'Genre';
 
     useEffect(() => {
         if (typeFromURL) {
@@ -34,7 +34,7 @@ export default function SearchBar() {
         setInput(e.target.value);
     };
 
-    const handleSearchTypeChange = (type: 'title' | 'category') => {
+    const handleSearchTypeChange = (type: 'Title' | 'Genre') => {
         setSearchType(type);
         setIsActive(false); // Close dropdown after selection
         setIsFlipped(false);
@@ -47,16 +47,14 @@ export default function SearchBar() {
 
     return (
         <div className={styles.container}>
-
             {/* Dropdown menu */}
             <div className={styles.dropdown}>
-                <button className={styles.dropbtn} onClick={ (event) => { toggleActive(); toggleFlipped(); } }>Filter By
-                    {/*Filter By: {searchType === 'title' ? 'Title' : 'Category'}*/}
+                <button className={styles.dropbtn} onClick={ (event) => { toggleActive(); toggleFlipped(); } }>Filter By: {searchType}
                     <Image src={sortdown} alt="sortdown icon" className={isFlipped ? styles.sortdownFlipped : styles.sortdown}></Image>
                 </button>
                 <div className={isActive ? styles.dropContent2 : styles.dropContent}>
-                    <button onClick={() => handleSearchTypeChange('title')}>Title</button>
-                    <button onClick={() => handleSearchTypeChange('category')}>Category</button>
+                    <button onClick={() => handleSearchTypeChange('Title')}>Title</button>
+                    <button onClick={() => handleSearchTypeChange('Genre')}>Category</button>
                 </div>
             </div>
 
@@ -65,7 +63,7 @@ export default function SearchBar() {
                 <form onSubmit={handleSubmit}>
                     <input
                         type="text"
-                        placeholder={`Search for ${searchType === 'title' ? 'Movies' : 'Genres'}...`}
+                        placeholder={`Search ${searchType === 'Title' ? 'for Title' : 'by Genre'}...`}
                         value={input}
                         onChange={handleInputChange}
                     />
