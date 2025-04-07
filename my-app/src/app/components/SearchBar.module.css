@@ -134,7 +134,7 @@
 .searchbar input {
     padding: 1vh;
     padding-left: 2vh;
-    padding-right: 50vh;
+    padding-right: 45vh;
     background-color: #E8F1FD;
     color: #1C2337;
 }
@@ -142,4 +142,10 @@
 /* When you click on search bar */
 .searchbar input:focus {
     outline: none;
+}
+
+.searchbtn {
+    position: relative;
+    top: 3px;
+    right: 5px;
 }
