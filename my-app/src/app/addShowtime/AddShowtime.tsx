@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import axios from "axios";
-import Navbar from "@/app/components/Navbar";
+//import Navbar from "@/app/components/Navbar";
+import AdminNavbar from "../components/AdminNavbar";
 
 export default function AddShowtimePage() {
   const [searchTitle, setSearchTitle] = useState("");
@@ -14,6 +16,37 @@ export default function AddShowtimePage() {
   const [auditorium, setAuditorium] = useState<any>(null);
   const [startTime, setStartTime] = useState("");
   const [auditoriumMap, setAuditoriumMap] = useState<{ [key: number]: any }>({});
+
+  const searchParams = useSearchParams();
+  const movieTitleFromParam = searchParams.get("movieTitle");
+
+  useEffect(() => {
+    if (movieTitleFromParam) {
+      setSearchTitle(movieTitleFromParam);
+    }
+  }, [movieTitleFromParam]);
+
+  useEffect(() => {
+    const autoLoadMovie = async () => {
+      if (!movieTitleFromParam) return;
+
+      try {
+        const res = await axios.get("http://localhost:8080/movieinfo/getAll");
+        const filtered = res.data.filter((m: any) =>
+          m.title?.toLowerCase() === movieTitleFromParam.toLowerCase()
+        );
+
+        if (filtered.length > 0) {
+          setMovie(filtered[0]);
+          await fetchShowtimes(filtered[0].movieId);
+        }
+      } catch (err) {
+        console.error("Auto-load movie failed", err);
+      }
+    };
+
+    autoLoadMovie();
+  }, [movieTitleFromParam]);
 
   const searchMovie = async () => {
     try {
@@ -129,7 +162,7 @@ export default function AddShowtimePage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <Navbar />
+      <AdminNavbar />
       <div className="p-6 max-w-4xl mx-auto">
         <h1 className="text-2xl font-bold mb-4">Add Showtime</h1>
 

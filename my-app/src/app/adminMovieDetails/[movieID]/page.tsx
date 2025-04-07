@@ -1,5 +1,5 @@
 /* Page - MovieDetails */
-import AdminMovieDetails from "../AdminMovieDetails"
+import AdminMovieDetails from "../adminMovieDetails"
 
 export default function AdminMovieDetailsPage() {
     return (

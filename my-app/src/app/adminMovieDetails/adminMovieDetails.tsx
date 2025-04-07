@@ -18,6 +18,12 @@ interface MovieShow {
   showStartTime: string;
 }
 
+interface Auditorium {
+  auditoriumID: number;
+  auditorium_name: string;
+  noOfSeats: number;
+}
+
 export default function AdminMovieDetails() {
   const { movieID } = useParams() as { movieID: string };
   const router = useRouter();
@@ -25,23 +31,26 @@ export default function AdminMovieDetails() {
   const [movie, setMovie] = useState<any>(null);
   const [cast, setCast] = useState<CastMember[]>([]);
   const [shows, setShows] = useState<MovieShow[]>([]);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [selectedShowID, setSelectedShowID] = useState<number | null>(null);
+  const [auditoriums, setAuditoriums] = useState<Auditorium[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchMovieData = async () => {
       try {
-        const [movieRes, castRes, showsRes] = await Promise.all([
+        const [movieRes, castRes, showsRes, audRes] = await Promise.all([
           fetch(`http://localhost:8080/movieinfo/get/${movieID}`),
           fetch(`http://localhost:8080/castandcrew/get/movie/${movieID}`),
           fetch(`http://localhost:8080/movieshow/movie/${movieID}`),
+          fetch("http://localhost:8080/auditorium/getAll"),
         ]);
 
-        if (!movieRes.ok || !castRes.ok || !showsRes.ok) throw new Error("Error fetching");
+        if (!movieRes.ok || !castRes.ok || !showsRes.ok || !audRes.ok) throw new Error("Error fetching");
 
         setMovie(await movieRes.json());
         setCast(await castRes.json());
         setShows(await showsRes.json());
+        setAuditoriums(await audRes.json());
       } catch (err) {
         console.error(err);
       } finally {
@@ -54,6 +63,11 @@ export default function AdminMovieDetails() {
 
   if (loading) return <div className="text-white p-6">Loading...</div>;
   if (!movie) return <div className="text-white p-6">Movie not found.</div>;
+
+  const getAuditoriumName = (id: number) => {
+    const match = auditoriums.find((a) => a.auditoriumID === id);
+    return match?.auditorium_name || `Auditorium #${id}`;
+  };
 
   return (
     <div className="bg-dark text-white min-h-screen">
@@ -92,55 +106,58 @@ export default function AdminMovieDetails() {
           </div>
         </div>
 
-        {/* Movie Info */}
+        {/* Movie Details */}
         <div className="mt-6">
           <h1 className="text-3xl font-bold">{movie.title}</h1>
-          <p className="text-gray-400 mt-2">{movie.releaseDate}</p>
+          <p className="text-gray-400 mt-2">{movie.genre}</p>
+          <p className="text-gray-400 mt-2">Review: {movie.movieRating}</p>
+          <p className="text-gray-400 mt-2">Rating: {movie.filmCode}</p>
+          <p className="text-gray-400 mt-2">Duration: {movie.movieDuration} min</p>
           <p className="mt-4">{movie.description}</p>
         </div>
 
-        {/* Cast */}
-        <div className="mt-6">
+        {/* Cast & Crew */}
+        <div className="mt-8">
           <h2 className="text-xl font-semibold">Cast & Crew</h2>
-          <div className="flex gap-4 mt-4">
-            {cast.map((member) => (
-              <div key={member.castAndCrewID} className="text-center">
-                <div className="w-16 h-16 overflow-hidden rounded-full bg-gray-700" />
-                <p className="text-sm">{member.name}</p>
-                <p className="text-xs text-gray-400">{member.role}</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+            {cast.map((person) => (
+              <div key={person.castAndCrewID} className="bg-gray-800 p-4 rounded-lg text-center">
+                <p className="font-medium text-lg">{person.name}</p>
+                <p className="text-sm text-gray-400">{person.role}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Showtimes */}
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold">Show Times</h2>
-          <div className="grid grid-cols-4 gap-4 mt-4">
-            {shows.map((show) => {
-              const showTime = new Date(show.showStartTime).toLocaleString();
-              return (
+        <div className="mt-10">
+          <h2 className="text-xl font-semibold mb-4">Current Showtimes</h2>
+          {shows.length === 0 ? (
+            <p className="text-gray-400">No showtimes available.</p>
+          ) : (
+            <div className="flex flex-wrap gap-4">
+              {shows.map((show) => (
                 <button
                   key={show.movieShowID}
-                  className={`px-4 py-2 border rounded ${
-                    selectedTime === showTime
-                      ? "bg-purple-600 text-white"
-                      : "bg-gray-800 text-gray-300"
+                  onClick={() => setSelectedShowID(show.movieShowID)}
+                  className={`border rounded-lg px-4 py-2 text-sm transition duration-150 ${
+                    selectedShowID === show.movieShowID
+                      ? "bg-purple-600 border-purple-600"
+                      : "border-gray-500 hover:border-purple-500"
                   }`}
-                  onClick={() => setSelectedTime(showTime)}
                 >
-                  {showTime}
+                  {new Date(show.showStartTime).toLocaleString()} — {getAuditoriumName(show.auditoriumID)}
                 </button>
-              );
-            })}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Next Button */}
+        {/* Edit Showtimes Button */}
         <div className="mt-6">
-          <Link href={`/selectNumTickets?movieShowID=${selectedTime}`}>
+          <Link href={`/addShowtime?movieTitle=${movie.title}`}>
             <button className="w-full py-3 text-lg font-semibold rounded bg-purple-500 hover:bg-purple-700">
-              NEXT
+              Edit Showtimes
             </button>
           </Link>
         </div>
