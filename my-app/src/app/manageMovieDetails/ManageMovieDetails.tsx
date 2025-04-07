@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import AddCastCrew from "../addCastCrew/AddCastCrew";
 import styles from "./ManageMovieDetails.module.css";
 
 interface Actor {
@@ -9,68 +10,76 @@ interface Actor {
   role: string;
 }
 
-interface Schedule {
-  date: string;
-  time: string;
-}
-
 export default function AddMovieDetails() {
-  const [category, setCategory] = useState<string>("");
-  const [actors, setActors] = useState<Actor[]>([
-    { name: "Lindsay Lohan", role: "Cady Heron" },
-    { name: "Rachel McAdams", role: "Regina George" },
-  ]);
-  const [newActor, setNewActor] = useState<string>("");
-  const [newRole, setNewRole] = useState<string>("");
-  const [schedule, setSchedule] = useState<Schedule[]>([]);
-  const [newDate, setNewDate] = useState<string>("");
-  const [newTime, setNewTime] = useState<string>("");
   const router = useRouter();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState(""); 
+  const [actors, setActors] = useState<Actor[]>([]);
+  const [moviePosterUrl, setMoviePosterUrl] = useState("");
+  const [genre, setGenre] = useState("");
+  const [filmCode, setFilmCode] = useState("");
+  const [trailerUrl, setTrailerUrl] = useState("");
+  const [movieRating, setMovieRating] = useState(0);
+  const [movieDuration, setMovieDuration] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [movieID, setMovieID] = useState<number | null>(null);
 
-  const removeActor = (actorToRemove: string) => {
-    setActors((prevActors) => prevActors.filter((actor) => actor.name !== actorToRemove));
-  };
 
-  const handleAddActor = () => {
-    if (newActor.trim()) {
-      setActors([...actors, { name: newActor, role: newRole.trim() || "No role specified" }]);
-      setNewActor("");
-      setNewRole("");
+  useEffect(() => {
+    const stored = localStorage.getItem("selectedMovieDetails");
+    if (stored) {
+      try {
+
+        const movieObj = JSON.parse(stored);
+        const movie = movieObj.movie;
+        const cast = movieObj.cast;
+  
+        setTitle(movie.title);
+        setDescription(movie.description);
+        setMoviePosterUrl(movie.moviePosterUrl);
+        setGenre(movie.genre);
+        setFilmCode(movie.filmCode);
+        setTrailerUrl(movie.trailerUrl);
+        setMovieRating(movie.movieRating);
+        setMovieDuration(movie.movieDuration);
+        setMovieID(movie.movieID);
+        setCategory(movie.category || "Currently Running");
+
+        const formattedCast = cast.map((member: any) => ({
+          name: member.name,
+          role: member.role
+        }));
+        setActors(formattedCast);
+
+      } catch (error) {
+        console.error("Error parsing movie details from localStorage", error);
+      }
     }
-  };
-
-  const handleAddSchedule = () => {
-    if (newDate && newTime) {
-      setSchedule([...schedule, { date: newDate, time: newTime }]);
-      setNewDate("");
-      setNewTime("");
-    }
-  };
-
-  const removeSchedule = (index: number) => {
-    setSchedule(schedule.filter((_, i) => i !== index));
-  };
+  }, []);
 
   const handleSaveChanges = () => {
-    alert("Movie Added!");
-    router.push("./adminMovie");
+    router.push(`/adminMovieDetails/${movieID}`);
   };
 
   return (
     <div className={styles.formContainer}>
       {/* Title Input */}
       <label className={styles.label}>Title</label>
-      <input type="text" className={styles.input} />
+      <input 
+        type="text" 
+        className={styles.input} 
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
 
       {/* Description Input */}
       <label className={styles.label}>Description</label>
-      <textarea className={styles.textarea}></textarea>
-
-      {/* Release Date */}
-      <label className={styles.label}>Release Date</label>
-      <div className={styles.dateWrapper}>
-        <input type="date" className={styles.input} />
-      </div>
+      <textarea 
+        className={styles.textarea}
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      ></textarea>
 
       {/* Categories Section */}
       <label className={styles.label}>Category</label>
@@ -97,66 +106,100 @@ export default function AddMovieDetails() {
         </label>
       </div>
 
-      {/* Actors Section */}
-      <label className={styles.label}>Actors</label>
-      <input
-        type="text"
-        placeholder="Add actor..."
-        className={styles.input}
-        value={newActor}
-        onChange={(e) => setNewActor(e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Add role (optional)..."
-        className={styles.input}
-        value={newRole}
-        onChange={(e) => setNewRole(e.target.value)}
-      />
-      <button className={styles.addButton} onClick={handleAddActor}>
-        Add Actor
-      </button>
-      <div className={styles.tagContainer}>
-        {actors.map((actor, index) => (
-          <div key={index} className={styles.actorTag}>
-            <span>{actor.name}</span>
-            {actor.role && <span className={styles.actorRole}>({actor.role})</span>}
-            <button className={styles.removeButton} onClick={() => removeActor(actor.name)}>
-              ✖
-            </button>
-          </div>
-        ))}
+      {/* Movie Poster URL */}
+      <label className={styles.label}>Movie Poster URL</label>
+        <input
+          type="text"
+          placeholder="Enter Movie Posrter URL"
+          className={styles.input}
+          value={moviePosterUrl}
+          onChange={(e) => setMoviePosterUrl(e.target.value)}
+        />
+      
+        {/* Genre */}
+        <label className={styles.label}>Genre</label>
+        <input
+          type="text"
+          placeholder="Enter Movie Genre"
+          className={styles.input}
+          value={genre}
+          onChange={(e) => setGenre(e.target.value)}
+        />
+
+        {/* Film Code */} 
+        <label className={styles.label}>Film Code</label>
+        <input
+          type="text"
+          placeholder="Enter Film Code"
+          className={styles.input}
+          value={filmCode}
+          onChange={(e) => setFilmCode(e.target.value)}
+        />
+
+        {/* Trailer URL */}
+        <label className={styles.label}>Trailer URL</label>
+        <input
+          type="text"
+          placeholder="Enter Trailer URL"
+          className={styles.input}
+          value={trailerUrl}
+          onChange={(e) => setTrailerUrl(e.target.value)}
+        />
+
+        {/* Movie Rating */}
+        <label className={styles.label}>Movie Rating</label>
+        <input
+          type="number"
+          min={1}
+          max={10}
+          step="0.1"
+          className={styles.input}
+          value={movieRating}
+          onChange={(e) => {
+            const val = e.target.value;
+            setMovieRating(val === "" ? 0 : parseFloat(val));
+          }}
+        />
+
+        {/* Movie Duration */}
+        <label className={styles.label}>Movie Duration (in minutes)</label>
+        <input
+          type="number"
+          className={styles.input}
+          value={movieDuration}
+          onChange={(e) => {
+            const val = e.target.value;
+            setMovieDuration(val === "" ? 0 : parseInt(val, 10));
+          }}
+        />
+
+        {/* Display Added Actors */}
+      <div className={styles.label}>
+        <h3>Cast & Crew</h3>
+        {actors.length > 0 ? (
+          actors.map((actor, index) => (
+            <div key={index} className={styles.castAndCrew}>
+              <span>{actor.name} - {actor.role}</span>
+            </div>
+          ))
+        ) : (
+          <p>No cast/crew members added yet.</p>
+        )}
       </div>
 
-      {/* Scheduled Times Section */}
-      <label className={styles.label}>Scheduled Times</label>
-      <div className={styles.scheduleInputContainer}>
-        <input
-          type="date"
-          className={styles.input}
-          value={newDate}
-          onChange={(e) => setNewDate(e.target.value)}
-        />
-        <input
-          type="time"
-          className={styles.input}
-          value={newTime}
-          onChange={(e) => setNewTime(e.target.value)}
-        />
-        <button className={styles.addButton} onClick={handleAddSchedule}>
-          Add Schedule
-        </button>
-      </div>
-      <div className={styles.tagContainer}>
-        {schedule.map((entry, index) => (
-          <div key={index} className={styles.scheduleTag}>
-            <span>{entry.date} - {entry.time}</span>
-            <button className={styles.removeButton} onClick={() => removeSchedule(index)}>
-              ✖
-            </button>
+      {/* Actors Section */}
+      <button className={styles.addButton} onClick={() => setShowModal(true)}>
+        Edit Cast & Crew
+      </button> 
+
+       {/* Modal Component */}
+       {showModal && (
+        <div className={styles.modalBackdrop}>
+          <div className={styles.modalContent}>
+            <AddCastCrew setShowModalAction={setShowModal} castCrew={actors} setCastCrewAction={setActors} />
           </div>
-        ))}
-      </div>
+        </div>
+      )}
 
       {/* Buttons at the Bottom */}
       <div className={styles.buttonContainer}>

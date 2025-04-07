@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import AdminNavbar from "../components/AdminNavbar";
+import { collectSegmentData } from "next/dist/server/app-render/collect-segment-data";
 
 interface CastMember {
   castAndCrewID: number;
@@ -69,6 +70,15 @@ export default function AdminMovieDetails() {
     return match?.auditorium_name || `Auditorium #${id}`;
   };
 
+  const handleManageMovie = () => {
+    const movieData = {
+      movie,
+      cast
+    };
+    localStorage.setItem("selectedMovieDetails", JSON.stringify(movieData));
+    router.push(`/manageMovieDetails/${movieID}`);
+  };
+
   return (
     <div className="bg-dark text-white min-h-screen">
       <AdminNavbar />
@@ -96,12 +106,12 @@ export default function AdminMovieDetails() {
               ) : (
                 <p className="text-gray-400">Trailer not available.</p>
               )}
-
-              <Link href={`/manageMovieDetails/${movieID}`}>
-                <span className="text-lg font-semibold text-white bg-purple-600 px-4 py-2 rounded hover:bg-purple-800 transition">
-                  Manage Movie
-                </span>
-              </Link>
+            <button
+              onClick={handleManageMovie}
+              className="text-lg font-semibold text-white bg-purple-600 px-4 py-2 rounded hover:bg-purple-800 transition"
+            >
+              Manage Movie
+            </button>
             </div>
           </div>
         </div>
