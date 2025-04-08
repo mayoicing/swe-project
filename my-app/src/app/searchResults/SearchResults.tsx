@@ -7,6 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import AdminNavbar from '../components/AdminNavbar';
 
 interface Movie {
     movieID: number,
@@ -30,8 +31,19 @@ export default function SearchResults() {
     const [showModal, setShowModal] = useState(false);
     const [movieid, setMovieId] = useState<number | null>(null);
     const [error, setError] = useState('');
+    const [isAdmin, setIsAdmin] = useState(false);
     const router = useRouter();
 
+    // Check user type
+    useEffect(() => {
+        const userType = sessionStorage.getItem('user_type');
+        if (userType === 'Admin') {
+            setIsAdmin(true);
+        } else {
+            setIsAdmin(false);
+        }
+
+    });
 
     useEffect(()=>{
         if (!query) return;
@@ -81,9 +93,9 @@ export default function SearchResults() {
 
     return (
         <div className={styles.container}>
-            <Navbar/>
+            {isAdmin ? <AdminNavbar/> : <Navbar/>}
             <h1>Search Results for "{query}" ({type})</h1>
-            <div className={styles.grid} >
+            <div className={styles.movieGrid} >
                 {movieResult.length > 0 ? (
                     movieResult.map((movie) => (
                         <div key={movie.movieID} className={styles.movieCard}>

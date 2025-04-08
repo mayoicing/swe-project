@@ -13,4 +13,5 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
     Optional<UserInfo> findByEmail(String email);  // Fetch by Email
 
     List<UserInfo> findByUserType(UserInfo.UserType userType);  // Fetch all users by user_typeid
+    List<UserInfo> findByEnrollForPromotions(boolean enrollForPromotions);
 }

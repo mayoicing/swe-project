@@ -25,6 +25,13 @@ interface Auditorium {
   noOfSeats: number;
 }
 
+interface MovieShowSeat {
+  movieShowSeatID: number;
+  movieShowID: number;
+  seatID: number;
+  seatStatus: "Available" | "Unavailable";
+}
+
 export default function MovieDetails() {
   const { movieID } = useParams() as { movieID: string };
   const router = useRouter();

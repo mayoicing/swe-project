@@ -56,6 +56,11 @@
   .selected {
     background-color: #1b1e68 !important;
   }
+
+  .unavailable {
+    background-color: rgb(61, 52, 116) !important;
+    cursor: not-allowed;
+  }
   
   /* Button styling */
   .selectButton {

@@ -34,4 +34,9 @@ public class AuditoriumImp implements AuditoriumService {
     public Optional<Auditorium> getAuditoriumByName(String name) {
         return repository.findByAuditoriumName(name);
     }
+
+    @Override
+    public int getTotalSeats(int auditoriumId) {
+        return repository.findTotalSeatsByAuditoriumID(auditoriumId);
+    }
 }

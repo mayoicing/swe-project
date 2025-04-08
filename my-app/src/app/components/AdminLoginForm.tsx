@@ -38,9 +38,13 @@ export default function LoginForm() {
                 if (rememberMe) {
                     localStorage.setItem("authToken", token);
                     localStorage.setItem("userID", userID.toString());
+                    localStorage.setItem("user_type", 'Admin');
+
                 } else {
                     sessionStorage.setItem("authToken", token);
                     sessionStorage.setItem("userID", userID.toString());
+                    sessionStorage.setItem("user_type", 'Admin');
+
                 }
 
                 router.push('/adminMovie'); // Redirect to admin panel

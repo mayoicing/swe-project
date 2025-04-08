@@ -39,24 +39,6 @@ public class SeatImp implements SeatService {
     public void deleteSeat(int seatID) {
         seatRepository.deleteById(seatID);
     }
-    
-    @Override
-    public void updateSeatStatus(int auditoriumID, List<String> selectedSeats) {
-        // Fetch all seats for the given auditorium
-        List<Seat> seats = seatRepository.findByAuditoriumAuditoriumID(auditoriumID);
-
-        // Update the availability of the selected seats
-        for (Seat seat : seats) {
-            // If the seat is in the list of selected seats, mark it as unavailable
-            String seatIdentifier = seat.getSeatRow() + "-" + seat.getSeatNum(); // Example: "A-1"
-            if (selectedSeats.contains(seatIdentifier)) {
-                seat.setSeatStatus(Seat.SeatStatus.Unavailable);
-            }
-        }
-
-        // Save the updated seat statuses to the database
-        seatRepository.saveAll(seats);
-    }
 
     @Override
     public Optional<Seat> findSeatByAuditoriumAndRowAndNum(int auditoriumID, String seatRow, int seatNum) {

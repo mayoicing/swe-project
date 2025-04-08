@@ -16,6 +16,14 @@
     padding: 25px 50px;
 }
 
+.movieGrid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+  }  
+
 .movieCard {
     display: flex;
     flex-direction: column;
@@ -99,6 +107,12 @@
     margin-top: 8px;
     color: white;
     text-shadow: 0px 3px 14px rgba(0, 0, 0, 0.7);
+
+    /* Prevent text from overflowing */
+    max-width: 250px; 
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .trailerButton {

@@ -45,9 +45,11 @@ export default function LoginForm() {
             if (rememberMe) {
                 localStorage.setItem("authToken", token);
                 localStorage.setItem("userID", userID.toString());
+                localStorage.setItem("user_type", 'Customer');
             } else {
                 sessionStorage.setItem("authToken", token);
                 sessionStorage.setItem("userID", userID.toString());
+                sessionStorage.setItem("user_type", 'Customer');
             }
                     
                 router.push('/');

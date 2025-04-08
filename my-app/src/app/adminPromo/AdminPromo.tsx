@@ -1,34 +1,79 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./AdminPromo.module.css";
 
 export default function AdminPromo() {
-  // Initialize with an active promo code
-  const [promoCodes, setPromoCodes] = useState<{ code: string; discount: number }[]>([
-    { code: "DISCOUNT10", discount: 10 }, // Preloaded promo code
-  ]);
+  const [promoCodes, setPromoCodes] = useState<{ code: string; discount: number }[]>([]);
   const [newCode, setNewCode] = useState("");
   const [newDiscount, setNewDiscount] = useState(0);
 
-  const handleAddPromo = () => {
-    if (newCode.trim() && newDiscount > 0) {
-      setPromoCodes([...promoCodes, { code: newCode, discount: newDiscount }]);
-      setNewCode("");
-      setNewDiscount(0);
-    } else {
-      alert("Please enter a valid promo code and discount.");
-    }
+  const backendUrl = "http://localhost:8080/promocode"; // Adjust if deployed
+
+  const fetchPromoCodes = async () => {
+    const res = await fetch(`${backendUrl}/getAll`);
+    const data = await res.json();
+    setPromoCodes(data);
   };
 
-  const handleRemovePromo = (code: string) => {
-    setPromoCodes(promoCodes.filter((promo) => promo.code !== code));
+  const handleAddPromo = async () => {
+    if (!newCode.trim() || newDiscount <= 0) {
+      alert("Please enter a valid promo code and discount.");
+      return;
+    }
+  
+    const confirm = window.confirm(
+      `⚠️ Are you sure you want to add promo code "${newCode}" for ${newDiscount}% off?\n\n` +
+      `This will immediately email all users who are enrolled for promotions.`
+    );
+  
+    if (!confirm) return;
+  
+    try {
+      const res = await fetch(`${backendUrl}/add`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: newCode, discount: newDiscount }),
+      });
+  
+      if (res.ok) {
+        setNewCode("");
+        setNewDiscount(0);
+        fetchPromoCodes();
+      } else {
+        const err = await res.text();
+        alert("Failed to add promo: " + err);
+      }
+    } catch (err) {
+      alert("Error: " + err);
+    }
   };
+/*
+  const handleRemovePromo = async (code: string) => {
+    try {
+      const res = await fetch(`${backendUrl}/getByCode/${code}`);
+      const promo = await res.json();
+      const id = promo.promoID;
+
+      const delRes = await fetch(`${backendUrl}/delete/${id}`, { method: "DELETE" });
+
+      if (delRes.ok) {
+        fetchPromoCodes();
+      } else {
+        alert("Failed to delete promo.");
+      }
+    } catch (err) {
+      alert("Error deleting promo: " + err);
+    }
+  };
+*/
+  useEffect(() => {
+    fetchPromoCodes();
+  }, []);
 
   return (
     <div className={styles.container}>
       <h1>Promotions Management</h1>
 
-      {/* Add Promo Code Section */}
       <div className={styles.addPromoSection}>
         <h2>Add New Promo Code</h2>
         <div className={styles.inputGroup}>
@@ -41,7 +86,7 @@ export default function AdminPromo() {
           />
           <input
             type="number"
-            placeholder="Discount amount"
+            placeholder="Discount %"
             value={newDiscount}
             onChange={(e) => setNewDiscount(parseFloat(e.target.value))}
             className={styles.input}
@@ -52,7 +97,6 @@ export default function AdminPromo() {
         </div>
       </div>
 
-      {/* Promo Codes List */}
       <div className={styles.promoList}>
         <h2>Active Promo Codes</h2>
         {promoCodes.length > 0 ? (
@@ -61,7 +105,7 @@ export default function AdminPromo() {
               <tr>
                 <th>Promo Code</th>
                 <th>Discount</th>
-                <th>Action</th>
+                {/*<th>Action</th>*/}
               </tr>
             </thead>
             <tbody>
@@ -69,14 +113,14 @@ export default function AdminPromo() {
                 <tr key={index}>
                   <td>{promo.code}</td>
                   <td>{promo.discount}%</td>
-                  <td>
+                 {/* <td>
                     <button
                       onClick={() => handleRemovePromo(promo.code)}
                       className={styles.removeButton}
                     >
                       Remove
                     </button>
-                  </td>
+                  </td>*/}
                 </tr>
               ))}
             </tbody>
