@@ -10,11 +10,11 @@ export default function SearchBar() {
     const [input, setInput] = useState<string>('');
     const [isActive, setIsActive] = useState(false);
     const [isFlipped, setIsFlipped] = useState(false);
-    const [searchType, setSearchType] = useState<'Title' | 'Genre'>('Title'); // Track search type
+    const [searchType, setSearchType] = useState<'title' | 'genre'>('title'); // Track search type
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    const typeFromURL = searchParams.get('type') as 'Title' | 'Genre';
+    const typeFromURL = searchParams.get('type') as 'title' | 'genre';
 
     useEffect(() => {
         if (typeFromURL) {
@@ -34,7 +34,7 @@ export default function SearchBar() {
         setInput(e.target.value);
     };
 
-    const handleSearchTypeChange = (type: 'Title' | 'Genre') => {
+    const handleSearchTypeChange = (type: 'title' | 'genre') => {
         setSearchType(type);
         setIsActive(false); // Close dropdown after selection
         setIsFlipped(false);
@@ -53,8 +53,8 @@ export default function SearchBar() {
                     <Image src={sortdown} alt="sortdown icon" className={isFlipped ? styles.sortdownFlipped : styles.sortdown}></Image>
                 </button>
                 <div className={isActive ? styles.dropContent2 : styles.dropContent}>
-                    <button onClick={() => handleSearchTypeChange('Title')}>Title</button>
-                    <button onClick={() => handleSearchTypeChange('Genre')}>Category</button>
+                    <button onClick={() => handleSearchTypeChange('title')}>Title</button>
+                    <button onClick={() => handleSearchTypeChange('genre')}>Genre</button>
                 </div>
             </div>
 
@@ -63,7 +63,7 @@ export default function SearchBar() {
                 <form onSubmit={handleSubmit}>
                     <input
                         type="text"
-                        placeholder={`Search ${searchType === 'Title' ? 'for Title' : 'by Genre'}...`}
+                        placeholder={`Search ${searchType === 'title' ? 'for title' : 'by genre'}...`}
                         value={input}
                         onChange={handleInputChange}
                     />
