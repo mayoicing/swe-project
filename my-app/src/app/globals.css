@@ -17,10 +17,11 @@
 
 */
 
-body {
+html, body {
   color: #000000;
   background: linear-gradient(135deg, #2C3851, black);
   font-family: Spline Sans, Arial, Helvetica, sans-serif;
+  height: 100%;
 }
 
 body::-webkit-scrollbar { /* Hides scrollbar */

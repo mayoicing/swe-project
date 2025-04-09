@@ -5,8 +5,8 @@ import Navbar from '../components/Navbar';
 export default function SelectNumTicketsPage() {
     return (
         <>
-        <Navbar/>
-        <SelectNumTickets/>
+            <Navbar/>
+            <SelectNumTickets/>
         </>
     );
 }
