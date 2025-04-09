@@ -69,7 +69,7 @@ export default function LoginForm() {
 
     return (
         <div className={styles.formContainer}>
-            <h1>Log In</h1>
+            <h1 className={styles.login}>Log In</h1>
             {error && <p className={styles.error}>{error}</p>}
             <form onSubmit={handleSubmit} className={styles.inputForm}>
                 <label>
@@ -93,12 +93,12 @@ export default function LoginForm() {
                     />
                 </label>
                 <label className={styles.rememberMe}>
+                    Remember Me
                     <input
                         type="checkbox"
                         checked={rememberMe}
                         onChange={(e) => setRememberMe(e.target.checked)}
                     />
-                    Remember me
                     </label>
                 <div className={styles.buttonContainer}>
                     <input type="submit" value="Log In" className={styles.submitButton} />
