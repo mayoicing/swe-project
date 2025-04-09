@@ -52,6 +52,12 @@
   padding: 0.4rem 1rem;
   margin-left: 1%;
   border-radius: 5px;
+  transition: background-color 0.2s ease;
+}
+
+/* When you hover over movie searchbar */
+.mechanics button:hover {
+  background-color:#923fdb;
 }
 
 /* Each movie result after searching */
