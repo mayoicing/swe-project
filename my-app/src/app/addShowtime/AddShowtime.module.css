@@ -1,109 +1,135 @@
 /* AddShowtime.module.css */
+
+/* Actual form container */
 .container {
-    padding: 1.5rem;
-    background-color: #121212;
-    color: #fff;
-    min-height: 100vh;
-  }
-  
-  .section {
-    margin-bottom: 2rem;
-  }
-  
-  .searchInput {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #444;
-    border-radius: 0.375rem;
-    background-color: #1e1e1e;
-    color: #fff;
-  }
-  
-  .button {
-    background-color: #6b46c1;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 0.375rem;
-    margin-left: 1rem;
-    cursor: pointer;
-    border: none;
-  }
-  
-  .button:hover {
-    background-color: #553c9a;
-  }
-  
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1rem;
-  }
-  
-  .card {
-    border: 1px solid #444;
-    border-radius: 0.375rem;
-    padding: 0.75rem;
-    text-align: center;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .card:hover {
-    background-color: #2a2a2a;
-  }
-  
-  .card img {
-    border-radius: 0.375rem;
-  }
-  
-  .cardTitle {
-    margin-top: 0.5rem;
-    font-size: 0.875rem;
-  }
-  
-  .selectedCard {
-    background-color: #4c1d95;
-    border-color: #7c3aed;
-  }
-  
-  .errorMessage {
-    color: #f87171;
-    margin-top: 0.5rem;
-  }
-  
-  .label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-  }
-  
-  .inputGroup {
-    margin-top: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    max-width: 400px;
-  }
-  
-  .inputGroup input,
-  .inputGroup select {
-    padding: 0.5rem;
-    border-radius: 0.375rem;
-    border: 1px solid #444;
-    background-color: #1e1e1e;
-    color: white;
-  }
-  
-  .submitButton {
-    margin-top: 2rem;
-    background-color: #10b981;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 0.375rem;
-    font-size: 1rem;
-    cursor: pointer;
-  }
-  
-  .submitButton:hover {
-    background-color: #059669;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: center;
+  margin: 5% 10%;
+  padding: 2%;
+  border-radius: 20px;
+  background-color: white;
+}
+
+/* 'Add Showtime' title */
+.container h1 {
+  font-size: 35px;
+  font-weight: bolder;
+  color: #2C2C2C;
+  letter-spacing: -0.5px;
+}
+
+/* Searchbar form for movies */
+.searchbar {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  margin-top: 1%;
+}
+
+/* Input typed into searchbar */
+.searchbar input {
+  padding: 1vh;
+  padding-left: 2%;
+  padding-right: 50vh;
+  background-color: #E8F1FD;
+  color: #2C2C2C;
+}
+
+/* When you click on search bar */
+.searchbar input:focus {
+  outline: none;
+}
+
+/* Searchbar button */
+.mechanics button {
+  color: white;
+  font-weight: bolder;
+  letter-spacing: 1px;
+  background-color:#7E22CE;
+  padding: 0.4rem 1rem;
+  margin-left: 1%;
+  border-radius: 5px;
+}
+
+/* Each movie result after searching */
+.movie {
+  font-weight: bolder;
+  letter-spacing: 1px;
+  margin-top: 1%;
+  padding: 1%;
+  padding-left: 2%;
+  background-color: #E8F1FD;
+  cursor: pointer;
+  border-radius: 5px;
+  color: #2C2C2C;
+  transition: background-color 0.3s ease;
+}
+
+/* When you hover each any movie result */
+.movie:hover {
+  background-color: #c9d2f0;
+}
+
+/* Includes title & description for each movie */
+.movieInfo {
+  background-color: #E8F1FD;
+  margin-top: 1%;
+  padding: 1%;
+  padding-left: 2%;
+}
+
+/* 'MovieTitle' heading */
+.movieInfo h2 {
+  font-weight: bolder;
+  letter-spacing: 1px;
+}
+
+/* Horizontal rule */
+.movieInfo hr {
+  border: 1px solid #2C2C2C;
+  margin-top: 20px;
+}
+
+/* Shows available showtimes */
+.showtimes {
+  background-color: #E8F1FD;
+  padding: 1%;
+  padding-left: 2%;
+}
+
+/* 'Existing Showtimes' heading */
+.showtimes h3 { 
+  font-weight: bolder;
+  letter-spacing: 1px;
+  color: #2C2C2C;
+}
+
+/* Each avilable showtime */
+.showtimes li {
+  color: #2C2C2C;
+  border: #2C2C2C solid 1px;
+  border-radius: 5px;
+  padding: 5px;
+  transition: background-color 0.2s ease;
+  margin-top: 1%;
+  margin-bottom: 1%;
+}
+
+/* Button for delete each showtime */
+.showtimes button {
+  background-color: #cc0000;
+  color: white;
+  border-radius: 5px;
+  padding: 5px;
+  margin-left: 2%;
+  align-self: right;
+  transition: background-color 0.2s ease;
+}
+
+/* When you hover over each DELETE button */
+.showtimes button:hover {
+  background-color: #940f0f;
+}

@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import axios from "axios";
 //import Navbar from "@/app/components/Navbar";
 import AdminNavbar from "../components/AdminNavbar";
+import styles from './AddShowtime.module.css';
 
 export default function AddShowtimePage() {
   const [searchTitle, setSearchTitle] = useState("");
@@ -161,123 +162,111 @@ export default function AddShowtimePage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <AdminNavbar />
-      <div className="p-6 max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold mb-4">Add Showtime</h1>
+    <div className={styles.container}>
 
-        <div className="mb-4">
-          <input
-            type="text"
-            placeholder="Search movie title"
-            value={searchTitle}
-            onChange={(e) => setSearchTitle(e.target.value)}
-            className="text-black px-3 py-2 rounded"
-          />
-          <button onClick={searchMovie} className="ml-2 bg-blue-600 px-4 py-2 rounded">
-            Search
-          </button>
+      {/* Container for search mechanics */}
+      <div className={styles.mechanics}>
+        <h1>Add Showtime</h1>
+        <div className={styles.searchbar}>
+            <input
+              type="text"
+              placeholder="Search movie title"
+              value={searchTitle}
+              onChange={(e) => setSearchTitle(e.target.value)}
+              className="text-black px-3 py-2 rounded"
+            />
+            <button onClick={searchMovie}>
+              Search
+            </button>
+          </div>
+      </div>
+
+      {/* Shows list of movie results from searchbar */}
+      {movieResults.length > 0 && (
+        <ul>
+          {movieResults.map((m) => (
+            <li
+              key={m.movieId}
+              onClick={() => selectMovie(m)}
+              className={styles.movie}
+            >
+              {m.title}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* Format for movie title & description */}
+      {movie && (
+        <div className={styles.movieInfo}>
+          <h2>{movie.title}</h2>
+          <p>{movie.description}</p>
+          <hr/>
         </div>
+      )}
 
-        {movieResults.length > 0 && (
-          <ul className="mb-4 border rounded divide-y divide-gray-700">
-            {movieResults.map((m) => (
-              <li
-                key={m.movieId}
-                onClick={() => selectMovie(m)}
-                className="cursor-pointer px-4 py-2 hover:bg-gray-800"
-              >
-                {m.title}
+      {/* Show all existing available showtimes */}
+      {showtimes.length > 0 && (
+        <div className={styles.showtimes}>
+          <h3>Existing Showtimes</h3>
+          <ul>
+            {showtimes.map((s) => (
+              <li key={s.movieShowID}>
+                <span>
+                  {s.showStartTime} — {auditoriumMap[s.auditoriumID]?.auditorium_name || "Auditorium #" + s.auditoriumID} — Seats: {auditoriumMap[s.auditoriumID]?.noOfSeats ?? "N/A"}
+                </span>
+                <button onClick={() => deleteShowtime(s.movieShowID)}>Delete</button>
               </li>
             ))}
           </ul>
-        )}
+        </div>
+      )}
 
-        {movie && (
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold">{movie.title}</h2>
-            <p>{movie.description}</p>
+      {/* Shows all available auditoriums */}
+      {movie && (
+        <div>
+
+          {/* Seachbar for auditorium */}
+          <div>
+            <input
+              type="text"
+              placeholder="Search auditorium by name"
+              value={auditoriumSearch}
+              onChange={(e) => setAuditoriumSearch(e.target.value)}
+            />
+            <button onClick={searchAuditorium}>Search</button>
           </div>
-        )}
 
-        {showtimes.length > 0 && (
-          <div className="mb-6">
-            <h3 className="text-lg font-bold mb-2">Existing Showtimes</h3>
-            <ul className="space-y-2">
-              {showtimes.map((s) => (
-                <li
-                  key={s.movieShowID}
-                  className="flex justify-between items-center border-b pb-1"
-                >
-                  <span>
-                    {s.showStartTime} — {auditoriumMap[s.auditoriumID]?.auditorium_name || "Auditorium #" + s.auditoriumID} — Seats: {auditoriumMap[s.auditoriumID]?.noOfSeats ?? "N/A"}
-                  </span>
-                  <button
-                    onClick={() => deleteShowtime(s.movieShowID)}
-                    className="bg-red-600 px-3 py-1 rounded"
-                  >
-                    Delete
-                  </button>
-                </li>
+          {}
+          {auditoriumMatches.length > 0 && (
+            <ul>
+              {auditoriumMatches.map((a) => (
+                <li key={a.auditoriumID} onClick={() => selectAuditorium(a)}>
+                  {a.auditorium_name} — Seats: {a.noOfSeats}
+                 </li>
               ))}
             </ul>
-          </div>
-        )}
+          )}
 
-        {movie && (
-          <div className="space-y-4">
-            <div>
-              <input
-                type="text"
-                placeholder="Search auditorium by name"
-                value={auditoriumSearch}
-                onChange={(e) => setAuditoriumSearch(e.target.value)}
-                className="text-black px-3 py-2 rounded"
-              />
-              <button
-                onClick={searchAuditorium}
-                className="ml-2 bg-green-600 px-4 py-2 rounded"
-              >
-                Search
-              </button>
-            </div>
+          {auditorium && (
+            <p>
+              Selected Auditorium: {auditorium.auditorium_name} — Seats: {auditorium.noOfSeats}
+            </p>
+          )}
 
-            {auditoriumMatches.length > 0 && (
-              <ul className="mb-4 border rounded divide-y divide-gray-700">
-                {auditoriumMatches.map((a) => (
-                  <li
-                    key={a.auditoriumID}
-                    onClick={() => selectAuditorium(a)}
-                    className="cursor-pointer px-4 py-2 hover:bg-gray-800"
-                  >
-                    {a.auditorium_name} — Seats: {a.noOfSeats}
-                  </li>
-                ))}
-              </ul>
-            )}
+          <input
+            type="datetime-local"
+            value={startTime}
+            onChange={(e) => setStartTime(e.target.value)}
+          />
 
-            {auditorium && (
-              <p>
-                Selected Auditorium: {auditorium.auditorium_name} — Seats: {auditorium.noOfSeats}
-              </p>
-            )}
+          {/* Button to add showtime */}
+          <button onClick={addShowtime}>
+            Add Showtime
+          </button>
+        </div>
+      )}
 
-            <input
-              type="datetime-local"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-              className="text-black px-3 py-2 rounded"
-            />
-
-            <button
-              onClick={addShowtime}
-              className="bg-purple-700 px-5 py-2 rounded"
-            >
-              Add Showtime
-            </button>
-          </div>
-        )}
-      </div>
     </div>
   );
 }
