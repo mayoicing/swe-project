@@ -10,4 +10,5 @@ import com.movieapp.swe_project_backend.model.MovieShow;
 @Repository
 public interface MovieShowRepository extends JpaRepository<MovieShow, Integer> {
     List<MovieShow> findByMovieID(int movieID);
+    List<MovieShow> findByAuditoriumID(int auditoriumID);
 }

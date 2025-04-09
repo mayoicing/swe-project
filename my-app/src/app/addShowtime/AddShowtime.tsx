@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
-//import Navbar from "@/app/components/Navbar";
 import AdminNavbar from "../components/AdminNavbar";
 import styles from './AddShowtime.module.css';
 
@@ -118,43 +117,34 @@ export default function AddShowtimePage() {
     }
 
     try {
-      console.log("AVAILABLE SEATS:", auditorium.noOfSeats); 
-      // Add the Showtime
       const response = await axios.post("http://localhost:8080/movieshow/add", {
         movieID: movie.movieId,
         auditoriumID: auditorium.auditoriumID,
         showStartTime: startTime,
         available_seats: auditorium.noOfSeats,
-    });
+      });
 
-    if (response.data) {
-      console.log("New Showtime ID:", response.data.movieShowID); 
+      if (response.data) {
+        await axios.post(
+          `http://localhost:8080/movieshowseat/initialize/${response.data.movieShowID}/${auditorium.auditoriumID}`
+        );
 
-      // Initialize seats for the showtime
-      await axios.post(`http://localhost:8080/movieshowseat/initialize/${response.data.movieShowID}/${auditorium.auditoriumID}`);
-
-      alert("Showtime and seats added successfully!");
-
-      // Refresh the showtimes list
-      fetchShowtimes(movie.movieId);
+        alert("Showtime and seats added successfully!");
+        fetchShowtimes(movie.movieId);
+      }
+    } catch (err: any) {
+      console.error("Error adding showtime", err);
+      const message = err.response?.data || "\u274C Failed to add showtime.";
+      alert(message);
     }
-  } catch (err) {
-    console.error("Error adding showtime", err);
-    alert("Failed to add showtime.");
-  }
-};
+  };
 
   const deleteShowtime = async (id: number) => {
     try {
-      // Delete seats for the specific movie show
       await axios.delete(`http://localhost:8080/movieshowseat/delete/byMovieShow/${id}`);
-
-      // Delete movie showtime
       await axios.delete(`http://localhost:8080/movieshow/delete/${id}`);
 
       if (movie) fetchShowtimes(movie.movieId);
-
-      console.log("Showtime deleted successfully!");
     } catch (error) {
       console.error("Error deleting showtime:", error);
       alert("Error deleting showtime!");
@@ -163,25 +153,20 @@ export default function AddShowtimePage() {
 
   return (
     <div className={styles.container}>
-
-      {/* Container for search mechanics */}
       <div className={styles.mechanics}>
         <h1>Add Showtime</h1>
         <div className={styles.searchbar}>
-            <input
-              type="text"
-              placeholder="Search movie title"
-              value={searchTitle}
-              onChange={(e) => setSearchTitle(e.target.value)}
-              className="text-black px-3 py-2 rounded"
-            />
-            <button onClick={searchMovie}>
-              Search
-            </button>
-          </div>
+          <input
+            type="text"
+            placeholder="Search movie title"
+            value={searchTitle}
+            onChange={(e) => setSearchTitle(e.target.value)}
+            className="text-black px-3 py-2 rounded"
+          />
+          <button onClick={searchMovie}>Search</button>
+        </div>
       </div>
 
-      {/* Shows list of movie results from searchbar */}
       {movieResults.length > 0 && (
         <ul>
           {movieResults.map((m) => (
@@ -196,16 +181,14 @@ export default function AddShowtimePage() {
         </ul>
       )}
 
-      {/* Format for movie title & description */}
       {movie && (
         <div className={styles.movieInfo}>
           <h2>{movie.title}</h2>
           <p>{movie.description}</p>
-          <hr/>
+          <hr />
         </div>
       )}
 
-      {/* Show all existing available showtimes */}
       {showtimes.length > 0 && (
         <div className={styles.showtimes}>
           <h3>Existing Showtimes</h3>
@@ -222,11 +205,8 @@ export default function AddShowtimePage() {
         </div>
       )}
 
-      {/* Shows all available auditoriums */}
       {movie && (
         <div>
-
-          {/* Seachbar for auditorium */}
           <div>
             <input
               type="text"
@@ -237,13 +217,12 @@ export default function AddShowtimePage() {
             <button onClick={searchAuditorium}>Search</button>
           </div>
 
-          {}
           {auditoriumMatches.length > 0 && (
             <ul>
               {auditoriumMatches.map((a) => (
                 <li key={a.auditoriumID} onClick={() => selectAuditorium(a)}>
                   {a.auditorium_name} — Seats: {a.noOfSeats}
-                 </li>
+                </li>
               ))}
             </ul>
           )}
@@ -260,13 +239,9 @@ export default function AddShowtimePage() {
             onChange={(e) => setStartTime(e.target.value)}
           />
 
-          {/* Button to add showtime */}
-          <button onClick={addShowtime}>
-            Add Showtime
-          </button>
+          <button onClick={addShowtime}>Add Showtime</button>
         </div>
       )}
-
     </div>
   );
 }
