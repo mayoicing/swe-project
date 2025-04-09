@@ -133,9 +133,20 @@ export default function AddShowtimePage() {
         fetchShowtimes(movie.movieId);
       }
     } catch (err: any) {
-      console.error("Error adding showtime", err);
-      const message = err.response?.data || "\u274C Failed to add showtime.";
-      alert(message);
+      const status = err.response?.status;
+      const message = err.response?.data;
+    
+      if (status === 500 && message) {
+        // backend message
+        alert(message);
+      } else if (status) {
+        // Other known error (non-500)
+        alert(message || "❌ Failed to add showtime due to server error.");
+      } else {
+        // Unexpected error (maybe network issue, etc.)
+        console.error("Unexpected error adding showtime:", err);
+        alert("❌ An unexpected error occurred. Please try again later.");
+      }
     }
   };
 
