@@ -2,7 +2,7 @@
 
 .body { /* Overall file */
     margin: 0;
-    height: 100vh;
+    height: 90vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,7 +21,7 @@
 }
 
 .formContainer h1 { /* Title of form */
-    font-size: 40px;
+    font-size: 35px;
     font-weight: bolder;
     color: #2C2C2C;
     letter-spacing: -0.5px;
@@ -93,28 +93,27 @@
     margin: 0; /* Removes auto margin that was pushing it */
     flex-shrink: 0; /* Ensures checkbox doesn't resize unexpectedly */
 }
-
   
-    .navigation {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        align-items: flex-start;
-        margin-top: 1rem;
-        margin-bottom: 50px;
-        text-decoration: underline;
-    }
-    .navigation a {
-        font-size: 0.9rem;
-        color: #0070f3;
-        text-decoration: none;
-        transition: color 0.2s ease;
-      }
-
-    .signup {
-        text-decoration: underline;
+.navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+    margin-top: 1rem;
+    margin-bottom: 50px;
+    text-decoration: underline;
+}
+.navigation a {
+    font-size: 0.9rem;
+    color: #0070f3;
+    text-decoration: none;
+    transition: color 0.2s ease;
     }
 
-    .signup a:hover {
-        color: #2C3851;
-    }
+.signup {
+    text-decoration: underline;
+}
+
+.signup a:hover {
+    color: #2C3851;
+}

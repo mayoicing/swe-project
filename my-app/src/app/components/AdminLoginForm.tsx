@@ -87,7 +87,7 @@ export default function LoginForm() {
                         required
                     />
                 </label>
-                <label>
+                <label className={styles.rememberMe}>
                     Remember me? 
                     <input 
                         type="checkbox" 
