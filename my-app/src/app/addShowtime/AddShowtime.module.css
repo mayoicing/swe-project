@@ -139,3 +139,51 @@
 .showtimes button:hover {
   background-color: #940f0f;
 }
+
+/* Auditorium search and time selection section */
+.auditoriumSection input[type="text"] {
+  background-color: #F0E8FD;
+  padding: 1vh 2vh;
+  margin-top: 2%;
+  margin-right: 1%;
+  border-radius: 5px;
+  border: none;
+  width: 50%;
+  color: #2C2C2C;
+}
+
+.auditoriumSection input[type="text"]:focus {
+  outline: none;
+  box-shadow: 0 0 5px #7E22CE;
+}
+
+/* Auditorium search button */
+.auditoriumSection button {
+  color: white;
+  font-weight: bold;
+  letter-spacing: 1px;
+  background-color: #7E22CE;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  transition: background-color 0.2s ease;
+}
+
+.auditoriumSection button:hover {
+  background-color: #923fdb;
+}
+
+/* Time selector */
+.auditoriumSection input[type="datetime-local"] {
+  background-color: #E8F1FD;
+  padding: 1vh 2vh;
+  border-radius: 5px;
+  border: none;
+  margin-top: 2%;
+  margin-bottom: 2%;
+  color: #2C2C2C;
+}
+
+.auditoriumSection input[type="datetime-local"]:focus {
+  outline: none;
+  box-shadow: 0 0 5px #7E22CE;
+}

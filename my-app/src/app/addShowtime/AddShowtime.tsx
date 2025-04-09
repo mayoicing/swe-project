@@ -204,18 +204,15 @@ export default function AddShowtimePage() {
           </ul>
         </div>
       )}
-
       {movie && (
-        <div>
-          <div>
-            <input
-              type="text"
-              placeholder="Search auditorium by name"
-              value={auditoriumSearch}
-              onChange={(e) => setAuditoriumSearch(e.target.value)}
-            />
-            <button onClick={searchAuditorium}>Search</button>
-          </div>
+        <div className={styles.auditoriumSection}>
+          <input
+            type="text"
+            placeholder="Search auditorium by name"
+            value={auditoriumSearch}
+            onChange={(e) => setAuditoriumSearch(e.target.value)}
+          />
+          <button onClick={searchAuditorium}>Search</button>
 
           {auditoriumMatches.length > 0 && (
             <ul>
