@@ -187,3 +187,25 @@
   outline: none;
   box-shadow: 0 0 5px #7E22CE;
 }
+
+/* Auditorium list item */
+.auditoriumItem {
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin-top: 1%;
+  padding: 1vh 2vh;
+  background-color: #E8F1FD;
+  color: #2C2C2C;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.auditoriumItem:hover {
+  background-color: #c9d2f0;
+}
+
+.selectedAuditorium {
+  background-color: #D8B4FE;
+  border: 2px solid #7E22CE;
+}

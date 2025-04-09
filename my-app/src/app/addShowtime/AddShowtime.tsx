@@ -228,13 +228,16 @@ export default function AddShowtimePage() {
           {auditoriumMatches.length > 0 && (
             <ul>
               {auditoriumMatches.map((a) => (
-                <li key={a.auditoriumID} onClick={() => selectAuditorium(a)}>
+                <li
+                  key={a.auditoriumID}
+                  onClick={() => selectAuditorium(a)}
+                  className={`${styles.auditoriumItem} ${auditorium?.auditoriumID === a.auditoriumID ? styles.selectedAuditorium : ""}`}
+                >
                   {a.auditorium_name} — Seats: {a.noOfSeats}
                 </li>
               ))}
             </ul>
           )}
-
           {auditorium && (
             <p>
               Selected Auditorium: {auditorium.auditorium_name} — Seats: {auditorium.noOfSeats}
