@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.movieapp.swe_project_backend.dto.MovieInfoDTO;
@@ -176,16 +175,23 @@ public class MovieInfoController {
     }
 
     @PutMapping("/updateFilter/{movieID}")
-    public ResponseEntity<?> updateMovieFilter(@PathVariable int movieID, @RequestParam MovieInfo.MovieFilter filter) {
+    public ResponseEntity<String> updateMovieFilter(@PathVariable int movieID, @RequestBody Map<String, String> filter) {
         Optional<MovieInfo> optionalMovie = movieInfoService.getMovieInfoById(movieID);
-    
+
         if (optionalMovie.isPresent()) {
             MovieInfo movie = optionalMovie.get();
-            movie.setFilter(filter);
-            movieInfoService.saveMovieInfo(movie);
-            return ResponseEntity.ok("Movie filter updated to " + filter.name());
+            try {
+                // Attempt to set the filter from the request body
+                movie.setFilter(MovieInfo.MovieFilter.valueOf(filter.get("filter")));
+                movieInfoService.saveMovieInfo(movie);
+                return ResponseEntity.ok("Movie filter updated successfully");
+            } catch (IllegalArgumentException e) {
+                // Handle invalid filter value
+                return ResponseEntity.badRequest().body("Invalid filter value provided");
+            }
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
 }

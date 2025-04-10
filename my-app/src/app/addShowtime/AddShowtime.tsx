@@ -129,6 +129,11 @@ export default function AddShowtimePage() {
           `http://localhost:8080/movieshowseat/initialize/${response.data.movieShowID}/${auditorium.auditoriumID}`
         );
 
+        await axios.put(`http://localhost:8080/movieinfo/updateFilter/${movie.movieId}`, 
+          { filter: "NOW_PLAYING" },
+          { headers: { "Content-Type": "application/json" } }
+        );
+
         alert("Showtime and seats added successfully!");
         fetchShowtimes(movie.movieId);
       }
