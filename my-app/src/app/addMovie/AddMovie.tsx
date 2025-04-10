@@ -13,7 +13,10 @@ interface Actor {
 }
 
 export default function AddMovieDetails() {
-  const [category, setCategory] = useState<string>("");
+  //const [category, setCategory] = useState<string>("");
+
+  const [filter, setFilter] = useState<string>("COMING_SOON"); // set default
+
   const [actors, setActors] = useState<Actor[]>([]);
   const [moviePosterUrl, setMoviePosterUrl] = useState<string>("");
   const [genre, setGenre] = useState<string>("");
@@ -30,7 +33,7 @@ export default function AddMovieDetails() {
     const movieData = {
       title,
       description,
-      category,
+      filter,
       actors,
       moviePosterUrl,
       genre,
@@ -88,7 +91,7 @@ export default function AddMovieDetails() {
         ></textarea>
       
       {/* Categories Section */}
-      <label className={styles.label}>Category</label>
+     {/*} <label className={styles.label}>Category</label>
       <div className={styles.categoryOptions}>
         <label>
           <input
@@ -110,7 +113,7 @@ export default function AddMovieDetails() {
           />
           Currently Running
         </label>
-      </div>
+      </div>*/}
 
         {/* Movie Poster URL */}
         <label className={styles.label}>Movie Poster URL</label>

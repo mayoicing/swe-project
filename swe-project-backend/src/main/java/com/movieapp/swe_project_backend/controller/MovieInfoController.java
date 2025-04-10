@@ -12,8 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.movieapp.swe_project_backend.dto.MovieInfoDTO;
@@ -171,5 +173,19 @@ public class MovieInfoController {
         }).toList();
 
         return ResponseEntity.ok(movieDTOs);
+    }
+
+    @PutMapping("/updateFilter/{movieID}")
+    public ResponseEntity<?> updateMovieFilter(@PathVariable int movieID, @RequestParam MovieInfo.MovieFilter filter) {
+        Optional<MovieInfo> optionalMovie = movieInfoService.getMovieInfoById(movieID);
+    
+        if (optionalMovie.isPresent()) {
+            MovieInfo movie = optionalMovie.get();
+            movie.setFilter(filter);
+            movieInfoService.saveMovieInfo(movie);
+            return ResponseEntity.ok("Movie filter updated to " + filter.name());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

@@ -16,11 +16,6 @@ interface Movie {
   filter: string;
 }
 
-/*
-const CURRENTLY_RUNNING = ['Mean Girls', 'Interstellar', 'Gladiator II', 'The Wild Robot', 'Avatar: The Way of Water', 'La La Land'];
-const COMING_SOON = ['Kung Fu Panda 2', 'Wicked', 'Wonka', 'Dune: Part Two', 'Elvis', 'Flow', 'Puss In Boots: The Last Wish', 'The Hunger Games: The Ballad of Songbirds and Snakes', 'Luca'];
-*/
-
 export default function MoviesList() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [activeGenre, setActiveGenre] = useState<'NOW_PLAYING' | 'COMING_SOON' | null>(null);
