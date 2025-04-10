@@ -1,4 +1,6 @@
 package com.movieapp.swe_project_backend.dto;
+import com.movieapp.swe_project_backend.model.MovieInfo.MovieFilter;
+
 
 public class MovieInfoDTO {
     private int movieID;
@@ -10,9 +12,10 @@ public class MovieInfoDTO {
     private String moviePosterUrl;
     private double movieRating;
     private int movieDuration;
+    private MovieFilter filter;
 
     // Constructor
-    public MovieInfoDTO(int movieID, String title, String description, String genre, String filmCode, String trailerUrl, String moviePosterUrl, double movieRating, int movieDuration) {
+    public MovieInfoDTO(int movieID, String title, String description, String genre, String filmCode, String trailerUrl, String moviePosterUrl, double movieRating, int movieDuration, MovieFilter filter) {
         this.movieID = movieID;
         this.title = title;
         this.description = description;
@@ -22,6 +25,7 @@ public class MovieInfoDTO {
         this.moviePosterUrl = moviePosterUrl;
         this.movieRating = movieRating;
         this.movieDuration = movieDuration;
+        this.filter = filter;
     }
 
     // Getters and Setters
@@ -96,4 +100,13 @@ public class MovieInfoDTO {
     public void setMovieDuration(int movieDuration) {
         this.movieDuration = movieDuration;
     }
+
+    public MovieFilter getFilter() {
+        return filter;
+    }
+
+    public void setFilter(MovieFilter filter) {
+        this.filter = filter;
+    }
+
 }

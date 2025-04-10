@@ -13,14 +13,17 @@ interface Movie {
   poster: string;
   trailer: string;
   filmCode: string;
+  filter: string;
 }
 
+/*
 const CURRENTLY_RUNNING = ['Mean Girls', 'Interstellar', 'Gladiator II', 'The Wild Robot', 'Avatar: The Way of Water', 'La La Land'];
 const COMING_SOON = ['Kung Fu Panda 2', 'Wicked', 'Wonka', 'Dune: Part Two', 'Elvis', 'Flow', 'Puss In Boots: The Last Wish', 'The Hunger Games: The Ballad of Songbirds and Snakes', 'Luca'];
+*/
 
 export default function MoviesList() {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [activeGenre, setActiveGenre] = useState<'current' | 'comingSoon' | null>(null);
+  const [activeGenre, setActiveGenre] = useState<'NOW_PLAYING' | 'COMING_SOON' | null>(null);
   const [selectedTrailer, setSelectedTrailer] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -33,6 +36,7 @@ export default function MoviesList() {
           poster: decodeURIComponent((movie.poster || "").trim()),
           trailer: movie.trailer,
           filmCode: movie.filmCode,
+          filter: movie.filter,
         }));
         setMovies(decodedMovies);
       })
@@ -40,10 +44,10 @@ export default function MoviesList() {
   }, []);
 
   const getFilteredMovies = () => {
-    if (activeGenre === 'current') {
-      return movies.filter(m => CURRENTLY_RUNNING.includes(m.title));
-    } else if (activeGenre === 'comingSoon') {
-      return movies.filter(m => COMING_SOON.includes(m.title));
+    if (activeGenre === 'NOW_PLAYING') {
+      return movies.filter(m => m.filter === 'NOW_PLAYING');
+    } else if (activeGenre === 'COMING_SOON') {
+      return movies.filter(m => m.filter === 'COMING_SOON');
     }
     return movies;
   };

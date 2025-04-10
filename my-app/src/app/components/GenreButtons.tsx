@@ -9,11 +9,11 @@ interface Genre {
 }
 
 interface GenreButtonsProps {
-  onGenreSelect: (genre: 'current' | 'comingSoon' | null) => void;
+  onGenreSelect: (genre: 'NOW_PLAYING' | 'COMING_SOON' | null) => void;
 }
 
 const initialGenres: Genre[] = [
-  { genre: 'CURRENTLY RUNNING', isSelected: false },
+  { genre: 'NOW PLAYING', isSelected: false },
   { genre: 'COMING SOON', isSelected: false },
 ];
 
@@ -35,7 +35,7 @@ export default function GenreButtons({ onGenreSelect }: GenreButtonsProps) {
 
     if (isSelectedNow) {
       onGenreSelect(
-        selectedGenre === 'CURRENTLY RUNNING' ? 'current' : 'comingSoon'
+        selectedGenre === 'NOW PLAYING' ? 'NOW_PLAYING' : 'COMING_SOON'
       );
     } else {
       onGenreSelect(null); // deselected

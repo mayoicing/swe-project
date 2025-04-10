@@ -43,6 +43,7 @@ public class MovieInfoController {
         movieInfo.setPoster(movieInfoDTO.getMoviePosterUrl());
         movieInfo.setRating(movieInfoDTO.getMovieRating());
         movieInfo.setDuration(movieInfoDTO.getMovieDuration());
+        movieInfo.setFilter(movieInfoDTO.getFilter());
         return movieInfo;
     }
 
@@ -83,7 +84,8 @@ public class MovieInfoController {
                 movieInfo.getTrailer(),
                 movieInfo.getPoster(),
                 movieInfo.getRating(),
-                movieInfo.getDuration()
+                movieInfo.getDuration(),
+                movieInfo.getFilter()
             );
             return ResponseEntity.ok(movieInfoDTO);
         } else {
@@ -110,7 +112,8 @@ public class MovieInfoController {
                 movieInfo.getTrailer(),
                 movieInfo.getPoster(),
                 movieInfo.getRating(),
-                movieInfo.getDuration()
+                movieInfo.getDuration(),
+                movieInfo.getFilter()
             );
             return ResponseEntity.ok(movieInfoDTO);
         } else {
@@ -162,7 +165,8 @@ public class MovieInfoController {
                 movieInfo.getTrailer(),
                 movieInfo.getPoster(),
                 movieInfo.getRating(),
-                movieInfo.getDuration()
+                movieInfo.getDuration(),
+                movieInfo.getFilter()
             );
         }).toList();
 

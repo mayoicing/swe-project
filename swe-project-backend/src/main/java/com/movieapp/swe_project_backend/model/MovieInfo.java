@@ -2,6 +2,8 @@ package com.movieapp.swe_project_backend.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,10 +26,18 @@ public class MovieInfo {
     private double rating;
     private int duration;
 
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "ENUM('COMING_SOON', 'NOW_PLAYING')")
+    private MovieFilter filter;
+
+    public enum MovieFilter {
+        COMING_SOON,
+        NOW_PLAYING
+    }
+
     // Constructor
-    public MovieInfo(int movieID, String poster, String title, String description, String genre, String filmCode, String trailer, double rating, int duration) {
+    public MovieInfo(int movieID, String poster, String title, String description, String genre, String filmCode, String trailer, double rating, int duration, MovieFilter filter) {
         this.movieID = movieID;
-        //this.movieID = movieID;
         this.poster = poster;
         this.title = title;
         this.description = description;
@@ -36,6 +46,7 @@ public class MovieInfo {
         this.trailer = trailer;
         this.rating = rating;
         this.duration = duration;
+        this.filter = filter;
     }
 
     // Default Constructor
@@ -114,6 +125,14 @@ public class MovieInfo {
         this.duration = duration;
     }   
 
+    public MovieFilter getFilter() {
+        return filter;
+    }
+
+    public void setFilter(MovieFilter filter) {
+        this.filter = filter;
+    }
+
     // toString method
     @Override
     public String toString() {
@@ -127,6 +146,7 @@ public class MovieInfo {
                 ", trailer='" + trailer + '\'' +
                 ", rating=" + rating +
                 ", duration=" + duration +
+                ", filter=" + filter +
                 '}';
     }
 }
