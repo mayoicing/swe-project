@@ -1,18 +1,22 @@
-package com.movieapp.swe_project_backend.model;
+package com.movieapp.swe_project_backend.model.ticket;
 
 //import com.fasterxml.jackson.annotation.JsonProperty;
+
+import com.movieapp.swe_project_backend.model.Booking;
+import com.movieapp.swe_project_backend.model.Seat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.*;
 
 @Entity
 @Table(name = "ticket")
-public class Ticket {
+public class Ticket implements TicketComponent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ticketID")
@@ -26,15 +30,14 @@ public class Ticket {
     @JoinColumn(name = "seatID", referencedColumnName = "seatID")
     private Seat seat;
 
-    @ManyToOne
-    @JoinColumn(name = "ticketTypeID", referencedColumnName = "ticketTypeID")
-    private TicketType ticketType;
+    @Column(name = "ticketType")
+    private String ticketType;
 
      // Default Constructor
     public Ticket() {}
 
     // Constructor
-    public Ticket(int ticketID, Booking booking, Seat seat, TicketType ticketType) {
+    public Ticket(int ticketID, Booking booking, Seat seat, String ticketType) {
         this.ticketID = ticketID;
         this.booking = booking;
         this.seat = seat;
@@ -51,6 +54,16 @@ public class Ticket {
     public Seat getSeat() { return seat; }
     public void setSeat(Seat seat) { this.seat = seat; }
 
-    public TicketType getTicketType() { return ticketType; }
-    public void setTicketType(TicketType ticketType) { this.ticketType = ticketType; }
+    public String getTicketType() { return ticketType; }
+    public void setTicketType(String ticketType) { this.ticketType = ticketType; }
+
+    @Override
+    public double getPrice() {
+        return 20.0;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Base Ticket";
+    }
 }

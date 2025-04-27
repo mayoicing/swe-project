@@ -1,6 +1,6 @@
 package com.movieapp.swe_project_backend.service;
 
-import com.movieapp.swe_project_backend.model.Ticket;
+import com.movieapp.swe_project_backend.model.ticket.Ticket;
 
 import java.util.List;
 import java.util.Optional;
