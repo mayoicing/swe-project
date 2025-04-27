@@ -1,9 +1,10 @@
 package com.movieapp.swe_project_backend.controller;
 
-import com.movieapp.swe_project_backend.model.ticket.Ticket;
+import com.movieapp.swe_project_backend.model.ticket.*;
 import com.movieapp.swe_project_backend.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,9 +29,12 @@ public class TicketController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<Ticket> getTicketById(@PathVariable int id) {
-        Optional<Ticket> ticket = ticketService.getTicketById(id);
-        return ticket.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<TicketComponent> getTicketById(@PathVariable int id) {
+        Optional<TicketComponent> ticket = ticketService.getTicketById(id);
+        return ticket
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                            .body(null)); // Return null for TicketComponent when not found
     }
 
     @DeleteMapping("/delete/{id}")

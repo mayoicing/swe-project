@@ -38,6 +38,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<!-- Lombok dependency for slf4j logging -->
+		<dependency>
+    		<groupId>org.projectlombok</groupId>
+   		 	<artifactId>lombok</artifactId>
+    		<version>1.18.24</version>
+    		<scope>provided</scope>
+		</dependency>
 		<!-- Spring Security for password encryption -->
 		<dependency>
     		<groupId>org.springframework.boot</groupId>
