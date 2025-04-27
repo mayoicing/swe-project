@@ -40,6 +40,15 @@ export default function SelectNumSeats() {
 
   const handleNext = () => {
     if (totalSeats > 0) {
+      const tickets = [
+        ...Array(seats.children).fill({ ticketType: 'children', price: 5 }),
+        ...Array(seats.adults).fill({ ticketType: 'adults', price: 10 }),
+        ...Array(seats.seniors).fill({ ticketType: 'seniors', price: 7 }),
+      ];
+      
+      // Save tickets to localStorage
+      localStorage.setItem("tickets", JSON.stringify(tickets));
+
       const params = new URLSearchParams();
       params.append("movieShowID", movieShowID || "");
       params.append("children", seats.children.toString());
@@ -53,6 +62,7 @@ export default function SelectNumSeats() {
       console.log("adults:", seats.adults);
       console.log("seniors:", seats.seniors);
       console.log("totalSeats:", totalSeats);
+      console.log("Tickets:", tickets);
 
       router.push(`./seatSelection?${params.toString()}`);
     } else {

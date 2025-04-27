@@ -2,10 +2,29 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import LoginModal from './LoginModal';
+import SignUpModal from './SignUpModal';
+import AddCardModal from './AddCardModal';
+import { LoginHandler } from '../handlers/LoginHandler';
+//import { Handler } from '../handlers/Handler';
+//import { TicketPriceHandler } from '../handlers/TicketPriceHandler';
+//import { TaxHandler } from '../handlers/TaxHandler';
+//import { PromotionHandler } from '../handlers/PromotionHandler';
+//import { PaymentHandler } from '../handlers/PaymentHandler';
 import styles from "./CheckoutSummaryForm.module.css";
+
+interface OrderRequest {
+  showLoginModal?: boolean;
+  userID?: number;
+}
 
 export default function CheckoutSummary() {
   const router = useRouter();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showSignUpModal, setShowSignUpModal] = useState(false);
+  const [orderRequest, setOrderRequest] = useState<OrderRequest>({});
+  const [showAddCardModal, setShowAddCardModal] = useState(false);  
+
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [ticketDetails, setTicketDetails] = useState([
     { category: "Children under 13", quantity: 0, price: 10 },
@@ -20,6 +39,29 @@ export default function CheckoutSummary() {
   const paymentMethod = "Visa **** 1234";
 
   const totalPrice = ticketDetails.reduce((sum, ticket) => sum + ticket.quantity * ticket.price, 0) - discount;
+
+  const handleLoginSuccess = () => {
+    // Once logged in, continue the chain of responsibility
+    const loginHandler = new LoginHandler();
+    loginHandler.handle(orderRequest); // Continue the flow after login
+  };
+
+  const handleShowLoginModal = () => {
+    setShowLoginModal(true);
+    setShowSignUpModal(false); // Hide sign-up modal if showing login
+  };
+
+  const handleShowSignUpModal = () => {
+    setShowSignUpModal(true);
+    setShowLoginModal(false); // Hide login modal if showing sign-up
+  };
+
+  const closeLoginModal = () => setShowLoginModal(false);
+  const closeSignUpModal = () => setShowSignUpModal(false);
+
+  const handleShowAddCardModal = () => setShowAddCardModal(true);
+  const closeAddCardModal = () => setShowAddCardModal(false);
+
 
   const handleConfirmOrder = () => {
     router.push("/orderConfirm");
@@ -143,6 +185,31 @@ export default function CheckoutSummary() {
           Confirm Order
         </button>
       </div>
+
+      {/* Trigger the Login Modal if the user is not logged in */}
+      <LoginModal 
+        show={orderRequest.showLoginModal || showLoginModal} 
+        closeModal={closeLoginModal}
+        onSwitchToSignUp={handleShowSignUpModal}
+        onLoginSuccess={handleLoginSuccess} 
+      />
+
+      {/* Show SignUp Modal if required */}
+      <SignUpModal
+        show={showSignUpModal}
+        closeModal={closeSignUpModal}
+        onLoginSuccess={handleLoginSuccess}
+      />
+
+      {/* If login is required, trigger the modal */}
+      {!localStorage.getItem('authToken') && (
+        <button onClick={handleShowLoginModal}>Login to Continue</button>
+      )}
+
+      {showAddCardModal && (
+        <AddCardModal closeModal={closeAddCardModal} />
+      )}
+
     </div>
   );
 }

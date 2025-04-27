@@ -59,7 +59,7 @@ public class Ticket implements TicketComponent {
 
     @Override
     public double getPrice() {
-        return 20.0;
+        return 10.0;
     }
 
     @Override
