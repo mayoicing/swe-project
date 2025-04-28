@@ -79,15 +79,20 @@ export default function SignUpModal({
     return (
         <div className={styles.modalBackdrop}>
             <div className={styles.modalContainer}>
-                <button onClick={closeModal} className={styles.closeButton}>X</button>
                 <h1>Sign Up</h1>
                 <form onSubmit={handleSubmit}>
                     {/* Fields for First Name, Last Name, etc. */}
                     <input type="text" name="first_name" value={formData.first_name} onChange={handleChange} placeholder="First Name" required />
                     <input type="text" name="last_name" value={formData.last_name} onChange={handleChange} placeholder="Last Name" required />
                     <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
+                    <input type="text" name="phone_number" value={formData.phone_number} onChange={handleChange} placeholder="Phone Number" required />
                     <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" required />
                     <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm Password" required />
+                    <label>
+                        Enroll for Promotions
+                        <input type="checkbox" name="enroll_for_promotions" checked={formData.enroll_for_promotions} onChange={handleChange} />
+                    </label>
+
                     <button type="submit">Sign Up</button>
                 </form>
             </div>

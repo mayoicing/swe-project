@@ -21,17 +21,8 @@ export default function LoginModal({
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState('');
     const router = useRouter();
-
-    // Auto-login if token exists
-    useEffect(() => {
-        const token = localStorage.getItem('authToken');
-        if (token) {
-            router.push('/');
-        }
-    }, [router]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -49,17 +40,11 @@ export default function LoginModal({
 
             if (response.status === 200) {
                 const { userID, token } = response.data;
-                // Save to localStorage or sessionStorage
-                if (rememberMe) {
-                    localStorage.setItem("authToken", token);
-                    localStorage.setItem("userID", userID.toString());
-                    localStorage.setItem("user_type", 'Customer');
-                } else {
-                    sessionStorage.setItem("authToken", token);
-                    sessionStorage.setItem("userID", userID.toString());
-                    sessionStorage.setItem("user_type", 'Customer');
-                }
-
+            
+                sessionStorage.setItem("authToken", token);
+                sessionStorage.setItem("userID", userID.toString());
+                sessionStorage.setItem("user_type", 'Customer');
+                
                 onLoginSuccess();
                 closeModal();
             }
@@ -79,8 +64,7 @@ export default function LoginModal({
     return (
         <div className={styles.modalBackdrop}>
             <div className={styles.modalContainer}>
-                <button onClick={closeModal} className={styles.closeButton}>X</button>
-                <h1>Log In</h1>
+                <h1>Please log in to continue</h1>
                 {error && <p className={styles.error}>{error}</p>}
                 <form onSubmit={handleSubmit}>
                     <label>
@@ -103,20 +87,16 @@ export default function LoginModal({
                             required
                         />
                     </label>
-                    <label>
-                        Remember Me
-                        <input 
-                            type="checkbox" 
-                            checked={rememberMe}
-                            onChange={(e) => setRememberMe(e.target.checked)}
-                        />
-                    </label>
                     <button type="submit">Log In</button>
                 </form>
                 <div>
-                    <Link href='/forgetPassword'>Forget password?</Link>
-                    <Link href='/loginAdmin'>Admin Login</Link>
-                    <Link href='/registerPersonal'>Don't have an account? Create one here!</Link>
+                    <button 
+                        type="button" 
+                        onClick={onSwitchToSignUp} 
+                        className={styles.switchButton}
+                    >
+                        Sign Up
+                    </button>
                 </div>
             </div>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import LoginModal from './LoginModal';
 import SignUpModal from './SignUpModal';
@@ -10,12 +11,23 @@ import { LoginHandler } from '../handlers/LoginHandler';
 //import { TicketPriceHandler } from '../handlers/TicketPriceHandler';
 //import { TaxHandler } from '../handlers/TaxHandler';
 //import { PromotionHandler } from '../handlers/PromotionHandler';
-//import { PaymentHandler } from '../handlers/PaymentHandler';
+import { PaymentHandler } from '../handlers/PaymentHandler';
 import styles from "./CheckoutSummaryForm.module.css";
+
+interface Card {
+  cardID: number;
+  cardholderName: string;
+  cardNumber: string;
+  expDate: string;
+  cardType: string;
+}
 
 interface OrderRequest {
   showLoginModal?: boolean;
   userID?: number;
+  billingAddress?: any;
+  selectedCardID?: number;
+  selectedCard?: Card;
 }
 
 export default function CheckoutSummary() {
@@ -24,26 +36,92 @@ export default function CheckoutSummary() {
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [orderRequest, setOrderRequest] = useState<OrderRequest>({});
   const [showAddCardModal, setShowAddCardModal] = useState(false);  
-
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [ticketDetails, setTicketDetails] = useState([
-    { category: "Children under 13", quantity: 0, price: 10 },
-    { category: "Adults", quantity: 0, price: 15 },
-    { category: "Seniors 65+", quantity: 0, price: 10 },
+    { category: "Children under 13", quantity: 0, price: 5 },
+    { category: "Adults", quantity: 0, price: 10 },
+    { category: "Seniors 65+", quantity: 0, price: 7 },
   ]);
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
+  const [cards, setCards] = useState<Card[]>([]);
+  const [selectedCard, setSelectedCard] = useState<Card | null>(null);
 
+/*
+  // Fetch user payment cards
+  useEffect(() => {
+    const userID = localStorage.getItem("userID");
+    if (userID) {
+      axios.get(`http://localhost:8080/paymentcard/user/${userID}`)
+        .then((response) => {
+          setCards(response.data);
+        })
+        .catch((error) => console.error('Error fetching payment cards:', error));
+    }
+  }, []);
+*/
+
+  /*
   // Placeholder for shipping and payment details
   const shippingAddress = "123 Example St, City, State, 12345";
   const paymentMethod = "Visa **** 1234";
+  */
 
   const totalPrice = ticketDetails.reduce((sum, ticket) => sum + ticket.quantity * ticket.price, 0) - discount;
 
-  const handleLoginSuccess = () => {
-    // Once logged in, continue the chain of responsibility
+  const handlerChain = useRef<LoginHandler | null>(null);
+
+  if (!handlerChain.current) {
     const loginHandler = new LoginHandler();
-    loginHandler.handle(orderRequest); // Continue the flow after login
+    const paymentHandler = new PaymentHandler();
+
+    loginHandler.setNext(paymentHandler);
+
+    handlerChain.current = loginHandler;
+  }
+
+  useEffect(() => {
+    const runChain = async () => {
+      if (handlerChain.current) {
+        const updatedRequest = await handlerChain.current.handle({ ...orderRequest });
+        
+        // Update the React state with what handlers added
+        if (updatedRequest) {
+          setOrderRequest(updatedRequest);
+          if (updatedRequest.paymentCards) {
+            setCards(updatedRequest.paymentCards);
+          }
+        }
+      }
+    };
+    runChain();
+  }, [orderRequest]); // Add any state or data changes as dependencies
+
+  useEffect(() => {
+    const authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+    if (!authToken) {
+      setShowLoginModal(true);
+    }
+  }, []);
+
+  const handleLoginSuccess = async () => {
+    const userID = Number(localStorage.getItem('userID'));
+  
+    const updatedRequest = {
+      ...orderRequest,
+      userID: userID
+    };
+
+    if (handlerChain.current) {
+      const result = await handlerChain.current.handle(updatedRequest);
+
+      if (result) {
+        setOrderRequest(result);
+        if (result.paymentCards) {
+          setCards(result.paymentCards);
+        } 
+      }
+    }
   };
 
   const handleShowLoginModal = () => {
@@ -60,7 +138,20 @@ export default function CheckoutSummary() {
   const closeSignUpModal = () => setShowSignUpModal(false);
 
   const handleShowAddCardModal = () => setShowAddCardModal(true);
-  const closeAddCardModal = () => setShowAddCardModal(false);
+  
+  const closeAddCardModal = () => {
+    setShowAddCardModal(false);
+    
+    // Fetch updated cards
+    const userID = localStorage.getItem("userID");
+    if (userID) {
+      axios.get(`http://localhost:8080/paymentcard/user/${userID}`)
+        .then((response) => {
+          setCards(response.data);
+        })
+        .catch((error) => console.error('Error fetching payment cards:', error));
+    }
+  };
 
 
   const handleConfirmOrder = () => {
@@ -84,6 +175,25 @@ export default function CheckoutSummary() {
     }
   };
 
+  const handleSelectCard = (card: Card) => {
+    setSelectedCard(card);
+    setOrderRequest((prevRequest) => ({
+      ...prevRequest,
+      selectedCardID: card.cardID,
+    }));
+  };
+
+  const renderCards = () => {
+    return cards.map((card) => (
+      <div key={card.cardID} className={styles.card} onClick={() => handleSelectCard(card)}>
+        <p>{card.cardType} **** {card.cardNumber.slice(-4)}</p>
+        {selectedCard?.cardID === card.cardID && (
+          <p style={{ color: 'green' }}>Selected</p>
+        )}
+      </div>
+    ));
+  };
+  
   const handleQuantityChange = (index: number, newQuantity: number) => {
     const updatedTickets = [...ticketDetails];
     updatedTickets[index].quantity = newQuantity;
@@ -149,16 +259,27 @@ export default function CheckoutSummary() {
             <p className={styles.totalPrice}><strong>Total: ${totalPrice}</strong></p>
           </div>
 
-          {/* Shipping Address */}
+          {/* Billing Address */}
           <div className={styles.summaryCard}>
-            <h2>Shipping Address</h2>
-            <p>{shippingAddress}</p>
+            <h2>Billing Address</h2>
+            {orderRequest.billingAddress ? (
+              <div>
+                <p>{orderRequest.billingAddress.streetAddress}</p>
+                <p>{orderRequest.billingAddress.city}, {orderRequest.billingAddress.state} {orderRequest.billingAddress.zip}</p>
+              </div>
+            ) : (
+              <p>No billing address saved.</p>
+            )}
           </div>
 
-          {/* Payment Information */}
-          <div className={styles.summaryCard}>
+         {/* Payment Information */}
+         <div className={styles.summaryCard}>
             <h2>Payment Information</h2>
-            <p>{paymentMethod}</p>
+            {cards.length > 0 ? (
+              <div className={styles.cards}>{renderCards()}</div>
+            ) : (
+              <p>No payment cards available.</p>
+            )}
           </div>
 
           {/* Promotions Section */}
@@ -188,7 +309,7 @@ export default function CheckoutSummary() {
 
       {/* Trigger the Login Modal if the user is not logged in */}
       <LoginModal 
-        show={orderRequest.showLoginModal || showLoginModal} 
+        show={showLoginModal} 
         closeModal={closeLoginModal}
         onSwitchToSignUp={handleShowSignUpModal}
         onLoginSuccess={handleLoginSuccess} 
@@ -200,11 +321,6 @@ export default function CheckoutSummary() {
         closeModal={closeSignUpModal}
         onLoginSuccess={handleLoginSuccess}
       />
-
-      {/* If login is required, trigger the modal */}
-      {!localStorage.getItem('authToken') && (
-        <button onClick={handleShowLoginModal}>Login to Continue</button>
-      )}
 
       {showAddCardModal && (
         <AddCardModal closeModal={closeAddCardModal} />
