@@ -130,9 +130,16 @@ export default function CheckoutSummary() {
 
   const handleShowLoginModal = () => {
     setShowLoginModal(true);
+    setShowSignUpModal(false); // Hide sign-up modal if showing login
+  };
+
+  const handleShowSignUpModal = () => {
+    setShowSignUpModal(true);
+    setShowLoginModal(false); // Hide login modal if showing sign-up
   };
 
   const closeLoginModal = () => setShowLoginModal(false);
+  const closeSignUpModal = () => setShowSignUpModal(false);
 
   const handleShowAddCardModal = () => setShowAddCardModal(true);
   
@@ -308,7 +315,15 @@ export default function CheckoutSummary() {
       <LoginModal 
         show={showLoginModal} 
         closeModal={closeLoginModal}
+        onSwitchToSignUp={handleShowSignUpModal}
         onLoginSuccess={handleLoginSuccess} 
+      />
+
+      {/* Show SignUp Modal if required */}
+      <SignUpModal
+        show={showSignUpModal}
+        closeModal={closeSignUpModal}
+        onLoginSuccess={handleLoginSuccess}
       />
 
       {showAddCardModal && (

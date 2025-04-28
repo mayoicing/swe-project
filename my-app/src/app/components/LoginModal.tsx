@@ -9,10 +9,12 @@ import Link from 'next/link';
 export default function LoginModal({ 
     show,
     closeModal,
+    onSwitchToSignUp,
     onLoginSuccess,
  }: { 
     show: boolean;
     closeModal: () => void;
+    onSwitchToSignUp: () => void;
     onLoginSuccess: () => void;
 }) {
     if (!show) return null; // If show is false, don't render the modal
@@ -88,7 +90,13 @@ export default function LoginModal({
                     <button type="submit">Log In</button>
                 </form>
                 <div>
-                    <p>Don't have an account? <Link href="/registerPersonal">Sign up</Link></p>
+                    <button 
+                        type="button" 
+                        onClick={onSwitchToSignUp} 
+                        className={styles.switchButton}
+                    >
+                        Sign Up
+                    </button>
                 </div>
             </div>
         </div>
