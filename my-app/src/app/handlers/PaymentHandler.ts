@@ -3,15 +3,15 @@ import axios from 'axios';
 
 export class PaymentHandler extends Handler {
   async handle(request: any): Promise<any> {
+    console.log('Payment Handler called with request:', request);
     const userIDString = localStorage.getItem("userID") || sessionStorage.getItem("userID");
     const userID = userIDString ? parseInt(userIDString, 10) : null;
 
     if (!userID) {
-      // No userID — can't proceed
-      request.showLoginModal = true; // Optional: force login again if missing
-      return;
+        console.warn('No userID found in PaymentHandler. Skipping payment fetching.');
+        return request; // don't set showLoginModal
     }
-
+      
     // Fetch payment cards from backend
     try {
       const cardResponse = await axios.get(`http://localhost:8080/paymentcard/user/${userID}`);

@@ -6,8 +6,10 @@ export class LoginHandler extends Handler {
 
     if (!token) {
       // User is not logged in, trigger modal state to show the login/sign-up modal
-      request.showLoginModal = true;
-      return; // Pause the chain and wait for login
+      if (!request.showLoginModal) {
+        request.showLoginModal = true;  // Only show modal if it's not already visible
+      }
+      return request; // Pause the chain and wait for login
     }
 
     // If token exists, retrieve the userID from storage
@@ -18,9 +20,10 @@ export class LoginHandler extends Handler {
     } else {
       alert("No user ID found. Please log in again.");
       request.showLoginModal = true; 
-      return; 
+      return request; 
     }
 
+    console.log('Login Handler called with request:', request);
     // Proceed with the next handler in the chain
     return super.handle(request);
   }

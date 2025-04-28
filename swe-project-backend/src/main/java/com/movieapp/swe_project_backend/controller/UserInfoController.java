@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.Collections;
 
 import com.movieapp.swe_project_backend.model.UserInfo;
 import com.movieapp.swe_project_backend.service.EmailService;
@@ -92,8 +93,9 @@ public class UserInfoController {
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "Error saving user information!"));
+                    .body(Collections.singletonMap("message", "Error saving user information!"));
         }
     }
 

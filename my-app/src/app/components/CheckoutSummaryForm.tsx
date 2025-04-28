@@ -28,13 +28,24 @@ interface OrderRequest {
   billingAddress?: any;
   selectedCardID?: number;
   selectedCard?: Card;
+  paymentCards?: Card[];
 }
 
 export default function CheckoutSummary() {
   const router = useRouter();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSignUpModal, setShowSignUpModal] = useState(false);
-  const [orderRequest, setOrderRequest] = useState<OrderRequest>({});
+  const [orderRequest, setOrderRequest] = useState<OrderRequest>({
+    userID: 0,
+    showLoginModal: false, 
+    paymentCards: [],
+    billingAddress: {
+      streetAddress: "",
+      city: "",
+      state: "",
+      zip: 0,
+    },
+  });
   const [showAddCardModal, setShowAddCardModal] = useState(false);  
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [ticketDetails, setTicketDetails] = useState([
@@ -46,26 +57,7 @@ export default function CheckoutSummary() {
   const [discount, setDiscount] = useState(0);
   const [cards, setCards] = useState<Card[]>([]);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
-
-/*
-  // Fetch user payment cards
-  useEffect(() => {
-    const userID = localStorage.getItem("userID");
-    if (userID) {
-      axios.get(`http://localhost:8080/paymentcard/user/${userID}`)
-        .then((response) => {
-          setCards(response.data);
-        })
-        .catch((error) => console.error('Error fetching payment cards:', error));
-    }
-  }, []);
-*/
-
-  /*
-  // Placeholder for shipping and payment details
-  const shippingAddress = "123 Example St, City, State, 12345";
-  const paymentMethod = "Visa **** 1234";
-  */
+  const [shouldRunChain, setShouldRunChain] = useState(true);
 
   const totalPrice = ticketDetails.reduce((sum, ticket) => sum + ticket.quantity * ticket.price, 0) - discount;
 
@@ -81,61 +73,66 @@ export default function CheckoutSummary() {
   }
 
   useEffect(() => {
+    if (!shouldRunChain) return;
     const runChain = async () => {
-      if (handlerChain.current) {
+      if (handlerChain.current && orderRequest && !orderRequest.showLoginModal) {  
+        console.log('Triggering handler chain...');
+        console.log('Initial Order Request:', orderRequest);
+
         const updatedRequest = await handlerChain.current.handle({ ...orderRequest });
-        
-        // Update the React state with what handlers added
+        console.log('Updated Request', updatedRequest);
+
+        if (updatedRequest && updatedRequest.showLoginModal) {
+          // Trigger the modal to open
+          setShowLoginModal(true);
+        } else {
+          setShowLoginModal(false);
+        }
+
         if (updatedRequest) {
           setOrderRequest(updatedRequest);
           if (updatedRequest.paymentCards) {
             setCards(updatedRequest.paymentCards);
+            console.log('Payment cards:', updatedRequest.paymentCards);
           }
         }
+        setShouldRunChain(false);
       }
     };
     runChain();
-  }, [orderRequest]); // Add any state or data changes as dependencies
-
-  useEffect(() => {
-    const authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-    if (!authToken) {
-      setShowLoginModal(true);
-    }
-  }, []);
-
+  }, [shouldRunChain]); 
+  
   const handleLoginSuccess = async () => {
     const userID = Number(localStorage.getItem('userID'));
-  
-    const updatedRequest = {
-      ...orderRequest,
-      userID: userID
-    };
 
-    if (handlerChain.current) {
-      const result = await handlerChain.current.handle(updatedRequest);
+    if (!isNaN(userID)) {
+      const updatedRequest = { ...orderRequest, userID };
 
-      if (result) {
-        setOrderRequest(result);
-        if (result.paymentCards) {
-          setCards(result.paymentCards);
-        } 
+      setOrderRequest(updatedRequest);  // Ensure the state is updated with the userID
+
+      console.log('Handler Chain Initialized:', handlerChain.current);
+
+      if (handlerChain.current) {
+        const result = await handlerChain.current.handle(updatedRequest);
+        if (result) {
+          setOrderRequest(result);
+          if (result.paymentCards) {
+            setCards(result.paymentCards);
+            console.log('Payment cards:', result.paymentCards);
+          }
+
+          // Close the modal after successful login
+          setShowLoginModal(false);
+        }
       }
     }
   };
 
   const handleShowLoginModal = () => {
     setShowLoginModal(true);
-    setShowSignUpModal(false); // Hide sign-up modal if showing login
-  };
-
-  const handleShowSignUpModal = () => {
-    setShowSignUpModal(true);
-    setShowLoginModal(false); // Hide login modal if showing sign-up
   };
 
   const closeLoginModal = () => setShowLoginModal(false);
-  const closeSignUpModal = () => setShowSignUpModal(false);
 
   const handleShowAddCardModal = () => setShowAddCardModal(true);
   
@@ -311,15 +308,7 @@ export default function CheckoutSummary() {
       <LoginModal 
         show={showLoginModal} 
         closeModal={closeLoginModal}
-        onSwitchToSignUp={handleShowSignUpModal}
         onLoginSuccess={handleLoginSuccess} 
-      />
-
-      {/* Show SignUp Modal if required */}
-      <SignUpModal
-        show={showSignUpModal}
-        closeModal={closeSignUpModal}
-        onLoginSuccess={handleLoginSuccess}
       />
 
       {showAddCardModal && (
