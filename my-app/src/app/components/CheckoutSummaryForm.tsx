@@ -10,7 +10,7 @@ import { LoginHandler } from '../handlers/LoginHandler';
 //import { Handler } from '../handlers/Handler';
 import { TicketPriceHandler } from '../handlers/TicketPriceHandler';
 import { TaxHandler } from '../handlers/TaxHandler';
-//import { PromotionHandler } from '../handlers/PromotionHandler';
+import { PromotionHandler } from '../handlers/PromotionHandler';
 import { PaymentHandler } from '../handlers/PaymentHandler';
 import styles from "./CheckoutSummaryForm.module.css";
 
@@ -43,6 +43,7 @@ interface OrderRequest {
     serviceFee?: number;
   };
   totalPrice?: number;
+  promoCode?: string;
 }
 
 
@@ -66,6 +67,7 @@ export default function CheckoutSummary() {
       serviceFee: 0,
     },
     totalPrice: 0,
+    promoCode: "",
   });
   const [showAddCardModal, setShowAddCardModal] = useState(false);  
   const [showAddBillingAddress, setShowAddBillingAddress] = useState(false);
@@ -75,6 +77,7 @@ export default function CheckoutSummary() {
   const [cards, setCards] = useState<Card[]>([]);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [shouldRunChain, setShouldRunChain] = useState(true);
+  const [promoCodeError, setPromoCodeError] = useState("");
 
   const totalTicketPrice = (orderRequest.totalTicketPrice ?? 0);
   const totalPrice = (orderRequest.totalPrice ?? 0);
@@ -86,10 +89,12 @@ export default function CheckoutSummary() {
     const paymentHandler = new PaymentHandler();
     const ticketPriceHandler = new TicketPriceHandler();
     const taxHandler = new TaxHandler();
+    const promotionHandler = new PromotionHandler();
 
     loginHandler.setNext(paymentHandler);
     paymentHandler.setNext(ticketPriceHandler);
     ticketPriceHandler.setNext(taxHandler);
+    taxHandler.setNext(promotionHandler);
 
     handlerChain.current = loginHandler;
   }
@@ -235,15 +240,26 @@ export default function CheckoutSummary() {
     }
   };
 
-  const handleApplyPromo = () => {
-    if (promoCode.trim() === "DISCOUNT10") {
-      setDiscount(10);
-      alert("Promo code applied! $10 discount added.");
+  const handleApplyPromo = async () => {
+    if (!promoCode || !handlerChain.current) return;
+    
+    const promoRequest = {
+      ...orderRequest,
+      promoCode,
+      totalPrice: orderRequest.totalPrice,
+    };
+    
+    const result = await handlerChain.current.handle(promoRequest);
+    
+    if (result?.promoError) {
+      setPromoCodeError(result.promoError);
     } else {
-      setDiscount(0);
-      alert("Invalid promo code.");
-    }
+      setPromoCodeError("");
+      setDiscount(result.discount || 0);
+      setOrderRequest(result);
+    }    
   };
+  
 
   const handleSelectCard = (card: Card) => {
     setSelectedCard(card);
@@ -329,6 +345,7 @@ export default function CheckoutSummary() {
           <p><strong>Sales Tax:</strong> ${orderRequest.fees?.salesTax?.toFixed(2) || '0.00'}</p>
           <p><strong>Service Fee:</strong> ${orderRequest.fees?.serviceFee?.toFixed(2) || '0.00'}</p>
           <p className={styles.totalPrice}><strong>Order Total: ${totalPrice}</strong></p>
+          {discount > 0 && <p style={{ color: 'red' }}>Discount Applied: -{discount}%</p>}
         </div>
   
         {/* RIGHT SIDE */}
@@ -381,6 +398,10 @@ export default function CheckoutSummary() {
             <button className={styles.promoButton} onClick={handleApplyPromo}>
               Apply
             </button>
+            {/* Promo code error message */}
+            {promoCodeError && (
+              <p style={{ color: "red", marginTop: "0.5rem" }}>{promoCodeError}</p>
+            )}
           </div>
         </div>
       </div>
