@@ -8,7 +8,7 @@ import SignUpModal from './SignUpModal';
 import AddCardModal from './AddCardModal';
 import { LoginHandler } from '../handlers/LoginHandler';
 //import { Handler } from '../handlers/Handler';
-//import { TicketPriceHandler } from '../handlers/TicketPriceHandler';
+import { TicketPriceHandler } from '../handlers/TicketPriceHandler';
 //import { TaxHandler } from '../handlers/TaxHandler';
 //import { PromotionHandler } from '../handlers/PromotionHandler';
 import { PaymentHandler } from '../handlers/PaymentHandler';
@@ -22,6 +22,13 @@ interface Card {
   cardType: string;
 }
 
+interface Ticket {
+  category: string;
+  seats: string[];
+  price: number;
+  quantity: number;
+}
+
 interface OrderRequest {
   showLoginModal?: boolean;
   userID?: number;
@@ -29,7 +36,10 @@ interface OrderRequest {
   selectedCardID?: number;
   selectedCard?: Card;
   paymentCards?: Card[];
+  ticketDetails?: { category: string; seats: string[]; quantity: number; price: number }[]; 
+  totalPrice?: number;
 }
+
 
 export default function CheckoutSummary() {
   const router = useRouter();
@@ -40,30 +50,40 @@ export default function CheckoutSummary() {
     showLoginModal: false, 
     paymentCards: [],
     billingAddress: {},
+    ticketDetails: [
+      { category: "Children under 13", seats: [], price: 5, quantity: 0 },
+      { category: "Adults", seats: [], price: 10, quantity: 0 },
+      { category: "Seniors 65+", seats: [], price: 7, quantity: 0 },
+    ],
+    totalPrice: 0,
   });
   const [showAddCardModal, setShowAddCardModal] = useState(false);  
   const [showAddBillingAddress, setShowAddBillingAddress] = useState(false);
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+  /*
   const [ticketDetails, setTicketDetails] = useState([
     { category: "Children under 13", quantity: 0, price: 5 },
     { category: "Adults", quantity: 0, price: 10 },
     { category: "Seniors 65+", quantity: 0, price: 7 },
   ]);
+  */
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [cards, setCards] = useState<Card[]>([]);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [shouldRunChain, setShouldRunChain] = useState(true);
 
-  const totalPrice = ticketDetails.reduce((sum, ticket) => sum + ticket.quantity * ticket.price, 0) - discount;
+  const totalPrice = (orderRequest.totalPrice ?? 0) - discount;
 
   const handlerChain = useRef<LoginHandler | null>(null);
 
   if (!handlerChain.current) {
     const loginHandler = new LoginHandler();
     const paymentHandler = new PaymentHandler();
+    const ticketPriceHandler = new TicketPriceHandler();
 
     loginHandler.setNext(paymentHandler);
+    paymentHandler.setNext(ticketPriceHandler);
 
     handlerChain.current = loginHandler;
   }
@@ -71,25 +91,38 @@ export default function CheckoutSummary() {
   useEffect(() => {
     if (!shouldRunChain) return;
     const runChain = async () => {
-      if (handlerChain.current && orderRequest && !orderRequest.showLoginModal) {  
+      const orderDataString = localStorage.getItem("orderData");
+      console.log('Order Data String:', orderDataString);
+      let updatedOrderRequest = { ...orderRequest };
+
+      if (orderDataString) {
+        const parsedOrderData = JSON.parse(orderDataString);
+        updatedOrderRequest = {
+          ...updatedOrderRequest,
+          ticketDetails: parsedOrderData.tickets ?? [],
+        };
+        console.log('Parsed Order Data:', parsedOrderData);
+      }
+
+
+      if (handlerChain.current && updatedOrderRequest && !updatedOrderRequest.showLoginModal) {  
         console.log('Triggering handler chain...');
-        console.log('Initial Order Request:', orderRequest);
+        console.log('Initial Order Request:', updatedOrderRequest);
 
-        const updatedRequest = await handlerChain.current.handle({ ...orderRequest });
-        console.log('Updated Request', updatedRequest);
+        const result = await handlerChain.current.handle(updatedOrderRequest);
+        console.log('Updated Request', result);
 
-        if (updatedRequest && updatedRequest.showLoginModal) {
-          // Trigger the modal to open
+        if (result && result?.showLoginModal) {
           setShowLoginModal(true);
         } else {
           setShowLoginModal(false);
         }
 
-        if (updatedRequest) {
-          setOrderRequest(updatedRequest);
-          if (updatedRequest.paymentCards) {
-            setCards(updatedRequest.paymentCards);
-            console.log('Payment cards:', updatedRequest.paymentCards);
+        if (result) {
+          setOrderRequest(result);
+          if (result.paymentCards) {
+            setCards(result.paymentCards);
+            console.log('Payment cards:', result.paymentCards);
           }
         }
         setShouldRunChain(false);
@@ -226,14 +259,20 @@ export default function CheckoutSummary() {
   };
   
   const handleQuantityChange = (index: number, newQuantity: number) => {
-    const updatedTickets = [...ticketDetails];
+    const updatedTickets = [...(orderRequest.ticketDetails || [])];
     updatedTickets[index].quantity = newQuantity;
-    setTicketDetails(updatedTickets);
+    setOrderRequest((prevRequest) => ({
+      ...prevRequest,
+      ticketDetails: updatedTickets,
+    }));
   };
 
   const handleDeleteTicket = (index: number) => {
-    const updatedTickets = ticketDetails.filter((_, i) => i !== index);
-    setTicketDetails(updatedTickets);
+    const updatedTickets = orderRequest.ticketDetails?.filter((_, i) => i !== index);
+    setOrderRequest((prevRequest) => ({
+      ...prevRequest,
+      ticketDetails: updatedTickets || [],
+    }));
   };
 
   const handleUpdateSeats = () => {
@@ -263,31 +302,35 @@ export default function CheckoutSummary() {
           {/* Total Section */}
           <div className={styles.summaryCard}>
             <h2>Total</h2>
-            <p><strong>{selectedSeats.length} seats</strong></p>
+            <p><strong>{
+              orderRequest.ticketDetails?.reduce((total, ticket) => total + ticket.seats.length, 0)
+              } seats</strong></p>
             <div className={styles.tableContainer}>
               <table>
                 <thead>
                   <tr>
                     <th>Category</th>
-                    <th>Qty</th>
+                    <th>Seat Number</th>
                     <th>Price</th>
                   </tr>
                 </thead>
                   <tbody>
-                    {ticketDetails.map((ticket, index) =>
+                    {orderRequest.ticketDetails?.map((ticket, index) =>
                       ticket.quantity > 0 ? (
-                        <tr key={index}>
-                          <td>{ticket.category}</td>
-                          <td>{ticket.quantity}</td>
-                          <td>${ticket.price * ticket.quantity}</td>
+                        ticket.seats.map((seat, seatIndex) => (
+                          <tr key={`${index}-${seatIndex}`}>
+                            <td>{ticket.category}</td>
+                            <td>{seat}</td>
+                            <td>${ticket.price}</td>
                         </tr>
+                    ))
                       ) : null
                     )}
                   </tbody>
               </table>
             </div>
             <hr className={styles.separator} />
-            <p className={styles.totalPrice}><strong>Total: ${totalPrice}</strong></p>
+            <p className={styles.totalPrice}><strong>Ticket Total: ${totalPrice}</strong></p>
           </div>
 
           {/* Billing Address */}
