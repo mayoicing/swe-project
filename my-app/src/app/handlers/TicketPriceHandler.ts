@@ -5,7 +5,7 @@ export class TicketPriceHandler extends Handler {
     const { ticketDetails } = request;
 
 
-    let totalPrice = 0;
+    let totalTicketPrice = 0;
     let ticketDetailsSummary = '';
 
     // Loop through each ticket type
@@ -16,7 +16,7 @@ export class TicketPriceHandler extends Handler {
       const priceForCategory = price * quantity;
 
       // Accumulate total price
-      totalPrice += priceForCategory;
+      totalTicketPrice += priceForCategory;
 
       // Append ticket details to the summary string
       ticketDetailsSummary += `${category} - ${quantity} ticket(s) - $${priceForCategory.toFixed(2)}\n`;
@@ -27,9 +27,9 @@ export class TicketPriceHandler extends Handler {
 
     // Add the ticket details summary and total price to the request
     request.ticketDetailsSummary = ticketDetailsSummary;
-    request.totalPrice = totalPrice;
+    request.totalTicketPrice = totalTicketPrice;
 
-    console.log(`Total ticket price: $${totalPrice.toFixed(2)}`);
+    console.log(`Total ticket price: $${totalTicketPrice.toFixed(2)}`);
 
     return super.handle(request);
   }

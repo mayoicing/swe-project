@@ -9,7 +9,7 @@ import AddCardModal from './AddCardModal';
 import { LoginHandler } from '../handlers/LoginHandler';
 //import { Handler } from '../handlers/Handler';
 import { TicketPriceHandler } from '../handlers/TicketPriceHandler';
-//import { TaxHandler } from '../handlers/TaxHandler';
+import { TaxHandler } from '../handlers/TaxHandler';
 //import { PromotionHandler } from '../handlers/PromotionHandler';
 import { PaymentHandler } from '../handlers/PaymentHandler';
 import styles from "./CheckoutSummaryForm.module.css";
@@ -37,6 +37,11 @@ interface OrderRequest {
   selectedCard?: Card;
   paymentCards?: Card[];
   ticketDetails?: { category: string; seats: string[]; quantity: number; price: number }[]; 
+  totalTicketPrice?: number;
+  fees?: {
+    salesTax?: number;
+    serviceFee?: number;
+  };
   totalPrice?: number;
 }
 
@@ -55,25 +60,24 @@ export default function CheckoutSummary() {
       { category: "Adults", seats: [], price: 10, quantity: 0 },
       { category: "Seniors 65+", seats: [], price: 7, quantity: 0 },
     ],
+    totalTicketPrice: 0,
+    fees: {
+      salesTax: 0,
+      serviceFee: 0,
+    },
     totalPrice: 0,
   });
   const [showAddCardModal, setShowAddCardModal] = useState(false);  
   const [showAddBillingAddress, setShowAddBillingAddress] = useState(false);
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
-  /*
-  const [ticketDetails, setTicketDetails] = useState([
-    { category: "Children under 13", quantity: 0, price: 5 },
-    { category: "Adults", quantity: 0, price: 10 },
-    { category: "Seniors 65+", quantity: 0, price: 7 },
-  ]);
-  */
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [cards, setCards] = useState<Card[]>([]);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [shouldRunChain, setShouldRunChain] = useState(true);
 
-  const totalPrice = (orderRequest.totalPrice ?? 0) - discount;
+  const totalTicketPrice = (orderRequest.totalTicketPrice ?? 0);
+  const totalPrice = (orderRequest.totalPrice ?? 0);
 
   const handlerChain = useRef<LoginHandler | null>(null);
 
@@ -81,9 +85,11 @@ export default function CheckoutSummary() {
     const loginHandler = new LoginHandler();
     const paymentHandler = new PaymentHandler();
     const ticketPriceHandler = new TicketPriceHandler();
+    const taxHandler = new TaxHandler();
 
     loginHandler.setNext(paymentHandler);
     paymentHandler.setNext(ticketPriceHandler);
+    ticketPriceHandler.setNext(taxHandler);
 
     handlerChain.current = loginHandler;
   }
@@ -282,61 +288,55 @@ export default function CheckoutSummary() {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Checkout Summary</h1>
-
+  
       <div className={styles.summaryWrapper}>
-        {/* LEFT SIDE: Seat Selection */}
+        {/* LEFT SIDE: Total Section */}
         <div className={styles.largeCard}>
-          <h2>Seat Selection</h2>
-          {selectedSeats.length > 0 ? (
-            selectedSeats.map((seat, index) => <p key={index}>{seat}</p>)
-          ) : (
-            <p>No seats selected</p>
-          )}
-          <button className={styles.updateSeatsButton} onClick={handleUpdateSeats}>
-            Update Seats
-          </button>
-        </div>
-
-        {/* RIGHT SIDE: Total, Promotions, Shipping, Payment */}
-        <div className={styles.rightSide}>
-          {/* Total Section */}
-          <div className={styles.summaryCard}>
-            <h2>Total</h2>
-            <p><strong>{
-              orderRequest.ticketDetails?.reduce((total, ticket) => total + ticket.seats.length, 0)
-              } seats</strong></p>
-            <div className={styles.tableContainer}>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Category</th>
-                    <th>Seat Number</th>
-                    <th>Price</th>
-                  </tr>
-                </thead>
-                  <tbody>
-                    {orderRequest.ticketDetails?.map((ticket, index) =>
-                      ticket.quantity > 0 ? (
-                        ticket.seats.map((seat, seatIndex) => (
-                          <tr key={`${index}-${seatIndex}`}>
-                            <td>{ticket.category}</td>
-                            <td>{seat}</td>
-                            <td>${ticket.price}</td>
-                        </tr>
+          <h2>Total</h2>
+          <p>
+            <strong>
+              {orderRequest.ticketDetails?.reduce((total, ticket) => total + ticket.seats.length, 0)} seats
+            </strong>
+          </p>
+  
+          <div className={styles.tableContainer}>
+            <table>
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Seat Number</th>
+                  <th>Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orderRequest.ticketDetails?.map((ticket, index) =>
+                  ticket.quantity > 0 ? (
+                    ticket.seats.map((seat, seatIndex) => (
+                      <tr key={`${index}-${seatIndex}`}>
+                        <td>{ticket.category}</td>
+                        <td>{seat}</td>
+                        <td>${ticket.price}</td>
+                      </tr>
                     ))
-                      ) : null
-                    )}
-                  </tbody>
-              </table>
-            </div>
-            <hr className={styles.separator} />
-            <p className={styles.totalPrice}><strong>Ticket Total: ${totalPrice}</strong></p>
+                  ) : null
+                )}
+              </tbody>
+            </table>
           </div>
-
+  
+          <hr className={styles.separator} />
+          <p className={styles.totalPrice}><strong>Ticket Total: ${totalTicketPrice}</strong></p>
+          <p><strong>Sales Tax:</strong> ${orderRequest.fees?.salesTax?.toFixed(2) || '0.00'}</p>
+          <p><strong>Service Fee:</strong> ${orderRequest.fees?.serviceFee?.toFixed(2) || '0.00'}</p>
+          <p className={styles.totalPrice}><strong>Order Total: ${totalPrice}</strong></p>
+        </div>
+  
+        {/* RIGHT SIDE */}
+        <div className={styles.rightSide}>
           {/* Billing Address */}
           <div className={styles.summaryCard}>
             <h2>Billing Address</h2>
-            {orderRequest.billingAddress && orderRequest.billingAddress.streetAddress ? (
+            {orderRequest.billingAddress?.streetAddress ? (
               <div>
                 <p>{orderRequest.billingAddress.streetAddress}</p>
                 <p>{orderRequest.billingAddress.city}, {orderRequest.billingAddress.state} {orderRequest.billingAddress.zip}</p>
@@ -345,9 +345,9 @@ export default function CheckoutSummary() {
               <p>No billing address saved.</p>
             )}
           </div>
-
-         {/* Payment Information */}
-         <div className={styles.summaryCard}>
+  
+          {/* Payment Info */}
+          <div className={styles.summaryCard}>
             <h2>Payment Information (Please Select One)</h2>
             {cards.length > 0 ? (
               <div className={styles.cards}>
@@ -357,7 +357,7 @@ export default function CheckoutSummary() {
                     Add Payment Card
                   </button>
                 )}
-                </div>
+              </div>
             ) : (
               <div>
                 <p>No payment cards available.</p>
@@ -367,8 +367,8 @@ export default function CheckoutSummary() {
               </div>
             )}
           </div>
-
-          {/* Promotions Section */}
+  
+          {/* Promotions */}
           <div className={styles.summaryCard}>
             <h2>Promotions</h2>
             <input
@@ -378,12 +378,14 @@ export default function CheckoutSummary() {
               value={promoCode}
               onChange={(e) => setPromoCode(e.target.value)}
             />
-            <button className={styles.promoButton} onClick={handleApplyPromo}>Apply</button>
+            <button className={styles.promoButton} onClick={handleApplyPromo}>
+              Apply
+            </button>
           </div>
         </div>
       </div>
-
-      {/* Buttons at the Bottom */}
+  
+      {/* Bottom Buttons */}
       <div className={styles.buttonContainer}>
         <button className={styles.cancelButton} onClick={handleCancelOrder}>
           Cancel Order
@@ -392,26 +394,27 @@ export default function CheckoutSummary() {
           Confirm Order
         </button>
       </div>
-
-      {/* Trigger the Login Modal if the user is not logged in */}
+  
+      {/* Modals */}
       <LoginModal 
         show={showLoginModal} 
         closeModal={closeLoginModal}
         onSwitchToSignUp={handleShowSignUpModal}
         onLoginSuccess={handleLoginSuccess} 
       />
-
-      {/* Show SignUp Modal if required */}
+  
       <SignUpModal
         show={showSignUpModal}
         closeModal={closeSignUpModal}
         onLoginSuccess={handleLoginSuccess}
       />
-
+  
       {showAddCardModal && (
-        <AddCardModal closeModal={closeAddCardModal} hasBillingAddress={!!orderRequest.billingAddress}/>
+        <AddCardModal 
+          closeModal={closeAddCardModal} 
+          hasBillingAddress={!!orderRequest.billingAddress} 
+        />
       )}
-
     </div>
-  );
+  );  
 }
