@@ -92,7 +92,7 @@ export default function PaymentInfoForm() {
             alert("Error submitting payment info");
         }
     };
-
+    
     return (
         <div className={styles.formContainer}>
             <h1>Payment Information (Optional)</h1>

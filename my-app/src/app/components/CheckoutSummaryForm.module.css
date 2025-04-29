@@ -168,3 +168,18 @@
 .updateSeatsButton:hover {
   background-color: #0056b3;
 }
+
+.addCardButton {
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.addCardButton:hover {
+  background-color: #45a049;
+}
