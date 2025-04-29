@@ -20,8 +20,13 @@ export class PaymentHandler extends Handler {
       
       if (cards && cards.length > 0) {
         request.paymentCards = cards; // Store cards into the request
-        console.log('Payment cards fetched successfully: ', cards);
-      } else {
+        //console.log('Payment cards fetched successfully: ', cards);
+        console.log('Payment cards length: ', cards.length);
+        if (cards.length < 3) {
+          request.showAddCardModal = true; 
+            console.log('Less than 3 cards found, showing Add Card modal.');
+        }
+      } else if (cards.length === 0) {
         request.paymentCards = []; // No cards found
         request.showAddCardModal = true; // Show "Add Card" modal
       }
@@ -44,10 +49,14 @@ export class PaymentHandler extends Handler {
         request.billingAddress = null;
         request.hasBillingAddress = false;
       }
-    } catch (error) {
-      console.error('Error fetching billing address: ', error);
-      request.billingAddress = null;
-      request.hasBillingAddress = false;
+    } catch (error: any) {
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+            console.warn('No billing address found for user.');
+        } else {
+            console.error('Error fetching billing address: ', error);
+        }
+        request.billingAddress = null;
+        request.hasBillingAddress = false;
     }
 
     return super.handle(request);

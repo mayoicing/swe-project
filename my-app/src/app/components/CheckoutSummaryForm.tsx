@@ -233,7 +233,7 @@ export default function CheckoutSummary() {
   };
 
   const handleUpdateSeats = () => {
-    router.push("/seatSelection"); // Change to the appropriate seat selection page
+    router.push("/seatSelection"); 
   };
 
   return (
@@ -301,9 +301,16 @@ export default function CheckoutSummary() {
 
          {/* Payment Information */}
          <div className={styles.summaryCard}>
-            <h2>Payment Information</h2>
+            <h2>Payment Information (Please Select One)</h2>
             {cards.length > 0 ? (
-              <div className={styles.cards}>{renderCards()}</div>
+              <div className={styles.cards}>
+                {renderCards()}
+                {cards.length < 3 && (
+                  <button className={styles.addCardButton} onClick={handleShowAddCardModal}>
+                    Add Payment Card
+                  </button>
+                )}
+                </div>
             ) : (
               <div>
                 <p>No payment cards available.</p>
