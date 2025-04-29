@@ -39,12 +39,7 @@ export default function CheckoutSummary() {
     userID: 0,
     showLoginModal: false, 
     paymentCards: [],
-    billingAddress: {
-      streetAddress: "",
-      city: "",
-      state: "",
-      zip: 0,
-    },
+    billingAddress: {},
   });
   const [showAddCardModal, setShowAddCardModal] = useState(false);  
   const [showAddBillingAddress, setShowAddBillingAddress] = useState(false);
@@ -144,7 +139,7 @@ export default function CheckoutSummary() {
 
   const handleShowAddCardModal = () => setShowAddCardModal(true);
   
-  const closeAddCardModal = () => {
+  const closeAddCardModal = async () => {
     setShowAddCardModal(false);
     console.log("Add Card Modal closed");
     // Fetch updated cards
@@ -157,28 +152,37 @@ export default function CheckoutSummary() {
           console.log('Updated payment cards:', response.data);
         })
         .catch((error) => console.error('Error fetching payment cards:', error));
-    }
-    if (userID) {
-      // Fetch the updated billing address and save it to orderRequest
-      axios.get(`http://localhost:8080/billingaddress/user/${userID}`)
-        .then((response) => {
-          if (response.data && response.data.length > 0) {
-            // Pick the first billing address
-            setOrderRequest((prevRequest) => ({
-              ...prevRequest,
-              billingAddress: response.data[0], 
-            }));
-          } else {
-            // No billing address found
-            setOrderRequest((prevRequest) => ({
-              ...prevRequest,
-              billingAddress: null,
-            }));
-          }
+
+     try {
+        // Fetch the updated billing address and save it to orderRequest
+        const response = await axios.get(`http://localhost:8080/billingaddress/user/${userID}`);
+      
+        if (response.data && response.data.length > 0) {
+          // Pick the first billing address
+          setOrderRequest((prevRequest) => ({
+            ...prevRequest,
+            billingAddress: response.data[0], 
+          }));
           console.log('Updated billing address:', response.data);
-        })
-        .catch((error) => console.error('Error fetching billing address:', error));
+        } else {
+          // No billing address found
+          setOrderRequest((prevRequest) => ({
+            ...prevRequest,
+            billingAddress: null,
+          }));
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+          console.warn('No billing address found for user.');
+        } else {
+          console.error('Error fetching billing address:', error);
+        }
+        setOrderRequest((prevRequest) => ({
+          ...prevRequest,
+          billingAddress: null,
+        }));
       }
+    }
   };
 
   const handleConfirmOrder = () => {
@@ -289,7 +293,7 @@ export default function CheckoutSummary() {
           {/* Billing Address */}
           <div className={styles.summaryCard}>
             <h2>Billing Address</h2>
-            {orderRequest.billingAddress ? (
+            {orderRequest.billingAddress && orderRequest.billingAddress.streetAddress ? (
               <div>
                 <p>{orderRequest.billingAddress.streetAddress}</p>
                 <p>{orderRequest.billingAddress.city}, {orderRequest.billingAddress.state} {orderRequest.billingAddress.zip}</p>

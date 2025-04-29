@@ -66,8 +66,10 @@ export default function SignUpModal({
                 { headers: { "Content-Type": "application/json" } }
             );
 
-            const { userID } = response.data;
-            localStorage.setItem("userID", userID.toString());
+            const { userID, token } = response.data;
+            sessionStorage.setItem("authToken", token);
+            sessionStorage.setItem("userID", userID.toString());
+            sessionStorage.setItem("user_type", formData.user_type);
 
             onLoginSuccess();
             closeModal(); // Close modal after successful registration
