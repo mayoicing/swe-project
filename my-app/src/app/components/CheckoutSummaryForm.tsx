@@ -47,6 +47,7 @@ export default function CheckoutSummary() {
     },
   });
   const [showAddCardModal, setShowAddCardModal] = useState(false);  
+  const [showAddBillingAddress, setShowAddBillingAddress] = useState(false);
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [ticketDetails, setTicketDetails] = useState([
     { category: "Children under 13", quantity: 0, price: 5 },
@@ -145,18 +146,40 @@ export default function CheckoutSummary() {
   
   const closeAddCardModal = () => {
     setShowAddCardModal(false);
-    
+    console.log("Add Card Modal closed");
     // Fetch updated cards
-    const userID = localStorage.getItem("userID");
+    const userID = localStorage.getItem("userID") || sessionStorage.getItem("userID");
+    console.log("User ID:", userID);
     if (userID) {
       axios.get(`http://localhost:8080/paymentcard/user/${userID}`)
         .then((response) => {
           setCards(response.data);
+          console.log('Updated payment cards:', response.data);
         })
         .catch((error) => console.error('Error fetching payment cards:', error));
     }
+    if (userID) {
+      // Fetch the updated billing address and save it to orderRequest
+      axios.get(`http://localhost:8080/billingaddress/user/${userID}`)
+        .then((response) => {
+          if (response.data && response.data.length > 0) {
+            // Pick the first billing address
+            setOrderRequest((prevRequest) => ({
+              ...prevRequest,
+              billingAddress: response.data[0], 
+            }));
+          } else {
+            // No billing address found
+            setOrderRequest((prevRequest) => ({
+              ...prevRequest,
+              billingAddress: null,
+            }));
+          }
+          console.log('Updated billing address:', response.data);
+        })
+        .catch((error) => console.error('Error fetching billing address:', error));
+      }
   };
-
 
   const handleConfirmOrder = () => {
     router.push("/orderConfirm");
@@ -282,7 +305,12 @@ export default function CheckoutSummary() {
             {cards.length > 0 ? (
               <div className={styles.cards}>{renderCards()}</div>
             ) : (
-              <p>No payment cards available.</p>
+              <div>
+                <p>No payment cards available.</p>
+                <button className={styles.addCardButton} onClick={handleShowAddCardModal}>
+                  Add Payment Card
+                </button>
+              </div>
             )}
           </div>
 
@@ -327,7 +355,7 @@ export default function CheckoutSummary() {
       />
 
       {showAddCardModal && (
-        <AddCardModal closeModal={closeAddCardModal} />
+        <AddCardModal closeModal={closeAddCardModal} hasBillingAddress={!!orderRequest.billingAddress}/>
       )}
 
     </div>

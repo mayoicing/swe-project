@@ -6,12 +6,14 @@ import axios from 'axios';
 import Image from 'next/image';
 import creditCardIcon from '../images/credit-card-icon.png';
 import debitCardIcon from '../images/debit-card-icon.png';
+import AddBillingAddressModal from './AddBillingAddressModal';
 
 interface AddCardModalProps {
   closeModal: () => void;
+  hasBillingAddress: boolean;
 }
 
-export default function AddCardModal({ closeModal }: AddCardModalProps) {
+export default function AddCardModal({ closeModal, hasBillingAddress }: AddCardModalProps) {
   const [paymentData, setPaymentData] = useState({
     cardholderName: '',
     cardNumber: '',
@@ -21,38 +23,45 @@ export default function AddCardModal({ closeModal }: AddCardModalProps) {
   });
 
   const [userID, setUserID] = useState<string | null>(null);
+  const [cardID, setCardID] = useState<number | null>(null);
+  const [showBillingModal, setShowBillingModal] = useState(false);
 
   useEffect(() => {
     const id = localStorage.getItem('userID') || sessionStorage.getItem('userID');
     setUserID(id);
-  }, []);
+    }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setPaymentData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userID) return;
 
-    axios.post(`http://localhost:8080/paymentcard/add`, {
-      ...paymentData,
-      user: { userID: parseInt(userID) },
-    })
-    .then(() => {
-      // Save some indicator that user now has a card if you want
-      localStorage.setItem("paymentCard", "true");
-      closeModal(); // Close the modal after successful addition
-    })
-    .catch((err) => {
-      console.error('Failed to add card:', err);
-    });
+    try {
+        const response = await axios.post(`http://localhost:8080/paymentcard/add`, {
+            ...paymentData,
+            user: { userID: parseInt(userID) },
+        });
+        const newCardID = response.data.cardID;
+        setCardID(newCardID);
+        localStorage.setItem('cardID', newCardID.toString());
+        
+        if (hasBillingAddress) {
+            closeModal();
+        } else {
+            setShowBillingModal(true);
+        }
+    } catch (err) {
+        alert('Failed to add payment card');
+    }
   };
 
   return (
-    <div className={styles.modalOverlay}>
-      <div className={styles.modalContent}>
+    <div className={styles.modalBackdrop}>
+      <div className={styles.modalContainer}>
         <button onClick={closeModal} className={styles.closeButton}>×</button>
         <h1>Add Card</h1>
         <form className={styles.inputForm} onSubmit={handleSubmit}>
@@ -126,6 +135,10 @@ export default function AddCardModal({ closeModal }: AddCardModalProps) {
             <input type="submit" value="Add Card" className={styles.submitButton} />
           </div>
         </form>
+        {/* Conditionally show AddBillingAddressModal */}
+        {showBillingModal && cardID && (
+            <AddBillingAddressModal cardID={cardID} closeModal={closeModal} />
+        )}
       </div>
     </div>
   );

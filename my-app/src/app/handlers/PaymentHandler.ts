@@ -4,6 +4,7 @@ import axios from 'axios';
 export class PaymentHandler extends Handler {
   async handle(request: any): Promise<any> {
     console.log('Payment Handler called with request:', request);
+    
     const userIDString = localStorage.getItem("userID") || sessionStorage.getItem("userID");
     const userID = userIDString ? parseInt(userIDString, 10) : null;
 
@@ -37,13 +38,16 @@ export class PaymentHandler extends Handler {
 
       if (addressList && addressList.length > 0) {
         request.billingAddress = addressList[0];
+        request.hasBillingAddress = true;
         console.log('Billing address fetched successfully: ', request.billingAddress);
       } else {
         request.billingAddress = null;
+        request.hasBillingAddress = false;
       }
     } catch (error) {
       console.error('Error fetching billing address: ', error);
       request.billingAddress = null;
+      request.hasBillingAddress = false;
     }
 
     return super.handle(request);
