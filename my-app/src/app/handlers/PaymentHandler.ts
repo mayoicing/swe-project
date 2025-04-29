@@ -20,11 +20,9 @@ export class PaymentHandler extends Handler {
       
       if (cards && cards.length > 0) {
         request.paymentCards = cards; // Store cards into the request
-        //console.log('Payment cards fetched successfully: ', cards);
-        console.log('Payment cards length: ', cards.length);
+        console.log('Payment cards fetched successfully: ', cards);
         if (cards.length < 3) {
           request.showAddCardModal = true; 
-            console.log('Less than 3 cards found, showing Add Card modal.');
         }
       } else if (cards.length === 0) {
         request.paymentCards = []; // No cards found
