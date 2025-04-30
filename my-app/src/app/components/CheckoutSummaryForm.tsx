@@ -248,7 +248,7 @@ export default function CheckoutSummary() {
       console.log('Handler chain result:', result);
       console.log('Current Handler:', handlerChain.current);
   
-      if (result?.confirmationSuccess) {
+      if (result?.bookingSuccess) {
         router.push("/orderConfirm");
       } else {
         alert("Failed to confirm order. Please check your details.");
