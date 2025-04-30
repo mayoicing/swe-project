@@ -20,22 +20,16 @@ export default function EditProfile() {
     });
     
     const [userID, setUserID] = useState<number>(3);  // Initialize userID with a default value
-    //const userIDString = localStorage.getItem("userID") || sessionStorage.getItem("userID") || "0";
-    //const userID = parseInt(userIDString, 10);
     const [isPasswordChangeVisible, setIsPasswordChangeVisible] = useState(false);
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const router = useRouter();
 
     useEffect(() => {
-        // Check if we're in the browser before accessing localStorage
-        //if (typeof window !== 'undefined') {
             const userIDString = localStorage.getItem("userID") || sessionStorage.getItem("userID") || "0";
-            //setUserID(parseInt(userIDString, 10));
             const updatedUserID = parseInt(userIDString, 10);
             setUserID(updatedUserID);
 
-        //}
 
         // Reset form data when userID changes
         setFormData({
