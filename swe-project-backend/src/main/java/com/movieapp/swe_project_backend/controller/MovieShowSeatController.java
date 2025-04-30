@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.movieapp.swe_project_backend.model.MovieShowSeat;
+import com.movieapp.swe_project_backend.model.MovieShowSeat.SeatStatus;
 import com.movieapp.swe_project_backend.service.MovieShowSeatService;
 
 @RestController
@@ -38,13 +40,18 @@ public class MovieShowSeatController {
     }
 
     @PutMapping("/update/{movieShowSeatID}")
-    public void updateSeatStatus(@PathVariable int movieShowSeatID, @RequestParam String status) {
-        movieShowSeatService.updateSeatStatus(movieShowSeatID, status);
+    public void updateSeatStatus(@PathVariable int movieShowSeatID, @RequestBody SeatStatus seatStatus) {
+        movieShowSeatService.updateSeatStatus(movieShowSeatID, seatStatus);
     }
 
     @DeleteMapping("/delete/byMovieShow/{movieShowID}")
     public ResponseEntity<String> deleteSeatsByMovieShow(@PathVariable int movieShowID) {
         movieShowSeatService.deleteSeatsByMovieShowID(movieShowID);
         return ResponseEntity.ok("Seats deleted successfully for MovieShow ID: " + movieShowID);
+    }
+
+    @GetMapping("/all/{movieShowID}")
+    public List<MovieShowSeat> getAllSeats(@PathVariable int movieShowID) {
+        return movieShowSeatService.getAllSeatsForMovieShow(movieShowID);
     }
 }

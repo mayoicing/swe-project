@@ -3,7 +3,7 @@ package com.movieapp.swe_project_backend.model.ticket;
 //import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.movieapp.swe_project_backend.model.Booking;
-import com.movieapp.swe_project_backend.model.Seat;
+import com.movieapp.swe_project_backend.model.MovieShowSeat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,8 +27,8 @@ public class Ticket implements TicketComponent {
     private Booking booking;
 
     @ManyToOne
-    @JoinColumn(name = "seatID", referencedColumnName = "seatID")
-    private Seat seat;
+    @JoinColumn(name = "movieShowSeatID", referencedColumnName = "movieShowSeatID")
+    private MovieShowSeat movieShowSeat;
 
     @Column(name = "ticketType")
     private String ticketType;
@@ -37,10 +37,10 @@ public class Ticket implements TicketComponent {
     public Ticket() {}
 
     // Constructor
-    public Ticket(int ticketID, Booking booking, Seat seat, String ticketType) {
+    public Ticket(int ticketID, Booking booking, MovieShowSeat movieShowSeat, String ticketType) {
         this.ticketID = ticketID;
         this.booking = booking;
-        this.seat = seat;
+        this.movieShowSeat = movieShowSeat;
         this.ticketType = ticketType;
     }
 
@@ -51,8 +51,8 @@ public class Ticket implements TicketComponent {
     public Booking getBooking() { return booking; }
     public void setBooking(Booking booking) { this.booking = booking; }
 
-    public Seat getSeat() { return seat; }
-    public void setSeat(Seat seat) { this.seat = seat; }
+    public MovieShowSeat getMovieShowSeat() { return movieShowSeat; }
+    public void setMovieShowSeat(MovieShowSeat movieShowSeat) { this.movieShowSeat = movieShowSeat; }
 
     public String getTicketType() { return ticketType; }
     public void setTicketType(String ticketType) { this.ticketType = ticketType; }

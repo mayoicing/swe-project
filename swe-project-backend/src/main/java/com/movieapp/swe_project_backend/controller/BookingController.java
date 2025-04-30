@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import java.util.Collections;
+import java.util.Map;
 
 import com.movieapp.swe_project_backend.model.Booking;
 import com.movieapp.swe_project_backend.service.BookingService;
@@ -24,10 +27,13 @@ public class BookingController {
     private BookingService bookingService;
 
     @PostMapping("/add")
-    public ResponseEntity<String> addBooking(@RequestBody Booking booking) {
-        bookingService.saveBooking(booking);
-        return ResponseEntity.ok("Booking created successfully!");
-    }
+public ResponseEntity<Map<String, Integer>> addBooking(@RequestBody Booking booking) {
+    Booking saved = bookingService.saveBooking(booking);
+    int bookingID = saved.getBookingID();
+    Map<String, Integer> response = Collections.singletonMap("bookingID", bookingID);
+    // Return the response with the booking ID
+    return ResponseEntity.ok(response);
+}
 
     @GetMapping("/user/{userID}")
     public List<Booking> getBookingByUserId(@PathVariable int userID) {

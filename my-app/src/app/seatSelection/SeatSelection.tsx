@@ -11,6 +11,12 @@ interface MovieShowSeat {
   seatStatus: "Available" | "Unavailable";
 }
 
+interface FormattedSeat {
+  id: number;
+  seatId: string;
+  status: "Available" | "Unavailable";
+}
+
 const ROWS = 6;
 const COLS = 10;
 
@@ -29,7 +35,7 @@ const SeatSelection: React.FC = () => {
   const [maxSeats, setMaxSeats] = useState<number>(0);
   const [auditoriumID, setAuditoriumID] = useState<string | null>(null);
   const [unavailableSeats, setUnavailableSeats] = useState<Set<string>>(new Set()); // Store unavailable seats
-
+  const [allSeats, setAllSeats] = useState<FormattedSeat[]>([]);
 
   const wheelchairSeats = new Set(["B-3", "C-4", "B-8", "C-7"]);
 
@@ -52,15 +58,24 @@ const SeatSelection: React.FC = () => {
           .catch((error) => console.error("Error fetching movie show data:", error));
 
           // Fetch unavailable seats for this show
-          axios.get(`http://localhost:8080/movieshowseat/unavailable/${movieShowID}`)
+          axios.get(`http://localhost:8080/movieshowseat/all/${movieShowID}`)
             .then((response) => {
-              console.log("Unavailable seats fetched:", response.data);
+              //console.log("Raw seat data:", response.data);
               
-              // Convert seat row and seat number to match frontend format (e.g., "A-7")
-              const formattedUnavailableSeats = response.data.map((seat: any) => 
-                `${seat.seat.seat_row}-${seat.seat.seat_num}`
+              const formattedSeats: FormattedSeat[] = response.data.map((seat: any) => ({
+                id: seat.movieShowSeatID,
+                seatId: `${seat.seat.seat_row}-${seat.seat.seat_num}`,
+                status: seat.seatStatus,
+              }));
+
+              setAllSeats(formattedSeats);
+
+              const isUnavailable = (seat: FormattedSeat) => seat.status === "Unavailable";
+              
+              setUnavailableSeats(
+                new Set(formattedSeats.filter(isUnavailable).map((seat) => seat.seatId))
               );
-              setUnavailableSeats(new Set(formattedUnavailableSeats)); // Store in a Set for quick lookup
+              console.log("Unavailable seats:", formattedSeats.filter(isUnavailable));
             })
             .catch((error) => console.error("Error fetching unavailable seats:", error));
       }  
@@ -81,10 +96,16 @@ const SeatSelection: React.FC = () => {
 
   const handleConfirmSelection = () => {
     if (selectedSeats.length === maxSeats) {
+      // Map selected seat labels to their movieShowSeatIDs
+      const selectedSeatIDs = allSeats
+        .filter(seat => selectedSeats.includes(seat.seatId))
+        .map(seat => seat.id);
+
       const bookingDetails = {
         movieShowID,
         auditoriumID,
         selectedSeats,
+        selectedSeatIDs,
         tickets: [
           { category: "Child", quantity: children, price: 5 },
           { category: "Adult", quantity: adults, price: 10 },
@@ -93,6 +114,7 @@ const SeatSelection: React.FC = () => {
       };
 
       localStorage.setItem("bookingDetails", JSON.stringify(bookingDetails));
+      console.log("Booking details saved to localStorage:", bookingDetails);
       router.push(`./orderSummary?movieShowID=${movieShowID}`);
     } else {
       alert("Please select the correct number of seats.");

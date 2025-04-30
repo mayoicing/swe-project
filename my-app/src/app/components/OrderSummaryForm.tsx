@@ -17,6 +17,7 @@ export default function CheckoutSummary() {
   const movieShowID = searchParams.get("movieShowID");
   const [seats, setSeats] = useState<string[]>([]);
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+  const [selectedSeatIDs, setSelectedSeatIDs] = useState<number[]>([]);
 
   const [ticketDetails, setTicketDetails] = useState<Ticket[]>([
     { category: "Children under 13", seats: [], price: 5, quantity: 0 },
@@ -36,6 +37,7 @@ export default function CheckoutSummary() {
     if (bookingData.selectedSeats) {
       setSelectedSeats(bookingData.selectedSeats);
       setSeats(bookingData.selectedSeats);
+      setSelectedSeatIDs(bookingData.selectedSeatIDs);
       console.log("Selected seats:", bookingData.selectedSeats);
     }
     if (bookingData.tickets) {
@@ -83,6 +85,7 @@ export default function CheckoutSummary() {
       movieShowID,
       tickets: ticketDetails,
       selectedSeats,
+      selectedSeatIDs,
     };
     localStorage.setItem("orderData", JSON.stringify(orderData));
 

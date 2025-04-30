@@ -12,6 +12,7 @@ import { TicketPriceHandler } from '../handlers/TicketPriceHandler';
 import { TaxHandler } from '../handlers/TaxHandler';
 import { PromotionHandler } from '../handlers/PromotionHandler';
 import { PaymentHandler } from '../handlers/PaymentHandler';
+import { ConfirmHandler } from '../handlers/ConfirmHandler';
 import styles from "./CheckoutSummaryForm.module.css";
 
 interface Card {
@@ -44,6 +45,9 @@ interface OrderRequest {
   };
   totalPrice?: number;
   promoCode?: string;
+  movieShowID?: number;
+  selectedSeats?: string[];
+  selectedSeatIDs?: number[];
 }
 
 
@@ -68,6 +72,9 @@ export default function CheckoutSummary() {
     },
     totalPrice: 0,
     promoCode: "",
+    movieShowID: 0,
+    selectedSeats: [],
+    selectedSeatIDs: [],
   });
   const [showAddCardModal, setShowAddCardModal] = useState(false);  
   const [showAddBillingAddress, setShowAddBillingAddress] = useState(false);
@@ -90,11 +97,13 @@ export default function CheckoutSummary() {
     const ticketPriceHandler = new TicketPriceHandler();
     const taxHandler = new TaxHandler();
     const promotionHandler = new PromotionHandler();
+    const confirmHandler = new ConfirmHandler();
 
     loginHandler.setNext(paymentHandler);
     paymentHandler.setNext(ticketPriceHandler);
     ticketPriceHandler.setNext(taxHandler);
     taxHandler.setNext(promotionHandler);
+    promotionHandler.setNext(confirmHandler);
 
     handlerChain.current = loginHandler;
   }
@@ -111,6 +120,9 @@ export default function CheckoutSummary() {
         updatedOrderRequest = {
           ...updatedOrderRequest,
           ticketDetails: parsedOrderData.tickets ?? [],
+          movieShowID: parsedOrderData.movieShowID ? Number(parsedOrderData.movieShowID) : undefined,
+          selectedSeats: parsedOrderData.selectedSeats ?? [],
+          selectedSeatIDs: parsedOrderData.selectedSeatIDs ?? [], // movieShowSeatIDs for selected seats
         };
         console.log('Parsed Order Data:', parsedOrderData);
       }
@@ -229,8 +241,19 @@ export default function CheckoutSummary() {
     }
   };
 
-  const handleConfirmOrder = () => {
-    router.push("/orderConfirm");
+  const handleConfirmOrder = async () => {
+    if (handlerChain.current) {
+      console.log('Confirming order with request:', orderRequest);
+      const result = await handlerChain.current.handle(orderRequest);
+      console.log('Handler chain result:', result);
+      console.log('Current Handler:', handlerChain.current);
+  
+      if (result?.confirmationSuccess) {
+        router.push("/orderConfirm");
+      } else {
+        alert("Failed to confirm order. Please check your details.");
+      }
+    }
   };
 
   const handleCancelOrder = () => {
@@ -260,13 +283,13 @@ export default function CheckoutSummary() {
     }    
   };
   
-
   const handleSelectCard = (card: Card) => {
     setSelectedCard(card);
     setOrderRequest((prevRequest) => ({
       ...prevRequest,
       selectedCardID: card.cardID,
     }));
+    console.log("Selected card:", card);
   };
 
   const renderCards = () => {

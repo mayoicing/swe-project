@@ -58,10 +58,10 @@ public class MovieShowSeatImp implements MovieShowSeatService {
     }
 
     @Override
-    public void updateSeatStatus(int movieShowSeatID, String status) {
+    public void updateSeatStatus(int movieShowSeatID, SeatStatus seatStatus) {
         MovieShowSeat movieShowSeat = movieShowSeatRepository.findById(movieShowSeatID)
                 .orElseThrow(() -> new RuntimeException("Seat not found"));
-        movieShowSeat.setSeatStatus(SeatStatus.valueOf(status.toUpperCase()));
+        movieShowSeat.setSeatStatus(seatStatus);
         movieShowSeatRepository.save(movieShowSeat);
     }
 
@@ -69,5 +69,10 @@ public class MovieShowSeatImp implements MovieShowSeatService {
     @Transactional
     public void deleteSeatsByMovieShowID(int movieShowID) {
         movieShowSeatRepository.deleteByMovieShowID(movieShowID);
+    }
+
+    @Override
+    public List<MovieShowSeat> getAllSeatsForMovieShow(int movieShowID) {
+        return movieShowSeatRepository.findAllByMovieShowMovieShowID(movieShowID);
     }
 }
