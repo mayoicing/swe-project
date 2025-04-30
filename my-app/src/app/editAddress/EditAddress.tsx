@@ -10,6 +10,7 @@ interface BillingAddress {
   state: string;
   zip: number;
   userID: { userID: number };
+  paymentCard: { cardID: number };
 }
 
 const EditAddress = () => {
@@ -18,9 +19,11 @@ const EditAddress = () => {
     city: '',
     state: '',
     zip: 0,
-    userID: { userID: 0 }
+    userID: { userID: 0 },
+    paymentCard: { cardID: 0 }
   });
 
+  const [hasAddress, setHasAddress] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -30,37 +33,44 @@ const EditAddress = () => {
   if (typeof window !== 'undefined') {
     userIDString = sessionStorage.getItem('userID') || localStorage.getItem('userID') || '0';
   }
-  
+
   const userID = parseInt(userIDString, 10);
 
   useEffect(() => {
     if (!userID) {
       setError('User not authenticated');
+      setLoading(false);
       return;
     }
+
+    axios.get(`http://localhost:8080/paymentcard/user/${userID}`)
+      .then((res) => {
+        if (res.data && res.data.length > 0) {
+          const cardID = res.data[0].cardID;
+          setFormData(prev => ({ ...prev, userID: { userID }, paymentCard: { cardID } }));
+        } else {
+          setError("You must add a payment card before adding an address.");
+        }
+      })
+      .catch(() => setError("Failed to fetch payment card information."));
 
     axios.get(`http://localhost:8080/billingaddress/user/${userID}`)
       .then((response) => {
         const data = response.data;
-        if (data.length > 0) {
-          setFormData({ ...data[0], userID: { userID } });
+        if (Array.isArray(data) && data.length > 0) {
+          setFormData({ ...data[0], userID: { userID }, paymentCard: data[0].paymentCard });
+          setHasAddress(true);
         } else {
-          setFormData({
-            streetAddress: '',
-            city: '',
-            state: '',
-            zip: 0,
-            userID: { userID }
-          });
+          setHasAddress(false);
         }
       })
-      .catch((error) => {
-        console.error("Error fetching address data: ", error);
-        setError('Failed to fetch address data');
+      .catch((err) => {
+        if (!(err.response && err.response.status === 404)) {
+          console.error("Error fetching address data: ", err);
+          setError('Failed to fetch address data');
+        }
       })
-      .finally(() => {
-        setLoading(false);
-      });
+      .finally(() => setLoading(false));
   }, [userID]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -74,13 +84,23 @@ const EditAddress = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!formData.paymentCard || formData.paymentCard.cardID === 0) {
+      setError("Cannot save address. Please add a payment card first.");
+      return;
+    }
+
+    if (!formData.streetAddress || !formData.city || !formData.state || !formData.zip) {
+      setError("All address fields are required.");
+      return;
+    }
+
     axios.put("http://localhost:8080/billingaddress/update", formData)
       .then(() => {
         router.push('/userProfilePayment');
       })
       .catch((error) => {
-        console.error("Error updating address:", error);
-        setError('Failed to update address');
+        console.error("Error submitting address:", error);
+        setError('Failed to submit address');
       });
   };
 
@@ -88,10 +108,10 @@ const EditAddress = () => {
 
   return (
     <div className={styles.formContainer}>
-      <h1>Edit Address</h1>
+      <h1>{hasAddress ? 'Edit Address' : 'Add Address'}</h1>
       <form onSubmit={handleSubmit} className={styles.inputForm}>
         <label>
-          Street Address <span className={styles.editLabel}>(Edit)</span>
+          Street Address <span className={styles.editLabel}>({hasAddress ? 'Edit' : 'New'})</span>
           <input
             type="text"
             name="streetAddress"
@@ -101,7 +121,7 @@ const EditAddress = () => {
           />
         </label>
         <label>
-          City <span className={styles.editLabel}>(Edit)</span>
+          City <span className={styles.editLabel}>({hasAddress ? 'Edit' : 'New'})</span>
           <input
             type="text"
             name="city"
@@ -111,7 +131,7 @@ const EditAddress = () => {
           />
         </label>
         <label>
-          State <span className={styles.editLabel}>(Edit)</span>
+          State <span className={styles.editLabel}>({hasAddress ? 'Edit' : 'New'})</span>
           <input
             type="text"
             name="state"
@@ -121,7 +141,7 @@ const EditAddress = () => {
           />
         </label>
         <label>
-          Zip Code <span className={styles.editLabel}>(Edit)</span>
+          Zip Code <span className={styles.editLabel}>({hasAddress ? 'Edit' : 'New'})</span>
           <input
             type="number"
             name="zip"
@@ -131,7 +151,7 @@ const EditAddress = () => {
           />
         </label>
         <div className={styles.buttonContainer}>
-          <input type="submit" value="Update" className={styles.submitButton} />
+          <input type="submit" value={hasAddress ? 'Update' : 'Add'} className={styles.submitButton} />
         </div>
         {error && <p className={styles.error}>{error}</p>}
       </form>
