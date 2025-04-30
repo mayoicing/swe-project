@@ -60,7 +60,6 @@ const SeatSelection: React.FC = () => {
           // Fetch unavailable seats for this show
           axios.get(`http://localhost:8080/movieshowseat/all/${movieShowID}`)
             .then((response) => {
-              //console.log("Raw seat data:", response.data);
               
               const formattedSeats: FormattedSeat[] = response.data.map((seat: any) => ({
                 id: seat.movieShowSeatID,

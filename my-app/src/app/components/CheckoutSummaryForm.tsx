@@ -78,8 +78,6 @@ export default function CheckoutSummary() {
     selectedSeatIDs: [],
   });
   const [showAddCardModal, setShowAddCardModal] = useState(false);  
-  const [showAddBillingAddress, setShowAddBillingAddress] = useState(false);
-  const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [cards, setCards] = useState<Card[]>([]);
@@ -135,10 +133,8 @@ export default function CheckoutSummary() {
 
       if (handlerChain.current && updatedOrderRequest && !updatedOrderRequest.showLoginModal) {  
         console.log('Triggering handler chain...');
-        //console.log('Initial Order Request:', updatedOrderRequest);
 
         const result = await handlerChain.current.handle(updatedOrderRequest);
-        //console.log('Updated Request', result);
 
         if (result && result?.showLoginModal) {
           setShowLoginModal(true);
@@ -166,15 +162,12 @@ export default function CheckoutSummary() {
 
       setOrderRequest(updatedRequest);  // Ensure the state is updated with the userID
 
-      //console.log('Handler Chain Initialized:', handlerChain.current);
-
       if (handlerChain.current) {
         const result = await handlerChain.current.handle(updatedRequest);
         if (result) {
           setOrderRequest(result);
           if (result.paymentCards) {
             setCards(result.paymentCards);
-            //console.log('Payment cards:', result.paymentCards);
           }
 
           // Close the modal after successful login
@@ -201,15 +194,12 @@ export default function CheckoutSummary() {
   
   const closeAddCardModal = async () => {
     setShowAddCardModal(false);
-    //console.log("Add Card Modal closed");
     // Fetch updated cards
     const userID = localStorage.getItem("userID") || sessionStorage.getItem("userID");
-    //console.log("User ID:", userID);
     if (userID) {
       axios.get(`http://localhost:8080/paymentcard/user/${userID}`)
         .then((response) => {
           setCards(response.data);
-          //console.log('Updated payment cards:', response.data);
         })
         .catch((error) => console.error('Error fetching payment cards:', error));
 
@@ -223,7 +213,6 @@ export default function CheckoutSummary() {
             ...prevRequest,
             billingAddress: response.data[0], 
           }));
-          //console.log('Updated billing address:', response.data);
         } else {
           // No billing address found
           setOrderRequest((prevRequest) => ({
@@ -247,14 +236,6 @@ export default function CheckoutSummary() {
 
   // check that orderRequest is valid before passing to confirmHandler
   const isBookingRequest = (request: OrderRequest): request is BookingRequest => {
-    console.log('userID', typeof request.userID);
-    console.log('movieShowID', typeof request.movieShowID);
-console.log('selectedCardID', typeof request.selectedCardID);
-console.log('billingAddress', request.billingAddress);
-console.log('selectedSeatIDs', Array.isArray(request.selectedSeatIDs));
-console.log('ticketDetails', request.ticketDetails);
-console.log('totalPrice', typeof request.totalPrice);
-console.log('promoID', request.promoID);
     return (
       typeof request.userID === 'number' &&
       typeof request.movieShowID === 'number' &&
@@ -287,7 +268,6 @@ console.log('promoID', request.promoID);
     }
 
     if (confirmHandler.current) {
-      //console.log('Confirming order with request:', orderRequest);
       const result = await confirmHandler.current.handle({
         ...orderRequest,
         hasBillingAddress
@@ -304,7 +284,7 @@ console.log('promoID', request.promoID);
   const handleCancelOrder = () => {
     const isConfirmed = confirm("Are you sure you want to cancel your order?");
     if (isConfirmed) {
-      router.push("/"); // Navigate back to the homepage or another page
+      router.push("/"); // Navigate back to the homepage 
     }
   };
 
@@ -334,7 +314,6 @@ console.log('promoID', request.promoID);
       ...prevRequest,
       selectedCardID: card.cardID,
     }));
-    //console.log("Selected card:", card);
   };
 
   const renderCards = () => {
@@ -344,27 +323,6 @@ console.log('promoID', request.promoID);
         <p>**** {card.cardNumber.slice(-4)}</p>
       </div>
     ));
-  };
-  
-  const handleQuantityChange = (index: number, newQuantity: number) => {
-    const updatedTickets = [...(orderRequest.ticketDetails || [])];
-    updatedTickets[index].quantity = newQuantity;
-    setOrderRequest((prevRequest) => ({
-      ...prevRequest,
-      ticketDetails: updatedTickets,
-    }));
-  };
-
-  const handleDeleteTicket = (index: number) => {
-    const updatedTickets = orderRequest.ticketDetails?.filter((_, i) => i !== index);
-    setOrderRequest((prevRequest) => ({
-      ...prevRequest,
-      ticketDetails: updatedTickets || [],
-    }));
-  };
-
-  const handleUpdateSeats = () => {
-    router.push("/seatSelection"); 
   };
 
   return (

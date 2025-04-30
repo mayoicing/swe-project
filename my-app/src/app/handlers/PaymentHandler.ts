@@ -20,7 +20,6 @@ export class PaymentHandler extends Handler {
       
       if (cards && cards.length > 0) {
         request.paymentCards = cards; // Store cards into the request
-        //console.log('Payment cards fetched successfully: ', cards);
         if (cards.length < 3) {
           request.showAddCardModal = true; 
         }

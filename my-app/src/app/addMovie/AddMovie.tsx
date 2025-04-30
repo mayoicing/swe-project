@@ -13,7 +13,6 @@ interface Actor {
 }
 
 export default function AddMovieDetails() {
-  //const [category, setCategory] = useState<string>("");
 
   const [filter, setFilter] = useState<string>("COMING_SOON"); // set default
 
@@ -90,31 +89,6 @@ export default function AddMovieDetails() {
         onChange={(e) => setDescription(e.target.value)}
         ></textarea>
       
-      {/* Categories Section */}
-     {/*} <label className={styles.label}>Category</label>
-      <div className={styles.categoryOptions}>
-        <label>
-          <input
-            type="radio"
-            name="category"
-            value="Coming Soon"
-            checked={category === "Coming Soon"}
-            onChange={(e) => setCategory(e.target.value)}
-          />
-          Coming Soon
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="category"
-            value="Currently Running"
-            checked={category === "Currently Running"}
-            onChange={(e) => setCategory(e.target.value)}
-          />
-          Currently Running
-        </label>
-      </div>*/}
-
         {/* Movie Poster URL */}
         <label className={styles.label}>Movie Poster URL</label>
         <input
