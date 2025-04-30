@@ -26,8 +26,6 @@ html, body {
   font-family: Spline Sans, Arial, Helvetica, sans-serif;
 }
 
-
-
 body::-webkit-scrollbar { /* Hides scrollbar */
   display: none; 
 }

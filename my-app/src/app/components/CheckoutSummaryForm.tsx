@@ -50,7 +50,6 @@ interface OrderRequest {
   selectedSeatIDs?: number[];
 }
 
-
 export default function CheckoutSummary() {
   const router = useRouter();
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -294,11 +293,9 @@ export default function CheckoutSummary() {
 
   const renderCards = () => {
     return cards.map((card) => (
-      <div key={card.cardID} className={styles.card} onClick={() => handleSelectCard(card)}>
-        <p>{card.cardType} **** {card.cardNumber.slice(-4)}</p>
-        {selectedCard?.cardID === card.cardID && (
-          <p style={{ color: 'green' }}>Selected</p>
-        )}
+      <div key={card.cardID} className={(selectedCard?.cardID === card.cardID) ? styles.cardSelected : styles.card} onClick={() => handleSelectCard(card)}>
+        <p>{card.cardType}</p>
+        <p>**** {card.cardNumber.slice(-4)}</p>
       </div>
     ));
   };
@@ -332,11 +329,7 @@ export default function CheckoutSummary() {
         {/* LEFT SIDE: Total Section */}
         <div className={styles.largeCard}>
           <h2>Total</h2>
-          <p>
-            <strong>
-              {orderRequest.ticketDetails?.reduce((total, ticket) => total + ticket.seats.length, 0)} seats
-            </strong>
-          </p>
+          <p>{orderRequest.ticketDetails?.reduce((total, ticket) => total + ticket.seats.length, 0)} seats</p>
   
           <div className={styles.tableContainer}>
             <table>
@@ -373,13 +366,13 @@ export default function CheckoutSummary() {
   
         {/* RIGHT SIDE */}
         <div className={styles.rightSide}>
+
           {/* Billing Address */}
           <div className={styles.summaryCard}>
             <h2>Billing Address</h2>
             {orderRequest.billingAddress?.streetAddress ? (
               <div>
-                <p>{orderRequest.billingAddress.streetAddress}</p>
-                <p>{orderRequest.billingAddress.city}, {orderRequest.billingAddress.state} {orderRequest.billingAddress.zip}</p>
+                <p>{orderRequest.billingAddress.streetAddress}, {orderRequest.billingAddress.city}, {orderRequest.billingAddress.state} {orderRequest.billingAddress.zip}</p>
               </div>
             ) : (
               <p>No billing address saved.</p>
@@ -388,15 +381,17 @@ export default function CheckoutSummary() {
   
           {/* Payment Info */}
           <div className={styles.summaryCard}>
-            <h2>Payment Information (Please Select One)</h2>
+            <h2>Payment Information (Please select one)</h2>
             {cards.length > 0 ? (
-              <div className={styles.cards}>
-                {renderCards()}
+              <div>
+                <div className={styles.cards}>
+                  {renderCards()}
+                </div>
                 {cards.length < 3 && (
-                  <button className={styles.addCardButton} onClick={handleShowAddCardModal}>
-                    Add Payment Card
-                  </button>
-                )}
+                    <button className={styles.addCardButton} onClick={handleShowAddCardModal}>
+                      Add Payment Card
+                    </button>
+                  )}
               </div>
             ) : (
               <div>
