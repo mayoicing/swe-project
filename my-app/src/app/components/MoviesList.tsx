@@ -26,7 +26,7 @@ export default function MoviesList() {
     axios.get('http://localhost:8080/movieinfo/getAll')
       .then((res) => {
         const decodedMovies = res.data.map((movie: any) => ({
-          movieID: movie.movieId, // ✅ fix casing from backend
+          movieID: movie.movieId, 
           title: movie.title,
           poster: decodeURIComponent((movie.poster || "").trim()),
           trailer: movie.trailer,

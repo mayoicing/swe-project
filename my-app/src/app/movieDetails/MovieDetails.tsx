@@ -2,9 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
 import Navbar from "@/app/components/Navbar";
-import Image from "next/image";
 
 interface CastAndCrew {
   castAndCrewID: number;

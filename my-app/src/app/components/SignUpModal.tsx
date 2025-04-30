@@ -65,14 +65,25 @@ export default function SignUpModal({
                 JSON.stringify(userData),
                 { headers: { "Content-Type": "application/json" } }
             );
+            if (response.status === 200) {
+                const login = await axios.post("http://localhost:8080/userinfo/login", {
+                    email: userData.email,
+                    password: userData.password,
+                }, {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+                if (login.status === 200) {
+                    const { userID, token } = login.data;
+                    sessionStorage.setItem("authToken", token);
+                    sessionStorage.setItem("userID", userID.toString());
+                    sessionStorage.setItem("user_type", formData.user_type);
 
-            const { userID, token } = response.data;
-            sessionStorage.setItem("authToken", token);
-            sessionStorage.setItem("userID", userID.toString());
-            sessionStorage.setItem("user_type", formData.user_type);
-
-            onLoginSuccess();
-            closeModal(); // Close modal after successful registration
+                    onLoginSuccess();
+                    closeModal(); // Close modal after successful registration
+                }
+            }
         } catch (err) {
             alert("Error registering user");
         }
