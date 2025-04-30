@@ -54,6 +54,12 @@
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Styling for h2 of each section */
+.summaryCard h2, .largeCard h2 {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
 /* Table Styling */
 .tableContainer {
   width: 100%;
@@ -111,6 +117,7 @@
   transition: background-color 0.3s ease;
 }
 
+/* When you hover over 'Apply' button */
 .promoButton:hover {
   background-color: #5a2bd6;
 }
@@ -129,6 +136,7 @@
   transition: background-color 0.3s ease;
 }
 
+/* When you hover over 'Confirm Order' button */
 .confirmButton:hover {
   background-color: #5a2bd6;
 }
@@ -147,6 +155,7 @@
   transition: background-color 0.3s ease;
 }
 
+/* When you hover over 'Cancel Order' button */
 .cancelButton:hover {
   background-color: #950d0d;
 }
@@ -162,13 +171,14 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
 .updateSeatsButton:hover {
   background-color: #0056b3;
 }
 
+/* Styling for 'Add Payment Card' button */
 .addCardButton {
   background-color: #4CAF50;
   color: white;
@@ -180,6 +190,48 @@
   transition: background-color 0.3s;
 }
 
+/* When you hover over 'Add Payment Card' button */
 .addCardButton:hover {
   background-color: #45a049;
+}
+
+/* All cards + 'Add Payment Card' button */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 130px);
+  gap: 10px;
+}
+
+/* Individual payment card (not selected) */
+.card {
+  background: none;
+  border: black solid 1px;
+  padding: 0.8rem 1rem;
+  margin-top: 0.5rem;
+  max-width: 160px;
+  border-radius: 10px;
+  transition: transform 0.1s ease;
+}
+
+/* Individual payment card (selected) */
+.cardSelected {
+  background-color: #c9b5f9;
+  border: black solid 1px;
+  padding: 0.8rem 1rem;
+  margin-top: 0.5rem;
+  max-width: 160px;
+  border-radius: 10px;
+  transition: transform 0.2s ease;
+}
+
+/* When you hover over any of the cards */
+.card:hover {
+  cursor: pointer;
+  transform: translateY(-3px);
+}
+
+/* Container for 'Cancel Order' and 'Confirm Order' buttons */
+.buttonContainer {
+  display: flex;
+  gap: 1rem;
 }
