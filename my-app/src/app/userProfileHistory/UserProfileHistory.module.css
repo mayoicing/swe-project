@@ -36,9 +36,14 @@
 
 .bookingCard {
     display: flex;
-    gap: 1.5rem;
+    gap: 1.75rem;
     color: black;
     background-color: white;
     padding: 1rem;
     border-radius: 10px;
+    transition: transform 0.2s ease;
+}
+
+.bookingCard:hover {
+    transform: translateY(-5px);
 }
