@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export class PaymentHandler extends Handler {
   async handle(request: any): Promise<any> {
-    console.log('Payment Handler called with request:', request);
+    console.log('PAYMENT HANDLER');
     
     const userIDString = localStorage.getItem("userID") || sessionStorage.getItem("userID");
     const userID = userIDString ? parseInt(userIDString, 10) : null;
@@ -20,7 +20,7 @@ export class PaymentHandler extends Handler {
       
       if (cards && cards.length > 0) {
         request.paymentCards = cards; // Store cards into the request
-        console.log('Payment cards fetched successfully: ', cards);
+        //console.log('Payment cards fetched successfully: ', cards);
         if (cards.length < 3) {
           request.showAddCardModal = true; 
         }

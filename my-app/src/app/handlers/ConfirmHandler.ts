@@ -5,7 +5,7 @@ interface BookingRequest {
     userID: number;
     movieShowID: number;
     selectedCardID: number;
-    billingAddress: string;
+    hasBillingAddress: boolean;
     selectedSeatIDs: number[];     
     ticketDetails: any[];        
     totalPrice: number;
@@ -16,13 +16,14 @@ interface BookingRequest {
     bookingID?: number;
   }
 
-export class ConfirmHandler extends Handler {
+export class ConfirmHandler extends Handler {   
   async handle(request: BookingRequest): Promise<any> {
+    console.log('CONFIRM HANDLER');
     const {
       userID,
       movieShowID,
       selectedCardID,
-      billingAddress,
+      hasBillingAddress,
       selectedSeatIDs, 
       ticketDetails, 
       totalPrice,
@@ -30,10 +31,10 @@ export class ConfirmHandler extends Handler {
     } = request;
 
      // Validate required fields
-    if (!selectedCardID || !billingAddress || !selectedSeatIDs?.length) {
+    if (!selectedCardID || !hasBillingAddress || !selectedSeatIDs?.length) {
         request.confirmationError = 
           !selectedCardID ? 'Please select a payment card.' :
-          !billingAddress ? 'Please provide a billing address.' :
+          !hasBillingAddress ? 'Please provide a billing address.' :
           'No seats selected.';
         return request;
     }
@@ -51,9 +52,6 @@ export class ConfirmHandler extends Handler {
         // Create booking
         const bookingResponse = await axios.post('http://localhost:8080/booking/add', bookingPayload);
 
-        console.log("BOOKINGID:", bookingResponse.data);
-        console.log("Selected Seat IDs:", selectedSeatIDs);
-
         const bookingID = bookingResponse.data.bookingID;
         if (!bookingID) throw new Error('Booking creation failed, no booking ID returned.');
 
@@ -68,7 +66,6 @@ export class ConfirmHandler extends Handler {
           }
         });
 
-        console.log("Ticket Types:", ticketTypes);
         // Create tickets
         const ticketPromises = selectedSeatIDs.map((movieShowSeatID, index) =>
             axios.post('http://localhost:8080/ticket/add', {

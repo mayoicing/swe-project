@@ -4,7 +4,7 @@ import axios from 'axios';
 export class PromotionHandler extends Handler {
   async handle(request: any): Promise<any> {
     const { promoCode } = request;
-    console.log('Promotion Handler called with code:', promoCode);
+    console.log('PROMOTION HANDLER');
 
     if (promoCode) {
       try {
@@ -18,11 +18,15 @@ export class PromotionHandler extends Handler {
         const promo = response.data;
         const discountPercent = promo.discount;
         const discountAmount = request.totalPrice * (discountPercent / 100);
+        const promoID = promo.promoID;
 
-        request.totalPrice -= discountAmount;
+        request.totalPrice = Math.round((request.totalPrice - discountAmount) * 100) / 100;
+
+        //request.totalPrice -= discountAmount;
         request.promoSuccess = `-${discountPercent}%`;
         request.discountAmount = discountAmount.toFixed(2);
         request.discount = discountPercent;
+        request.promoID = promoID;
       } catch (error) {
         if (axios.isAxiosError(error) && error.response && error.response.status === 404) {
             request.promoError = 'Invalid code'; // Invalid code

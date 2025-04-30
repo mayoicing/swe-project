@@ -45,6 +45,7 @@ interface OrderRequest {
   };
   totalPrice?: number;
   promoCode?: string;
+  promoID?: number;
   movieShowID?: number;
   selectedSeats?: string[];
   selectedSeatIDs?: number[];
@@ -72,6 +73,7 @@ export default function CheckoutSummary() {
     },
     totalPrice: 0,
     promoCode: "",
+    promoID: undefined,
     movieShowID: 0,
     selectedSeats: [],
     selectedSeatIDs: [],
@@ -85,11 +87,14 @@ export default function CheckoutSummary() {
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [shouldRunChain, setShouldRunChain] = useState(true);
   const [promoCodeError, setPromoCodeError] = useState("");
+  type BookingRequest = Required<OrderRequest>;
+
 
   const totalTicketPrice = (orderRequest.totalTicketPrice ?? 0);
   const totalPrice = (orderRequest.totalPrice ?? 0);
 
   const handlerChain = useRef<LoginHandler | null>(null);
+  const confirmHandler = useRef<ConfirmHandler | null>(null);
 
   if (!handlerChain.current) {
     const loginHandler = new LoginHandler();
@@ -97,22 +102,23 @@ export default function CheckoutSummary() {
     const ticketPriceHandler = new TicketPriceHandler();
     const taxHandler = new TaxHandler();
     const promotionHandler = new PromotionHandler();
-    const confirmHandler = new ConfirmHandler();
 
     loginHandler.setNext(paymentHandler);
     paymentHandler.setNext(ticketPriceHandler);
     ticketPriceHandler.setNext(taxHandler);
     taxHandler.setNext(promotionHandler);
-    promotionHandler.setNext(confirmHandler);
 
     handlerChain.current = loginHandler;
+  }
+
+  if (!confirmHandler.current) {
+    confirmHandler.current = new ConfirmHandler();
   }
 
   useEffect(() => {
     if (!shouldRunChain) return;
     const runChain = async () => {
       const orderDataString = localStorage.getItem("orderData");
-      console.log('Order Data String:', orderDataString);
       let updatedOrderRequest = { ...orderRequest };
 
       if (orderDataString) {
@@ -124,16 +130,16 @@ export default function CheckoutSummary() {
           selectedSeats: parsedOrderData.selectedSeats ?? [],
           selectedSeatIDs: parsedOrderData.selectedSeatIDs ?? [], // movieShowSeatIDs for selected seats
         };
-        console.log('Parsed Order Data:', parsedOrderData);
+        //console.log('Parsed Order Data:', parsedOrderData);
       }
 
 
       if (handlerChain.current && updatedOrderRequest && !updatedOrderRequest.showLoginModal) {  
         console.log('Triggering handler chain...');
-        console.log('Initial Order Request:', updatedOrderRequest);
+        //console.log('Initial Order Request:', updatedOrderRequest);
 
         const result = await handlerChain.current.handle(updatedOrderRequest);
-        console.log('Updated Request', result);
+        //console.log('Updated Request', result);
 
         if (result && result?.showLoginModal) {
           setShowLoginModal(true);
@@ -145,7 +151,6 @@ export default function CheckoutSummary() {
           setOrderRequest(result);
           if (result.paymentCards) {
             setCards(result.paymentCards);
-            console.log('Payment cards:', result.paymentCards);
           }
         }
         setShouldRunChain(false);
@@ -162,7 +167,7 @@ export default function CheckoutSummary() {
 
       setOrderRequest(updatedRequest);  // Ensure the state is updated with the userID
 
-      console.log('Handler Chain Initialized:', handlerChain.current);
+      //console.log('Handler Chain Initialized:', handlerChain.current);
 
       if (handlerChain.current) {
         const result = await handlerChain.current.handle(updatedRequest);
@@ -170,7 +175,7 @@ export default function CheckoutSummary() {
           setOrderRequest(result);
           if (result.paymentCards) {
             setCards(result.paymentCards);
-            console.log('Payment cards:', result.paymentCards);
+            //console.log('Payment cards:', result.paymentCards);
           }
 
           // Close the modal after successful login
@@ -197,15 +202,15 @@ export default function CheckoutSummary() {
   
   const closeAddCardModal = async () => {
     setShowAddCardModal(false);
-    console.log("Add Card Modal closed");
+    //console.log("Add Card Modal closed");
     // Fetch updated cards
     const userID = localStorage.getItem("userID") || sessionStorage.getItem("userID");
-    console.log("User ID:", userID);
+    //console.log("User ID:", userID);
     if (userID) {
       axios.get(`http://localhost:8080/paymentcard/user/${userID}`)
         .then((response) => {
           setCards(response.data);
-          console.log('Updated payment cards:', response.data);
+          //console.log('Updated payment cards:', response.data);
         })
         .catch((error) => console.error('Error fetching payment cards:', error));
 
@@ -219,7 +224,7 @@ export default function CheckoutSummary() {
             ...prevRequest,
             billingAddress: response.data[0], 
           }));
-          console.log('Updated billing address:', response.data);
+          //console.log('Updated billing address:', response.data);
         } else {
           // No billing address found
           setOrderRequest((prevRequest) => ({
@@ -241,12 +246,53 @@ export default function CheckoutSummary() {
     }
   };
 
+  // check that orderRequest is valid before passing to confirmHandler
+  const isBookingRequest = (request: OrderRequest): request is BookingRequest => {
+    console.log('userID', typeof request.userID);
+    console.log('movieShowID', typeof request.movieShowID);
+console.log('selectedCardID', typeof request.selectedCardID);
+console.log('billingAddress', request.billingAddress);
+console.log('selectedSeatIDs', Array.isArray(request.selectedSeatIDs));
+console.log('ticketDetails', request.ticketDetails);
+console.log('totalPrice', typeof request.totalPrice);
+console.log('promoID', request.promoID);
+    return (
+      typeof request.userID === 'number' &&
+      typeof request.movieShowID === 'number' &&
+      typeof request.selectedCardID === 'number' &&
+      typeof request.billingAddress === 'object' &&
+      Array.isArray(request.selectedSeatIDs) &&
+      request.selectedSeatIDs.length > 0 &&
+      Array.isArray(request.ticketDetails) &&
+      request.ticketDetails.every(item =>
+        typeof item.category === 'string' &&
+        typeof item.quantity === 'number' &&
+        typeof item.price === 'number' &&
+        Array.isArray(item.seats)
+      ) &&
+      typeof request.totalPrice === 'number' &&
+      (request.promoID === undefined || typeof request.promoID === 'number')
+    );
+  };  
+
   const handleConfirmOrder = async () => {
-    if (handlerChain.current) {
-      console.log('Confirming order with request:', orderRequest);
-      const result = await handlerChain.current.handle(orderRequest);
-      console.log('Handler chain result:', result);
-      console.log('Current Handler:', handlerChain.current);
+    console.log("userID", orderRequest.userID);
+    console.log("movieShowID", orderRequest.movieShowID);
+    console.log("selectedCardID", orderRequest.selectedCardID);
+
+    const hasBillingAddress = orderRequest.billingAddress != null;
+
+    if (!isBookingRequest(orderRequest)) {
+      alert("Please complete all required information before confirming your order.");
+      return;
+    }
+
+    if (confirmHandler.current) {
+      //console.log('Confirming order with request:', orderRequest);
+      const result = await confirmHandler.current.handle({
+        ...orderRequest,
+        hasBillingAddress
+    });
   
       if (result?.bookingSuccess) {
         router.push("/orderConfirm");
@@ -289,7 +335,7 @@ export default function CheckoutSummary() {
       ...prevRequest,
       selectedCardID: card.cardID,
     }));
-    console.log("Selected card:", card);
+    //console.log("Selected card:", card);
   };
 
   const renderCards = () => {
