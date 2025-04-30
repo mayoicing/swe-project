@@ -1,9 +1,9 @@
 "use client";
-
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
 import ProfileSidebar from '../components/ProfileSidebar';
+import styles from './UserProfileHistory.module.css';
 
 interface BookingDTO {
   bookingID: number;
@@ -42,41 +42,42 @@ export default function UserProfileHistory() {
   return (
     <>
       <Navbar />
-      <div style={{ display: 'flex', padding: '2rem' }}>
-        <div style={{ flex: '0 0 250px', marginRight: '2rem' }}>
-          <ProfileSidebar />
-        </div>
+      <div className={styles.container}>
+        <div className={styles.content}>
 
-        <div style={{ flex: 1 }}>
-          <h1>Booking History</h1>
-          {loading ? (
-            <p>Loading bookings...</p>
-          ) : error ? (
-            <p style={{ color: 'red' }}>{error}</p>
-          ) : bookings.length === 0 ? (
-            <p>No bookings found.</p>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {bookings.map((booking) => (
-                <div
-                  key={booking.bookingID}
-                  style={{
-                    border: '1px solid #ccc',
-                    borderRadius: '8px',
-                    padding: '1rem',
-                    backgroundColor: '#f9f9f9',
-                  }}
-                >
-                  <h2>{booking.movieTitle}</h2>
-                  <p><strong>Date:</strong> {formatDate(booking.showStartTime)}</p>
-                  <p><strong>Time:</strong> {formatTime(booking.showStartTime)}</p>
-                  <p><strong>Tickets:</strong> {booking.noOfTickets}</p>
-                  <p><strong>Total Paid:</strong> ${booking.totalPrice.toFixed(2)}</p>
-                  {booking.promoCode && <p><strong>Promo Code:</strong> {booking.promoCode}</p>}
+          {/* LEFT SECTION */}
+          <div className={styles.leftSection}>
+            <ProfileSidebar />
+          </div>
+
+          {/* RIGHT SECTION */}
+          <div className={styles.rightSection}>
+            <h1>Booking History</h1>
+
+            {/* PURCHASE HISTORY */}
+            {
+              loading ? ( <p>Loading bookings...</p> ) :
+              error ? ( <p className={styles.error}>{error}</p> ) : 
+              bookings.length === 0 ? ( <p>No bookings found.</p> ) : 
+              (
+                <div className={styles.bookingList}>
+                  {bookings.map((booking) => (
+                    <div key={booking.bookingID} className={styles.bookingCard}>
+                      <h2>{booking.movieTitle}</h2>
+                      <p><strong>Date:</strong> {formatDate(booking.showStartTime)}</p>
+                      <p><strong>Time: </strong>{formatTime(booking.showStartTime)}</p>
+                      <p><strong>Tickets:</strong> {booking.noOfTickets}</p>
+                      <p><strong>Total Paid:</strong> ${booking.totalPrice.toFixed(2)}</p>
+                      {booking.promoCode && (
+                        <p><strong>Promo Code:</strong> {booking.promoCode}</p>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
+              )
+            }
+            
+          </div>
         </div>
       </div>
     </>

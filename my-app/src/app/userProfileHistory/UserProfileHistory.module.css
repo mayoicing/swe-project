@@ -1,1 +1,44 @@
 /* Style - UserProfileHistory */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    color: white;
+    letter-spacing: 0.5px;
+}
+
+.content {
+    display: flex;
+}
+
+.leftSection {
+    width: 270px;
+  }
+  
+.rightSection {
+    padding: 20px;
+    margin-left: 30px;
+}
+
+.rightSection h1 {
+    font-size: 40px;
+    font-weight: bolder;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.bookingList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.bookingCard {
+    display: flex;
+    gap: 1.5rem;
+    color: black;
+    background-color: white;
+    padding: 1rem;
+    border-radius: 10px;
+}
