@@ -63,4 +63,28 @@ public void sendPromoNotificationEmail(String toEmail, String promoCode, int dis
     System.out.println("📩 Promo email sent to: " + toEmail);
 }
 
+public void sendBookingConfirmationEmail(String toEmail, String userName, String movieTitle, String auditoriumName, int ticketCount, float totalPrice, String promoCode) {
+    try {
+        String subject = "🎟️ Your Movie Booking is Confirmed!";
+        String body = "Hi " + userName + ",\n\n"
+                + "Thank you for booking with SlayTix! 🎬\n\n"
+                + "🎞️ Movie: " + movieTitle + "\n"
+                + "📍 Auditorium: " + auditoriumName + "\n"
+                + "🎫 Tickets: " + ticketCount + "\n"
+                + "💵 Total Paid: $" + totalPrice + "\n"
+                + "🏷️ Promo Code: " + (promoCode != null ? promoCode : "None") + "\n\n"
+                + "Enjoy the show!\nThe SlayTix Team";
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject(subject);
+        message.setText(body);
+
+        mailSender.send(message);
+        System.out.println("📩 Booking confirmation email sent to: " + toEmail);
+    } catch (Exception e) {
+        System.err.println("⚠️ Failed to send booking confirmation email: " + e.getMessage());
+    }
+}
+
 }
