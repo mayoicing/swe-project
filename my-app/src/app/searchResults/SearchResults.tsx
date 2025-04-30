@@ -42,10 +42,9 @@ export default function SearchResults() {
         } else {
             setIsAdmin(false);
         }
-
     });
 
-    useEffect(()=>{
+    useEffect(() => {
         if (!query) return;
 
         const endpoint =
@@ -57,7 +56,7 @@ export default function SearchResults() {
             .then((response) => {
                 let data = response.data;
                 if (type === "title") {
-                    data = [data]; //convert single movie object to an array
+                    data = [data]; // Converts single movie object to array
                 }
                 const formattedMovies = data.map((movie: Movie) => ({
                     ...movie,
@@ -122,7 +121,7 @@ export default function SearchResults() {
                         </div>
                     ))
                 ) : (
-                    <p>No movie found for "{query}"</p>
+                    <p>No movies found for "{query}"</p>
                 )} 
             </div>
             {showModal && selectedTrailer && (

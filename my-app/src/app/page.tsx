@@ -8,7 +8,7 @@ export default function Home() {
     <>
       <Navbar />
             <h2 className={styles.h2}>MOVIES</h2>
-      <MoviesList />
+      <MoviesList/>
     </>
   );
 }

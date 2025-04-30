@@ -6,8 +6,8 @@ import CheckoutSummary from './CheckoutSummary';
 export default function CheckoutSummaryPage() {
     return (
         <>
-        <Navbar/>
-        <CheckoutSummary/>
+            <Navbar/>
+            <CheckoutSummary/>
         </>
     );
 }

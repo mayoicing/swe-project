@@ -11,10 +11,21 @@ export default function SearchBar() {
     const [isActive, setIsActive] = useState(false);
     const [isFlipped, setIsFlipped] = useState(false);
     const [searchType, setSearchType] = useState<'title' | 'genre'>('title'); // Track search type
+    const [isAdmin, setIsAdmin] = useState(false);
     const router = useRouter();
     const searchParams = useSearchParams();
 
     const typeFromURL = searchParams.get('type') as 'title' | 'genre';
+
+    // CHECKS USER TYPE
+    useEffect(() => {
+            const userType = sessionStorage.getItem('user_type');
+            if (userType === 'Admin') {
+                setIsAdmin(true);
+            } else {
+                setIsAdmin(false);
+            }
+    });
 
     useEffect(() => {
         if (typeFromURL) {
@@ -42,7 +53,11 @@ export default function SearchBar() {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        router.push(`/searchResults?q=${encodeURIComponent(input)}&type=${searchType}`);
+        if (isAdmin === true) {
+            router.push(`/searchResultsAdmin?q=${encodeURIComponent(input)}&type=${searchType}`);
+        } else {
+            router.push(`/searchResults?q=${encodeURIComponent(input)}&type=${searchType}`);
+        }
     };
 
     return (

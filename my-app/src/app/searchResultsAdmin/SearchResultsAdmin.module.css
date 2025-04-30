@@ -1,4 +1,4 @@
-/* Style - SearchResults */
+/* Style - SearchResultsAdmin */
 
 .container {
     color: white;
@@ -16,7 +16,7 @@
     gap: 20px;
     justify-content: center;
     padding: 20px;
-}  
+} 
 
 .movieCard {
     display: flex;
