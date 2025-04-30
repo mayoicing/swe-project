@@ -1,6 +1,6 @@
 "use client";
 
-import styles from './Modal.module.css'; 
+import styles from './AddCardModal.module.css'; 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
