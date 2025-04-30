@@ -2,6 +2,7 @@ import { Handler } from './Handler';
 
 export class TicketPriceHandler extends Handler {
   handle(request: any): any {
+    console.log('TICKET PRICE HANDLER');
     const { ticketDetails } = request;
 
 
@@ -22,14 +23,14 @@ export class TicketPriceHandler extends Handler {
       ticketDetailsSummary += `${category} - ${quantity} ticket(s) - $${priceForCategory.toFixed(2)}\n`;
 
       // Display individual ticket details in the console
-      console.log(`${category}: ${quantity} ticket(s), $${priceForCategory.toFixed(2)}`);
+      //console.log(`${category}: ${quantity} ticket(s), $${priceForCategory.toFixed(2)}`);
     });
 
     // Add the ticket details summary and total price to the request
     request.ticketDetailsSummary = ticketDetailsSummary;
     request.totalTicketPrice = totalTicketPrice;
 
-    console.log(`Total ticket price: $${totalTicketPrice.toFixed(2)}`);
+    //console.log(`Total ticket price: $${totalTicketPrice.toFixed(2)}`);
 
     return super.handle(request);
   }

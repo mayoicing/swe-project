@@ -2,6 +2,7 @@ import { Handler } from './Handler';
 
 export class LoginHandler extends Handler {
   handle(request: any): any {
+    console.log('LOGIN HANDLER');
     const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
 
     if (!token) {
@@ -23,7 +24,6 @@ export class LoginHandler extends Handler {
       return request; 
     }
 
-    console.log('Login Handler called with request:', request);
     // Proceed with the next handler in the chain
     return super.handle(request);
   }
