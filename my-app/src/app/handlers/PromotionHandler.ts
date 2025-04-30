@@ -22,7 +22,7 @@ export class PromotionHandler extends Handler {
 
         request.totalPrice = Math.round((request.totalPrice - discountAmount) * 100) / 100;
 
-        //request.totalPrice -= discountAmount;
+
         request.promoSuccess = `-${discountPercent}%`;
         request.discountAmount = discountAmount.toFixed(2);
         request.discount = discountPercent;

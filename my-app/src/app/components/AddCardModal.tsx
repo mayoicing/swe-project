@@ -1,6 +1,6 @@
 "use client";
 
-import styles from './Modal.module.css'; 
+import styles from './AddCardModal.module.css'; 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
@@ -62,6 +62,10 @@ export default function AddCardModal({ closeModal, hasBillingAddress }: AddCardM
   return (
     <div className={styles.modalBackdrop}>
       <div className={styles.modalContainer}>
+      {showBillingModal && cardID ? (
+        <AddBillingAddressModal cardID={cardID} closeModal={closeModal} />
+      ) : (
+        <>
         <button onClick={closeModal} className={styles.closeButton}>×</button>
         <h1>Add Card</h1>
         <form className={styles.inputForm} onSubmit={handleSubmit}>
@@ -135,10 +139,8 @@ export default function AddCardModal({ closeModal, hasBillingAddress }: AddCardM
             <input type="submit" value="Add Card" className={styles.submitButton} />
           </div>
         </form>
-        {/* Conditionally show AddBillingAddressModal */}
-        {showBillingModal && cardID && (
-            <AddBillingAddressModal cardID={cardID} closeModal={closeModal} />
-        )}
+        </>
+      )}
       </div>
     </div>
   );

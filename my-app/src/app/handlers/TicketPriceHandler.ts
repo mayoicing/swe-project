@@ -22,15 +22,11 @@ export class TicketPriceHandler extends Handler {
       // Append ticket details to the summary string
       ticketDetailsSummary += `${category} - ${quantity} ticket(s) - $${priceForCategory.toFixed(2)}\n`;
 
-      // Display individual ticket details in the console
-      //console.log(`${category}: ${quantity} ticket(s), $${priceForCategory.toFixed(2)}`);
     });
 
     // Add the ticket details summary and total price to the request
     request.ticketDetailsSummary = ticketDetailsSummary;
     request.totalTicketPrice = totalTicketPrice;
-
-    //console.log(`Total ticket price: $${totalTicketPrice.toFixed(2)}`);
 
     return super.handle(request);
   }

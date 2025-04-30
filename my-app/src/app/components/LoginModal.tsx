@@ -39,11 +39,11 @@ export default function LoginModal({
 
             if (response.status === 200) {
                 const { userID, token } = response.data;
-            
+                
                 sessionStorage.setItem("authToken", token);
                 sessionStorage.setItem("userID", userID.toString());
                 sessionStorage.setItem("user_type", 'Customer');
-                
+          
                 onLoginSuccess();
                 closeModal();
             }

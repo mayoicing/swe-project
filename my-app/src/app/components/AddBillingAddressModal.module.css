@@ -1,0 +1,104 @@
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modalContent {
+    background-color: #fff;
+    color: #000;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+    position: relative;
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .modalContent h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .inputForm {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .inputForm label {
+    display: flex;
+    flex-direction: column;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .inputForm input {
+    margin-top: 0.25rem;
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease;
+  }
+  
+  .inputForm input:focus {
+    border-color: #7c42ff;
+    outline: none;
+  }
+  
+  .buttonContainer {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .submitButton {
+    background-color: #7c42ff;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .submitButton:hover {
+    background-color: #502cb1;
+  }
+  
+  .closeButton {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: #555;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  
+  .closeButton:hover {
+    color: #000;
+  }
+  
+  /* Fade-in animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }  
