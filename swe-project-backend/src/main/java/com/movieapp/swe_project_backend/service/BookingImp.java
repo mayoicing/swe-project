@@ -15,9 +15,41 @@ public class BookingImp implements BookingService {
     @Autowired
     private BookingRepository bookingRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     @Override
     public Booking saveBooking(Booking booking) {
-        return bookingRepository.save(booking);
+        Booking saved = bookingRepository.save(booking);
+
+        try {
+            Optional<Booking> fullBookingOpt = bookingRepository.findByIdWithDetails(saved.getBookingID());
+            if (fullBookingOpt.isEmpty()) throw new RuntimeException("Booking not found for email.");
+
+            Booking full = fullBookingOpt.get();
+
+            String userEmail = full.getUser().getEmail();
+            String userName = full.getUser().getFirstName();
+            String movieTitle = "Movie " + full.getMovieShow().getMovieID();  // Keep it simple
+            String auditoriumName = "Auditorium";
+            int ticketCount = full.getNoOfTickets();
+            float totalPrice = full.getTotalPrice();
+            String promoCode = full.getPromoCode() != null ? full.getPromoCode().getCode() : null;
+
+            emailService.sendBookingConfirmationEmail(
+                userEmail,
+                userName,
+                movieTitle,
+                auditoriumName,
+                ticketCount,
+                totalPrice,
+                promoCode
+            );
+        } catch (Exception e) {
+            System.err.println("⚠️ Failed to send booking confirmation email: " + e.getMessage());
+        }
+
+        return saved;
     }
 
     @Override
