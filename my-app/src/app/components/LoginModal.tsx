@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
@@ -64,37 +63,31 @@ export default function LoginModal({
     return (
         <div className={styles.modalBackdrop}>
             <div className={styles.modalContainer}>
-                <h1>Please log in to continue</h1>
+                <h1>Please Login to Continue</h1>
                 {error && <p className={styles.error}>{error}</p>}
                 <form onSubmit={handleSubmit}>
                     <label>
-                        Email Address
                         <input 
                             type="email" 
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Enter here"
+                            placeholder="Email Address"
                             required
                         />
                     </label>
                     <label>
-                        Password
                         <input 
                             type="password" 
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Enter here"
+                            placeholder="Password"
                             required
                         />
                     </label>
                     <button type="submit">Log In</button>
                 </form>
                 <div>
-                    <button 
-                        type="button" 
-                        onClick={onSwitchToSignUp} 
-                        className={styles.switchButton}
-                    >
+                    <button type="button" onClick={onSwitchToSignUp} className={styles.switchButton}>
                         Sign Up
                     </button>
                 </div>

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import styles from "./Modal.module.css"; 
+import styles from "./SignUpModal.module.css"; 
 
 export default function SignUpModal({ 
     show,
@@ -81,20 +81,19 @@ export default function SignUpModal({
     return (
         <div className={styles.modalBackdrop}>
             <div className={styles.modalContainer}>
-                <h1>Sign Up</h1>
+                <h1>Quick Sign Up</h1>
                 <form onSubmit={handleSubmit}>
-                    {/* Fields for First Name, Last Name, etc. */}
+                    {/* Fields for First Name, Last Name, Email, Phone Number, Password */}
                     <input type="text" name="first_name" value={formData.first_name} onChange={handleChange} placeholder="First Name" required />
                     <input type="text" name="last_name" value={formData.last_name} onChange={handleChange} placeholder="Last Name" required />
                     <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
                     <input type="text" name="phone_number" value={formData.phone_number} onChange={handleChange} placeholder="Phone Number" required />
                     <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" required />
                     <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm Password" required />
-                    <label>
-                        Enroll for Promotions
+                    <label className={styles.enroll}>
+                        Enroll for Promotions 
                         <input type="checkbox" name="enroll_for_promotions" checked={formData.enroll_for_promotions} onChange={handleChange} />
                     </label>
-
                     <button type="submit">Sign Up</button>
                 </form>
             </div>
