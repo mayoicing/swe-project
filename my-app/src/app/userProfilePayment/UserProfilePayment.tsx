@@ -53,31 +53,39 @@ export default function UserProfilePayment() {
         }
       })
       .catch((error) => {
-        console.error('Error fetching billing address: ', error);
-        setAddress(null);
+        if (error.response && error.response.status === 404) {
+          setAddress(null); // No billing address found — not an error
+        } else {
+          console.error('Error fetching billing address: ', error);
+        }
       });
 
     axios.get(`http://localhost:8080/paymentcard/user/${userID}`)
       .then((response) => setCards(response.data))
-      .catch((error) => console.error('Error fetching payment cards: ', error));
+      .catch((error) => {
+        if (error.response && error.response.status === 404) {
+          setCards([]); // No cards found — not an error
+        } else {
+          console.error('Error fetching payment cards: ', error);
+        }
+      });
   }, [userID]);
 
   const renderCards = () => {
     const cardElements = cards.slice(0, 3).map((card) => (
-    <PaymentCard
-      key={card.cardID}
-      cardID={card.cardID}
-      cardholderName={card.cardholderName}
-      cardNumber={card.cardNumber}
-      expDate={card.expDate}
-      cardType={card.cardType}
-    />
+      <PaymentCard
+        key={card.cardID}
+        cardID={card.cardID}
+        cardholderName={card.cardholderName}
+        cardNumber={card.cardNumber}
+        expDate={card.expDate}
+        cardType={card.cardType}
+      />
     ));
-  
+
     if (cards.length < 3) {
-      // Only render ONE add button slot
       cardElements.push(
-      <NoCard key="add-new-card" showAddButton />
+        <NoCard key="add-new-card" showAddButton />
       );
     }
     return cardElements;
